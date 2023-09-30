@@ -1,0 +1,87 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #b4dcfc;
+    text-align: center;
+    align-items: center;
+}
+
+.logohome {
+    width: auto;
+    height: 60px;
+}
+
+section h1 {
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px #000000;
+    padding-top: 30px;
+    font-size: 70px
+}
+
+.search{
+    text-align: center;
+    align-items: center;
+    margin: 20px 0px;
+}
+
+.bookh {
+    font-size: 25px;
+}
+
+.grid-container {
+    display: grid;
+    border-radius: 25px;
+    gap: 50px 0px;
+    grid-template-columns: auto auto auto auto;
+    background-color: #95cfff;
+    padding: 30px ;
+    margin: 10px 20px;
+}
+  
+.grid-item { 
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 25px;
+    margin: 10px 30px;
+    padding: 20px  ;
+    font-size: 14px;
+    text-align: center;
+  }
+
+.img {
+    padding: 10px;
+    width: 15rem
+}
+
+.button {
+    display: inline-block;
+    padding: 2px 20px;
+    margin: 15px 0px;
+    font-size: 24px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4c78af;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px #999;
+
+
+}
+  
+.button:hover {background-color: #6192cd}
+  
+.button:active {
+    background-color: #6192cd;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+
+
+

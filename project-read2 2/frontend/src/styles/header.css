@@ -1,0 +1,67 @@
+.sticky-header {
+    position: sticky !important; 
+    top: 0;
+    background-color: white; /* Add your background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a shadow for visual separation */
+    z-index: 1000; /* Adjust z-index as needed */
+    /* Add any other styles you want for the sticky header */
+  }
+
+
+/* .mb-3Nbar {
+  transition: all 0.3s; 
+  padding: 10px 0; 
+  background-color: #fff;
+} */
+
+
+
+.welcometext{
+  font-weight: bold;
+  display: inline;
+}
+
+.logohome {
+  height: 50px; 
+  width: auto; 
+}
+
+.offcanvas-header {
+  background-color: #f8f9fa; 
+  border-bottom: 1px solid black; 
+}
+
+
+.offcanvas-title {
+  display: flex; 
+  align-items: center;
+}
+
+
+.offcanvas-body {
+  padding: 0; 
+}
+
+
+.list_item {
+  color: #000; 
+  font-size: 18px;
+  padding: 10px 0; 
+  text-decoration: none; 
+  display: flex;
+  align-items: center;
+}
+
+.list_item:hover {
+  background-color: #9bd2ff;
+  font-size: 20px;
+  padding: 10px 0; 
+  display: inline;
+}
+
+
+.bi {
+  font-size: 24px; 
+  margin: 0px 10px; 
+}
+

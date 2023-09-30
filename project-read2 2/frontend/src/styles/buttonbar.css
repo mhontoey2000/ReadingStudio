@@ -1,0 +1,26 @@
+/* 
+.primary-button {
+    background-color: #b4dcfc;
+    border-color: blue;
+    border-radius: 10px;
+    color: blue;
+}
+  
+.primary-button:hover {
+    background-color: blue;
+    border-color: blue;
+    color: white;
+}
+  
+.success-button {
+    background-color:#b4dcfc;
+    border-radius: 10px;
+    color: green;
+    border: 2px solid green;
+}
+  
+.success-button:hover {
+    background-color:green;
+    color: white;
+    border: 2px solid green;
+} */

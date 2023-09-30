@@ -1,0 +1,45 @@
+
+.grid-containerr {
+  border-radius: 25px;
+  padding: 30px ;
+  margin: 10px 20px;
+}
+
+.form-item label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.fg{
+  background-color: white;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  border-radius: 25px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  padding: 80px;
+  margin: 10px 30px;
+}
+
+.btn-containerr {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn1{
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.btn1:hover{
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.fg h2{
+  text-align: center;
+  padding-bottom: 10px;
+}
