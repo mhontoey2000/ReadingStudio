@@ -92,9 +92,13 @@ app.get('/api/book', function (req, res) {
         }
       );
   });
+
 // แก้เพิ่ม
-  app.post('/api/addbook', (req, res) => {
-    const { book_name, book_detail, book_image } = req.body;
+
+  app.post('/api/addbook', multer().single('book_image'), (req, res) => {
+    // const { book_name, book_detail, book_image } = req.body;
+    const image = req.file.path; // ภาพที่ถูกอัปโหลด
+    const { book_name, book_detail } = req.body;
 
     connection.query("SELECT book_id FROM book ORDER BY book_id DESC LIMIT 1", (err, results) => {
       if (err) {
@@ -113,7 +117,7 @@ app.get('/api/book', function (req, res) {
       const book_id = `book${String(newNumber).padStart(3, '0')}`;
 
       connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image) VALUES (?, ?, ?, ?)", 
-      [book_id, book_name, book_detail, book_image], 
+      [book_id, book_name, book_detail, image], 
       (err, result) => {
           if (err) {
               console.error('Error adding book:', err);
