@@ -97,7 +97,7 @@ app.get('/api/book', function (req, res) {
 // Multer configuration for handling file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './uploads'); 
+    cb(null, '../frontend/public/picture'); 
   },
   filename: (req, file, cb) => {
     const fileName = Date.now() + '_' + file.originalname; 
@@ -108,10 +108,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage:storage });
 
 // แก้เพิ่ม
-
   app.post('/api/addbook',upload.single('book_image'), (req, res) => {
     // const { book_name, book_detail, book_image } = req.body;
-    const image = req.file.path; // ภาพที่ถูกอัปโหลด
+    const image = req.file.path.replace("..\\frontend\\public", ""); // ภาพที่ถูกอัปโหลด
     const { book_name, book_detail } = req.body;
 
     connection.query("SELECT book_id FROM book ORDER BY book_id DESC LIMIT 1", (err, results) => {
