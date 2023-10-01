@@ -44,8 +44,9 @@ app.get('/', (req, res) => {
 app.get('/api/key', function (req, res) {
   res.json({ key: process.env.PASS_KEY });
 });
-
-app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+// app.use(bodyParser.urlencoded({extended:true}))
 
 app.listen(5004, () => {
   console.log('Application is running on port 5004');
