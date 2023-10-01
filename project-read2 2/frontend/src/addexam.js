@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import "./styles/addexam.css";
-import { useLocation } from "react-router-dom";
+import { Await, useLocation } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 
 function Addexam() {
@@ -100,7 +100,8 @@ function Addexam() {
     setQuestions(updatedQuestions);
   };
 
-  const submitExam = () => {
+// แก้การส่งหน้าสร้างข้อสอบ
+  const submitExam = async () => {
     if (
       questions.some(
         (question) =>
@@ -110,41 +111,40 @@ function Addexam() {
       alert("Please fill in all question details.");
       return;
     }
+    try{
 
-    // Create an array to hold the question data
-    const questionsData = questions.map((question) => {
-      const formData = new FormData();
-      formData.append("question_text", question.text);
-      if (question.image) {
-        formData.append("question_image", question.image);
+    async function convertImageToBase64(file) {
+      return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(',')[1]); // เฉพาะส่วนข้อมูล Base64
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(file);
+      });
+    }
+    const data = {
+      book_id: bookid,
+      article_id: articleid,
+      total_questions: totalQuestions,
+      questions: await Promise.all(questions.map(async question => ({
+          text: question.text,
+          image: question.image ? await convertImageToBase64(question.image) : null,
+          options: question.options,
+          correctOption: question.correctOption
+      })))
+    };
+
+    // Send POST request
+    const response = await axios.post("http://localhost:5004/api/add-data", data, {
+      headers: {
+          "Content-Type": "application/json"
       }
-      formData.append("options", JSON.stringify(question.options));
-      formData.append("correct_option_id", question.correctOption);
-      return formData;
     });
 
-    // Send a POST request to your /api/add-data endpoint with the data
-    const formData = new FormData();
-    formData.append("book_id", bookid);
-    formData.append("article_id", articleid);
-    formData.append("total_questions", totalQuestions);
-    console.log("book_id", bookid);
-    console.log("article_id", articleid);
-    console.log("total_questions", totalQuestions);
-    questionsData.forEach((questionData, index) => {
-      formData.append(`questions[${index}]`, questionData);
-      console.log(`questions[${index}]`, questionData);
-    });
-
-    axios
-      .post("http://localhost:5004/api/add-data", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        alert("Exam created successfully");
-        setQuestions([
+     if(response.status >= 200 && response.status< 300)
+     {
+      alert("Success");
+      console.log(response.data);
+      setQuestions([
           {
             text: "",
             image: null,
@@ -152,11 +152,16 @@ function Addexam() {
             correctOption: 0,
           },
         ]);
-      })
-      .catch((error) => {
-        alert("Error creating exam");
-        console.error(error);
-      });
+      }
+      else 
+        alert(response.error);
+    }
+    catch(error){
+      alert(error);
+      console.error(error);
+
+    }
+   
   };
 
   const cancelExam = () => {

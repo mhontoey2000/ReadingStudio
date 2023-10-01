@@ -37,12 +37,10 @@ function Home() {
     <div>
             <Header/>
         
-
                 <section >
                     <h1>หนังสือ</h1>
                     
                       <Searchbar/>
-
 
                     {["admin", "creater"].includes(usertype) && (<div>
                     <div className="btnad d-grid d-md-flex justify-content-md-end">
