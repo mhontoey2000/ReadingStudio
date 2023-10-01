@@ -93,9 +93,23 @@ app.get('/api/book', function (req, res) {
       );
   });
 
+//แก้เพิ่มย้ายบรรทัด ให้เรียก เก็บรูปในดาต้า
+// Multer configuration for handling file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads'); 
+  },
+  filename: (req, file, cb) => {
+    const fileName = Date.now() + '_' + file.originalname; 
+    cb(null, fileName);
+  },
+});
+
+const upload = multer({ storage:storage });
+
 // แก้เพิ่ม
 
-  app.post('/api/addbook', multer().single('book_image'), (req, res) => {
+  app.post('/api/addbook',upload.single('book_image'), (req, res) => {
     // const { book_name, book_detail, book_image } = req.body;
     const image = req.file.path; // ภาพที่ถูกอัปโหลด
     const { book_name, book_detail } = req.body;
@@ -501,18 +515,7 @@ app.get('/api/report', function (req, res) {
 //   });
 // });
 
-// Multer configuration for handling file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); 
-  },
-  filename: (req, file, cb) => {
-    const fileName = Date.now() + '_' + file.originalname; 
-    cb(null, fileName);
-  },
-});
 
-const upload = multer({ storage });
 
 
 app.post('/api/add-data', upload.array('questions'), (req, res) => {
