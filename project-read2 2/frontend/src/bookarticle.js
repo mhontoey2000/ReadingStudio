@@ -56,13 +56,18 @@ function Bookarticle({ match }) {
 
           {["admin", "creater"].includes(usertype) && (<div>
                     <div className="btnad d-grid d-md-flex justify-content-md-end">
+                      <li key={bookid}>
                         <Link 
                           type="button" 
-                          to={{ pathname: '/Page/addarticle', state: { book_id:bookid } }}
+                          to={{ 
+                            pathname: `/Page/addarticle/${bookid}`, 
+                            state: { book_id:bookid } 
+                          }}
                           className="btn btn-success btnt"
                           >
                               เพิ่มบทหนังสือ
                           </Link>
+                      </li>
                     </div>
                     </div>)}
           

@@ -44,9 +44,9 @@ app.get('/', (req, res) => {
 app.get('/api/key', function (req, res) {
   res.json({ key: process.env.PASS_KEY });
 });
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-// app.use(bodyParser.urlencoded({extended:true}))
+// app.use(bodyParser.json({ limit: '50mb' }));
+// app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.urlencoded({extended:true}))
 
 app.listen(5004, () => {
   console.log('Application is running on port 5004');
@@ -61,7 +61,6 @@ connection.connect((err) => {
     }
   
   });
-
 
 
 //const { request } = require('express')
@@ -93,6 +92,25 @@ app.get('/api/book', function (req, res) {
         }
       );
   });
+
+//gustest
+
+app.get('/api/gus', function (req, res) {
+ 
+  connection.query(
+    'SELECT * FROM questions ' +
+    'LEFT JOIN exams ON exams.exam_id = questions.exam_id ' +
+    'LEFT JOIN options ON questions.question_id = options.question_id ' +
+    'WHERE exams.exam_id = 61',
+      function(err, results) {
+        res.json(results);
+      }
+    );
+});
+
+
+
+//close gustest
 
 //แก้เพิ่มย้ายบรรทัด ให้เรียก เก็บรูปในดาต้า
 // Multer configuration for handling file uploads
@@ -462,60 +480,6 @@ app.get('/api/report', function (req, res) {
     );
 });
 
-
-// app.post('/api/add-data', (req, res) => {
-//   const { data1, data2, data3, data4 } = req.body;
-//   console.log(req.body);
-//   // Define SQL statements to insert data into your tables
-//   const sql1 = `INSERT INTO exams (total_questions, name, book_id, article_id) VALUES (?, ?, ?, ?)`;
-//   const values1 = [data1, data2, data3, data4];
-
-//   const sql2 = `INSERT INTO questions (exam_id, question_text, question_image, correct_option_id) VALUES (?, ?, ?, ?)`;
-//   const values2 = [data4, data1, data2, data3];
-
-//   const sql3 = `INSERT INTO options (question_id, option_text) VALUES (?, ?)`;
-//   const values3 = [data1, data2];
-
-//   const sql4 = `INSERT INTO correct_options (question_id, option_id) VALUES (?, ?)`;
-//   const values4 = [data1, data2];
-
-//   // Execute SQL queries for each table
-//   connection.query(sql1, values1, (err1, result1) => {
-//     if (err1) {
-//       console.error('Error inserting data into exams table: ' + err1.message);
-//       res.status(500).json({ message: 'Error inserting data into exams table' });
-//     } else {
-//       console.log('Data inserted into exams table successfully');
-//       connection.query(sql2, values2, (err2, result2) => {
-//         if (err2) {
-//           console.error('Error inserting data into questions table: ' + err2.message);
-//           res.status(500).json({ message: 'Error inserting data into questions table' });
-//         } else {
-//           console.log('Data inserted into questions table successfully');
-//           connection.query(sql3, values3, (err3, result3) => {
-//             if (err3) {
-//               console.error('Error inserting data into options table: ' + err3.message);
-//               res.status(500).json({ message: 'Error inserting data into options table' });
-//             } else {
-//               console.log('Data inserted into options table successfully');
-//               connection.query(sql4, values4, (err4, result4) => {
-//                 if (err4) {
-//                   console.error('Error inserting data into correct_options table: ' + err4.message);
-//                   res.status(500).json({ message: 'Error inserting data into correct_options table' });
-//                 } else {
-//                   console.log('Data inserted into correct_options table successfully');
-//                   res.status(200).json({ message: 'Data inserted successfully into all tables' });
-//                 }
-//               });
-//             }
-//           });
-//         }
-//       });
-//     }
-//   });
-// });
-
-
 const fs = require('fs');
 // app.use(bodyParser.json({ limit: '100mb' })); // ตั้งค่า limit สูงขึ้นถ้าข้อมูลที่คุณรับมีขนาดใหญ่
 
@@ -538,7 +502,7 @@ app.post('/api/add-data', /*upload.fields([{name:'questions'}]),*/ (req, res) =>
         const { text, image, options, correctOption } = question;
     
         // แปลง Base64 ไปเป็นไฟล์
-        const fileName = null; 
+        let fileName = null; 
 
         if (image) {
           const buffer = Buffer.from(image, 'base64');
@@ -570,4 +534,39 @@ app.post('/api/add-data', /*upload.fields([{name:'questions'}]),*/ (req, res) =>
       res.status(200).send('Exam created successfully');
     }
   });
+});
+
+app.post('/api/addarticle', (req, res) => {
+  const { book_id, chapter,level, description,image,sound } = req.body;
+  console.log(book_id);
+  console.log(chapter);
+  console.log(description);
+  console.log(image);
+  console.log(description);
+  connection.query("SELECT article_id FROM article ORDER BY article_id DESC LIMIT 1", (err, results) => {
+    if (err) {
+        console.error('Error fetching last article_id:', err);
+        res.status(500).json({ error: 'Error fetching last article_id' });
+        return;
+    }
+    let lastNumber = 0;
+    if (results.length > 0) {
+        const lastBookId = results[0].article_id;
+        lastNumber = parseInt(lastBookId.replace('XOL', ''), 10); 
+    }
+    const newNumber = lastNumber + 1;
+    const articleid = `XOL${String(newNumber).padStart(3, '0')}`;
+    const insertOptionQuery = `INSERT INTO article (article_id ,book_id, article_name ,article_level ,article_detail  ,article_images ,article_sounds) VALUES (?,?,?,?,?,?,?)`;
+    connection.query(insertOptionQuery, [articleid,book_id, chapter,level, description , image , sound], (err, result) => {
+      if (err) {
+        console.error('Error inserting exam data: ' + err.message);
+        res.status(500).send('Error creating exam Insert Id');
+      }else{
+        res.status(200).send('creating exam Insert Id');
+
+      }
+    });
+   
+  });
+ 
 });

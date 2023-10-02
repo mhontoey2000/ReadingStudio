@@ -40,8 +40,8 @@ function Exam() {
                 <section >
                     <h1>ทำแบบทดสอบ</h1>
                    
-                        <div className="grid-container">
-                        <from>ชื่อข้อสอบ</from>
+                      <div className="grid-container">
+                        <from>ชื่อข้อสอบ
                         
 
                                 <div>
@@ -49,8 +49,11 @@ function Exam() {
                                      
                                   </div>
                                 </div>
-                
+                        </from>
+                    
                     </div>
+                    <Button className="btn1 btn-success" onClick > ส่งคำตอบ </Button>
+                    
                     
                 </section>
             </div>

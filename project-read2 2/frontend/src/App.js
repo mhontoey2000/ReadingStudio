@@ -140,10 +140,10 @@ const App = () => {
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Addbook />
           }
         />
-        <Route
-          path="/Page/addarticle"
+       <Route
+          path="/Page/addarticle/:bookid"
           render={() =>
-            !isAuthenticated ? <Redirect to="/Page/one" /> : <Addarticle />
+          !isAuthenticated ? <Redirect to="/Page/one" /> : <Addarticle />
           }
         />
         <Route

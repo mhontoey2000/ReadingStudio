@@ -29,7 +29,7 @@ function Bookdetail(match) {
   const [audioProgress, setAudioProgress] = useState(0);
   const [usertype, setUsertype] = useState("")
   const [remail, setRemail] = useState("");
-
+  const [qitems, setqItems] = useState([]);
   const [visibleDiv, setVisibleDiv] = useState('เนื้อหา');
 
   const handleButtonClick = (divToShow) => {
@@ -73,6 +73,21 @@ function Bookdetail(match) {
       });
   }, [articleid]);
 
+  useEffect(() => {
+    axios.get('http://localhost:5004/api/gus')
+      .then((response) => {
+        let tempArr = []
+        for(let i = response.data.length-1; i>=0; i--){
+          tempArr[i] = response.data[i]
+        }
+      
+        setqItems(tempArr);
+        console.log(tempArr)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
    // Function to delete a vocab
    const deleteVocab = (vocabId) => {
@@ -295,7 +310,28 @@ function Bookdetail(match) {
                           </div>
 
                         <div className="grid-container" id="myDIV3" style={{ display: visibleDiv === 'ข้อสอบ' ? 'block' : 'none' }}>
-                          <div>This is ข้อสอบ.</div>
+                        <div>
+                          {Array.isArray(qitems) && qitems.map((vocabs, index) => (
+                            <div className="v-item" key={vocabs.vocabs_id}>
+                              <div className="vno" key={`vocabs_${index}`}>
+                                <h5 className="v-title">{`${index + 1}. ${vocabs.question_text}`}</h5>
+                                <h5 className="v-text">{vocabs.option_text}</h5>
+                              
+                                {["admin", "creater"].includes(usertype) && (
+                                  <Button
+                                    className="btn btn-danger"
+                                    onClick={() => deleteVocab(vocabs.vocabs_id)}
+                                  >
+                                    Delete
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                          </div>
+                          
+                            
+
                           {["admin", "creater"].includes(usertype) && (
                           <div className="addV">
                             <Link 

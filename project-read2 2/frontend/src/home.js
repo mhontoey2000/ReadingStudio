@@ -12,7 +12,7 @@ function Home() {
     const [items, setItems] = useState([]);
     const user = localStorage.getItem('email');
     const [usertype, setUsertype] = useState("")
-
+  
 
     useEffect(() => {
       axios.get('http://localhost:5004/api/userdata?user_email=' + user)
@@ -31,6 +31,7 @@ function Home() {
             console.error(error);
           });
       }, []);
+
 
 
     return (
