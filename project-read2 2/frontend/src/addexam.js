@@ -6,6 +6,8 @@ import axios from "axios";
 import "./styles/addexam.css";
 import { Await, useLocation } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
+import { apiClient as helper } from './config';
+
 
 function Addexam() {
   const location = useLocation();
@@ -18,8 +20,7 @@ function Addexam() {
   const [aname, setAname] = useState("");
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/articledetail/${articleid}`)
+    helper.get(`api/articledetail/${articleid}`)
       .then((response) => {
         setAname(response.data[0].article_name);
         setIsLoaded(true);
@@ -30,8 +31,7 @@ function Addexam() {
   }, [articleid]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/book`)
+    helper.get(`api/book`)
       .then((response) => {
         //console.log(response.data);
         for (let i = 0; i < response.data.length; i++) {
@@ -112,29 +112,20 @@ function Addexam() {
       return;
     }
     try{
-
-    async function convertImageToBase64(file) {
-      return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result.split(',')[1]); // เฉพาะส่วนข้อมูล Base64
-          reader.onerror = error => reject(error);
-          reader.readAsDataURL(file);
-      });
-    }
     const data = {
       book_id: bookid,
       article_id: articleid,
       total_questions: totalQuestions,
       questions: await Promise.all(questions.map(async question => ({
           text: question.text,
-          image: question.image ? await convertImageToBase64(question.image) : null,
+          image: question.image ? await helper.convertImageToBase64(question.image) : null,
           options: question.options,
           correctOption: question.correctOption
       })))
     };
 
     // Send POST request
-    const response = await axios.post("http://localhost:5004/api/add-data", data, {
+    const response = await helper.post("api/add-data", data, {
       headers: {
           "Content-Type": "application/json"
       }

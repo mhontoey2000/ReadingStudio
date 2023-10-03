@@ -8,6 +8,7 @@ import { Input, Space } from 'antd';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router-dom';
+import { apiClient as helper } from './config';
 
 
 function Addbook() {
@@ -18,18 +19,21 @@ function Addbook() {
     const [bookImage, setBookImage] = useState(null);
     const history = useHistory();
 
-    const addBook = () => {
+    const addBook = async () => {
         // Create a FormData object to send the data as a multipart/form-data request
-        const formData = new FormData();
-        formData.append('book_name', bookName);
-        formData.append('book_detail', bookDetail);
-        formData.append('book_image', bookImage);
-    
+       
+        const data = {
+          book_name: bookName,
+          book_detail: bookDetail,
+          book_image: bookImage ? await helper.convertImageToBase64(bookImage) : null
+        };
+
         // Send a POST request to the backend API to add the book
-        axios
-          .post('http://localhost:5004/api/addbook', formData) // Replace '/api/addbook' with your actual API endpoint
+        helper
+          .post('api/addbook', data) // Replace '/api/addbook' with your actual API endpoint
           .then((response) => {
             // Handle a successful response here (e.g., show a success message)
+            alert('Book added successfully');
             console.log('Book added successfully');
             // Optionally, you can clear the input fields and image after adding the book
             setBookName('');

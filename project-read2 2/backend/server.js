@@ -15,6 +15,7 @@ const connection = mysql.createConnection({
 });
 process.env.ACCESS_TOKEN_SECRET = 'doraemon';
 dotenv.config()
+const helper = require('./upload')
 
 function generateAccessToken(user) {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 60 * 60 * 24 * 30 });
@@ -83,17 +84,8 @@ router.get('/tbl',async (req,res,next) => {
     }
 })
 
-app.get('/api/book', function (req, res) {
- 
-    connection.query(
-        'SELECT * FROM book',
-        function(err, results) {
-          res.json(results);
-        }
-      );
-  });
 
-//gustest
+//หน้า exams
 
 app.get('/api/exam', function (req, res) {
   console.log('results Active');
@@ -210,7 +202,9 @@ return;
     // ' JOIN options ON questions.question_id = options.question_id '
 });
 
-//close gustest
+//close หน้า exam 
+
+
 
 
 //แก้เพิ่มย้ายบรรทัด ให้เรียก เก็บรูปในดาต้า
@@ -227,12 +221,28 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage:storage });
 
-// แก้เพิ่ม
-  app.post('/api/addbook',upload.single('book_image'), (req, res) => {
-    // const { book_name, book_detail, book_image } = req.body;
-    const image = req.file.path.replace("..\\frontend\\public", ""); // ภาพที่ถูกอัปโหลด
-    const { book_name, book_detail } = req.body;
+//หน้าหนังสือ
+app.get('/api/book', function (req, res) {
+ 
+  connection.query(
+      'SELECT * FROM book',
+      function(err, results) {
+        res.json(results);
+      }
+    );
+});
 
+// แก้เพิ่ม
+  app.post('/api/addbook', async (req, res) => {
+    const { book_name, book_detail, book_image } = req.body;
+    console.log(book_name);
+    console.log(book_detail);
+    // const image = req.file.path.replace("..\\frontend\\public", ""); // ภาพที่ถูกอัปโหลด
+    // let fileName = '../frontend/public/picture/'+Date.now() + '_' + Image + 'jpg'; // ตำแหน่งของไฟล์ที่คุณต้องการบันทึก
+    // helper.SaveImageToFile(book_image,fileName);
+    // if(book_image == null)
+    //   fileName = null;
+    // console.log(path);
     connection.query("SELECT book_id FROM book ORDER BY book_id DESC LIMIT 1", (err, results) => {
       if (err) {
           console.error('Error fetching last book_id:', err);
@@ -250,7 +260,7 @@ const upload = multer({ storage:storage });
       const book_id = `book${String(newNumber).padStart(3, '0')}`;
 
       connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image) VALUES (?, ?, ?, ?)", 
-      [book_id, book_name, book_detail, image], 
+      [book_id, book_name, book_detail, null], 
       (err, result) => {
           if (err) {
               console.error('Error adding book:', err);

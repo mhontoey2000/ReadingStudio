@@ -60,7 +60,7 @@ function Bookarticle({ match }) {
                         <Link 
                           type="button" 
                           to={{ 
-                            pathname: `/Page/addarticle/${bookid}`, 
+                            pathname: `/Page/addarticle_${bookid}`, 
                             state: { book_id:bookid } 
                           }}
                           className="btn btn-success btnt"

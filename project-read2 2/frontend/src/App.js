@@ -141,7 +141,7 @@ const App = () => {
           }
         />
        <Route
-          path="/Page/addarticle/:bookid"
+          path="/Page/addarticle_:bookid"
           render={() =>
           !isAuthenticated ? <Redirect to="/Page/one" /> : <Addarticle />
           }

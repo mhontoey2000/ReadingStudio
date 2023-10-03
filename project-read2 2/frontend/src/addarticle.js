@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 
-import { apiClient } from './config';
+import { apiClient as helper } from './config';
 
 function Addarticle() {
 
@@ -33,7 +33,7 @@ function Addarticle() {
     
 
     useEffect(() => {
-        apiClient.get(`api/book`)
+        helper.get(`api/book`)
           .then((response) => {
             // console.log(response.data);
             for(let i=0;i<response.data.length;i++)
@@ -57,22 +57,7 @@ function Addarticle() {
     const cancelArticle = () => {
         history.goBack();
     }
-    async function convertSoundToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(',')[1]); // เฉพาะส่วนข้อมูล Base64
-            reader.onerror = error => reject(error);
-            reader.readAsDataURL(file);
-        });
-    }
-    async function convertImageToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(',')[1]); // เฉพาะส่วนข้อมูล Base64
-            reader.onerror = error => reject(error);
-            reader.readAsDataURL(file);
-        });
-    }
+   
     async function confirmBook(event) {
         event.preventDefault();
         try
@@ -82,12 +67,12 @@ function Addarticle() {
                 chapter: chapter,
                 level: chapter,
                 description: description,
-                image: imageFile ? await convertImageToBase64(imageFile) : null ,
-                sound: soundFile ? await convertSoundToBase64(soundFile) : null,
+                image: imageFile ? await helper.convertImageToBase64(imageFile) : null ,
+                sound: soundFile ? await helper.convertSoundToBase64(soundFile) : null,
                 };
                 
             // axios.post("http://localhost:5004/api/addarticle", data, {
-            apiClient.post('api/addarticle', data, {
+            helper.post('api/addarticle', data, {
                 headers: {
                     "Content-Type": "application/json"
                 }
