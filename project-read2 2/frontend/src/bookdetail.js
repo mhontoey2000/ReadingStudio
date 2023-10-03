@@ -74,7 +74,7 @@ function Bookdetail(match) {
   }, [articleid]);
 
   useEffect(() => {
-    axios.get('http://localhost:5004/api/gus')
+    axios.get('http://localhost:5004/api/exam')
       .then((response) => {
         let tempArr = []
         for(let i = response.data.length-1; i>=0; i--){
@@ -311,24 +311,43 @@ function Bookdetail(match) {
 
                         <div className="grid-container" id="myDIV3" style={{ display: visibleDiv === 'ข้อสอบ' ? 'block' : 'none' }}>
                         <div>
+                        {["admin", "creater"].includes(usertype) && (
+                          <div className="addV">
+                            <Link 
+                            className="btn btn-warning tc"
+                            to={{ pathname: "/Page/addexam", state: { book_id: bookid,article_id: articleid } }}
+                            >
+                              เพิ่มข้อสอบ
+                            </Link>
+                          </div>
+                          )}
                           {Array.isArray(qitems) && qitems.map((vocabs, index) => (
                             <div className="v-item" key={vocabs.vocabs_id}>
                               <div className="vno" key={`vocabs_${index}`}>
                                 <h5 className="v-title">{`${index + 1}. ${vocabs.question_text}`}</h5>
-                                {/* Radio buttons */}
                                 <div>
-                                <input type="radio" className="v-text" value={vocabs.option_text} name="radioOption" />
-                                  <label htmlFor="radioOption">{vocabs.option_text}</label>
-                                </div>
+                                    {vocabs.question_options.map((option, optionIndex) => (
+                                      <div key={`option_${optionIndex}`}>
+                                        <input
+                                          type="radio"
+                                          className="v-text"
+                                          value={option.option_id}
+                                          name={`radioOption_${index}`} // Nombre único para cada grupo de opciones
+                                          id={`option_${optionIndex}`}   // Identificador único para cada opción
+                                        />
+                                        <label htmlFor={`option_${optionIndex}`}>{option.option_text}</label>
+                                      </div>
+                                    ))}
+                                  </div>
                                 
-                                {["admin", "creater"].includes(usertype) && (
+                                {/* {["admin", "creater"].includes(usertype) && (
                                   <Button
                                     className="btn btn-danger"
                                     onClick={() => deleteVocab(vocabs.vocabs_id)}
                                   >
                                     Delete
                                   </Button>
-                                )}
+                                )} */}
                               </div>
                             </div>
                           ))}
@@ -336,12 +355,13 @@ function Bookdetail(match) {
                           
 
                           {["admin", "creater"].includes(usertype) && (
-                          <div className="addV">
-                            <Link 
+                    <div className="addV" style={{ textAlign: 'center' }}>
+                            <Link  
+                            style={{ background: 'red'}}
                             className="btn btn-warning tc"
-                            to={{ pathname: "/Page/addexam", state: { book_id: bookid,article_id: articleid } }}
+                            to={{ pathname: "/Page/score", state: { book_id: bookid,article_id: articleid } }}
                             >
-                              เพิ่มข้อสอบ
+                              ส่งคำตอบ
                             </Link>
                           </div>
                           )}

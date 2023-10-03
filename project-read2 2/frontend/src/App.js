@@ -20,7 +20,7 @@ import Adminpage from "./admin/adminpage";
 import Allexamadmin from "./admin/allexamadmin";
 import Alluseradmin from "./admin/alluseradmin";
 import Reportbook from "./reportbook";
-import Exam from "./exam";
+import Score from "./score";
 import Addexam from "./addexam";
 import Notification from "./admin/notification";
 import LoadingIndicator from "./LoadingIndicator";
@@ -159,9 +159,9 @@ const App = () => {
           }
         />
         <Route
-          path="/Page/exam"
+          path="/Page/score"
           render={() =>
-            !isAuthenticated ? <Redirect to="/Page/one" /> : <Exam />
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Score />
           }
         />
         <Route

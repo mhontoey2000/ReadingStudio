@@ -95,7 +95,7 @@ app.get('/api/book', function (req, res) {
 
 //gustest
 
-app.get('/api/gus', function (req, res) {
+app.get('/api/exam', function (req, res) {
   console.log('results Active');
  
   const query = `
@@ -136,16 +136,24 @@ connection.query(query, function(err, results) {
     }
 
     // เพิ่มตัวเลือกของคำถามนี้เข้าไปใน question_options
-    const option = {
+    let option = {
       option_id: item.option_id,
       option_text: item.option_text,
       is_correct: item.is_correct,
     };
+   
     groupedData[question_id].question_options.push(option);
   });
+ 
   // แปลง Object ใน groupedData เป็น Array
   const result = Object.values(groupedData);
-  console.log(result);
+  // console.log(result.question_options[0]);
+  // console.log(result);
+  res.json(result);
+  result.forEach(r =>{
+    console.log(r);
+  })
+
 //
 return;
   // ทำการแยกข้อมูลตาม exam_id, question_id และเก็บเป็น Object
@@ -170,8 +178,7 @@ return;
   // แปลง Object เป็น Array ของข้อมูลการสอบ
   const examData = Object.values(data);
 
-  console.log(examData);
-  res.json(examData);
+ 
 });
 
     // connection.query('SELECT * FROM exams WHERE exams.exam_id = 61',

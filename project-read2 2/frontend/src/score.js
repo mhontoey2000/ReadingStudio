@@ -7,7 +7,7 @@ import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Searchbar from "./searchbar";
 
-function Exam() {
+function Score() {
 
     const [items, setItems] = useState([]);
     const user = localStorage.getItem('email');
@@ -38,25 +38,39 @@ function Exam() {
             <Header/>
         
                 <section >
-                    <h1>ทำแบบทดสอบ</h1>
+                    <h1>สรุปคะแนน</h1>
                    
                       <div className="grid-container">
-                        <from>ชื่อข้อสอบ
-                        
-
+                        <from>
                                 <div>
                                   <div>
-                                     
+                                     คะแนนที่คุณทำได้
                                   </div>
                                 </div>
                         </from>
                     
                     </div>
-                    <Button className="btn1 btn-success" onClick > ส่งคำตอบ </Button>
-                    
-                    
+                    <div className="addV" style={{ textAlign: 'center' }}>
+                      <Link
+                        style={{ background: 'red', marginRight: '50px', width: '100px' }} // Ajusta el ancho según tu preferencia
+                        className="btn btn-warning tc"
+                        to={{ pathname: "/Page/home", state: {} }}
+                      >
+                        ปิด
+                      </Link>
+
+                      <Link
+                        style={{ background: '', marginLeft: '50px', width: '100px' }} // Ajusta el ancho según tu preferencia
+                        className="btn btn-warning tc"
+                        to={{ pathname: "/Page/bookdetail", state: {} }}
+                      >
+                        ย้อนกลับ
+                      </Link>
+                    </div>
+
+
                 </section>
             </div>
         );
     }
-export default Exam;
+export default Score;
