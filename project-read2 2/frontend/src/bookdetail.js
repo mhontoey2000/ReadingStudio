@@ -315,8 +315,12 @@ function Bookdetail(match) {
                             <div className="v-item" key={vocabs.vocabs_id}>
                               <div className="vno" key={`vocabs_${index}`}>
                                 <h5 className="v-title">{`${index + 1}. ${vocabs.question_text}`}</h5>
-                                <h5 className="v-text">{vocabs.option_text}</h5>
-                              
+                                {/* Radio buttons */}
+                                <div>
+                                <input type="radio" className="v-text" value={vocabs.option_text} name="radioOption" />
+                                  <label htmlFor="radioOption">{vocabs.option_text}</label>
+                                </div>
+                                
                                 {["admin", "creater"].includes(usertype) && (
                                   <Button
                                     className="btn btn-danger"
@@ -330,7 +334,6 @@ function Bookdetail(match) {
                           ))}
                           </div>
                           
-                            
 
                           {["admin", "creater"].includes(usertype) && (
                           <div className="addV">

@@ -96,21 +96,115 @@ app.get('/api/book', function (req, res) {
 //gustest
 
 app.get('/api/gus', function (req, res) {
+  console.log('results Active');
  
-  connection.query(
-    'SELECT * FROM questions ' +
-    'LEFT JOIN exams ON exams.exam_id = questions.exam_id ' +
-    'LEFT JOIN options ON questions.question_id = options.question_id ' +
-    'WHERE exams.exam_id = 61',
-      function(err, results) {
-        res.json(results);
-      }
-    );
+  const query = `
+  SELECT exams.*, questions.*, options.*
+  FROM exams
+  LEFT JOIN questions ON exams.exam_id = questions.exam_id
+  LEFT JOIN options ON questions.question_id = options.question_id
+  WHERE exams.exam_id = 61
+`;
+
+connection.query(query, function(err, results) {
+  if (err) {
+    // จัดการข้อผิดพลาดที่เกิดขึ้น
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+    return;
+  }
+  // console.log(results);
+  const groupedData = {};
+
+  // ลูปผ่านข้อมูลที่คุณได้รับ
+  results.forEach((item) => {
+    const {
+      question_id,
+      question_text,
+      question_image,
+      qusetopn_options,
+    } = item;
+
+    // ถ้ายังไม่มีข้อมูลสำหรับคำถามนี้ใน groupedData
+    if (!groupedData[question_id]) {
+      groupedData[question_id] = {
+        question_id,
+        question_text,
+        question_image,
+        question_options: [],
+      };
+    }
+
+    // เพิ่มตัวเลือกของคำถามนี้เข้าไปใน question_options
+    const option = {
+      option_id: item.option_id,
+      option_text: item.option_text,
+      is_correct: item.is_correct,
+    };
+    groupedData[question_id].question_options.push(option);
+  });
+  // แปลง Object ใน groupedData เป็น Array
+  const result = Object.values(groupedData);
+  console.log(result);
+//
+return;
+  // ทำการแยกข้อมูลตาม exam_id, question_id และเก็บเป็น Object
+  const data = {};
+  results.forEach(row => {
+    const examId = row.exam_id;
+    const questionId = row.question_id;
+
+    if (!data[examId]) {
+      data[examId] = { ...row, questions: [] };
+    }
+
+    if (!data[examId].questions[questionId]) {
+      data[examId].questions[questionId] = { ...row, options: [] };
+    }
+
+    if (row.option_id) {
+      data[examId].questions[questionId].options.push(row);
+    }
+  });
+
+  // แปลง Object เป็น Array ของข้อมูลการสอบ
+  const examData = Object.values(data);
+
+  console.log(examData);
+  res.json(examData);
 });
 
+    // connection.query('SELECT * FROM exams WHERE exams.exam_id = 61',
+    //   function(err, results) {
+    //     if (results.length > 0) 
+    //     {
+    //       const firstRow = results[0]; // หาแถวแรก
+    //       if (firstRow) {
+    //         const userId = firstRow.exam_id; // เรียกคอลัมน์ user_id
+    //         connection.query('SELECT * FROM questions WHERE questions.exam_id = '+userId,(err, res)=>{
+    //           console.log(res);
+    //           if (res.length > 0) 
+    //           {
+    //             res.forEach(element => {
+    //               connection.query('SELECT * FROM options WHERE options.question_id = '+ element.question_id,(err1, res1)=>{
+    //                 console.log(res1);
 
+    //               });
+    //             });
+    //           }
+    //         });
+    //       }
+    //     }
+    //     console.log(results);
+    //     res.json(results);
+    //   }
+    // );
+    // 'JOIN questions ON exams.exam_id = questions.exam_id'+
+    // ' JOIN options ON questions.question_id = options.question_id '
+});
 
 //close gustest
+
 
 //แก้เพิ่มย้ายบรรทัด ให้เรียก เก็บรูปในดาต้า
 // Multer configuration for handling file uploads

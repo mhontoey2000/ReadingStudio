@@ -56,7 +56,7 @@ function Bookarticle({ match }) {
 
           {["admin", "creater"].includes(usertype) && (<div>
                     <div className="btnad d-grid d-md-flex justify-content-md-end">
-                      <li key={bookid}>
+                      <div key={bookid}>
                         <Link 
                           type="button" 
                           to={{ 
@@ -67,7 +67,7 @@ function Bookarticle({ match }) {
                           >
                               เพิ่มบทหนังสือ
                           </Link>
-                      </li>
+                      </div>
                     </div>
                     </div>)}
           
