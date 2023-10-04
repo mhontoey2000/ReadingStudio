@@ -6,7 +6,8 @@ import axios from "axios";
 import "./styles/addexam.css";
 import { Await, useLocation } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
-import { apiClient as helper } from './config';
+import { apiClient , convertSoundToBase64,convertImageToBase64 } from './config';
+
 
 
 function Addexam() {
@@ -20,7 +21,7 @@ function Addexam() {
   const [aname, setAname] = useState("");
 
   useEffect(() => {
-    helper.get(`api/articledetail/${articleid}`)
+    apiClient.get(`api/articledetail/${articleid}`)
       .then((response) => {
         setAname(response.data[0].article_name);
         setIsLoaded(true);
@@ -31,7 +32,7 @@ function Addexam() {
   }, [articleid]);
 
   useEffect(() => {
-    helper.get(`api/book`)
+    apiClient.get(`api/book`)
       .then((response) => {
         //console.log(response.data);
         for (let i = 0; i < response.data.length; i++) {
@@ -118,14 +119,14 @@ function Addexam() {
       total_questions: totalQuestions,
       questions: await Promise.all(questions.map(async question => ({
           text: question.text,
-          image: question.image ? await helper.convertImageToBase64(question.image) : null,
+          image: question.image ? await convertImageToBase64(question.image) : null,
           options: question.options,
           correctOption: question.correctOption
       })))
     };
 
     // Send POST request
-    const response = await helper.post("api/add-data", data, {
+    const response = await apiClient.post("api/add-data", data, {
       headers: {
           "Content-Type": "application/json"
       }
@@ -311,7 +312,7 @@ function Addexam() {
           <div className="btn-containerr">
             <div className="btn-group me-2">
               <Button
-                type="submit"
+                // type="submit"
                 className="btn1 btn-warning"
                 onClick={cancelExam}
               >

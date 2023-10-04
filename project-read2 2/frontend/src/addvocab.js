@@ -145,7 +145,7 @@ function Addvocab() {
                     <div className="btn-containerr">
                         <div>
                             <Button 
-                             type="submit" 
+                            //  type="submit" 
                              className="btn1 btn-warning"
                              onClick={cancelVocab}
                             >
@@ -155,7 +155,7 @@ function Addvocab() {
                         </div>
                         <div>
                             <Button 
-                             type="submit" 
+                            //  type="submit" 
                              className="btn1 btn-primary"
                              onClick={sendVocab}
                             >

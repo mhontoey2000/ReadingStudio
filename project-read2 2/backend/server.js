@@ -45,9 +45,12 @@ app.get('/', (req, res) => {
 app.get('/api/key', function (req, res) {
   res.json({ key: process.env.PASS_KEY });
 });
-// app.use(bodyParser.json({ limit: '50mb' }));
-// app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.json({ limit: '500mb' }));
+app.use(bodyParser.urlencoded({ limit: '500mb', extended: true }));
+// app.use(bodyParser.urlencoded({extended:true}))
+app.use(express.json({limit: '1000mb'}));
+app.use(express.urlencoded({extended: true ,limit: '1000mb'}));
+app.use(bodyParser.raw({ type: 'image/*', limit: '160MB' }));
 
 app.listen(5004, () => {
   console.log('Application is running on port 5004');
@@ -233,16 +236,38 @@ app.get('/api/book', function (req, res) {
 });
 
 // แก้เพิ่ม
-  app.post('/api/addbook', async (req, res) => {
-    const { book_name, book_detail, book_image } = req.body;
+  app.post('/api/addbook',upload.single('book_image'),  (req, res) => {
+    const { book_name, book_detail } = req.body;
     console.log(book_name);
     console.log(book_detail);
-    // const image = req.file.path.replace("..\\frontend\\public", ""); // ภาพที่ถูกอัปโหลด
-    // let fileName = '../frontend/public/picture/'+Date.now() + '_' + Image + 'jpg'; // ตำแหน่งของไฟล์ที่คุณต้องการบันทึก
-    // helper.SaveImageToFile(book_image,fileName);
-    // if(book_image == null)
-    //   fileName = null;
-    // console.log(path);
+    const fs = require('fs');
+
+const filePath = req.file.path;
+
+fs.readFile(filePath, (err, data) => {
+  if (err) {
+    console.error('Error reading file:', err);
+    return res.status(500).send('Error reading file');
+  }
+
+  const binaryData = data;
+  
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error('Error deleting file:', err);
+    }
+    console.log('File deleted');
+  });
+
+    let fileName = '../frontend/public/picture/'+Date.now() + '_image.jpg'; // ตำแหน่งของไฟล์ที่คุณต้องการบันทึก
+    pathimage = fileName.replace('../frontend/public', '');
+    fs.writeFile(fileName, binaryData, (err) => {
+      if (err) {
+        console.error('Error saving file:', err);
+      }
+      
+      console.log('File saved:', fileName);
+    });
     connection.query("SELECT book_id FROM book ORDER BY book_id DESC LIMIT 1", (err, results) => {
       if (err) {
           console.error('Error fetching last book_id:', err);
@@ -258,11 +283,12 @@ app.get('/api/book', function (req, res) {
   
       const newNumber = lastNumber + 1;
       const book_id = `book${String(newNumber).padStart(3, '0')}`;
+      console.log(book_id);
 
-      connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image) VALUES (?, ?, ?, ?)", 
-      [book_id, book_name, book_detail, null], 
+      connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata) VALUES (?, ?, ?, ?,?)", 
+      [book_id, book_name, book_detail,pathimage,binaryData], 
       (err, result) => {
-          if (err) {
+          if (err) {s
               console.error('Error adding book:', err);
               res.status(500).json({ error: 'Error adding book' });
           } else {
@@ -271,6 +297,8 @@ app.get('/api/book', function (req, res) {
           }
       });
     });
+});
+
   });
 
 

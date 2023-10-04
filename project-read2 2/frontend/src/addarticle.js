@@ -10,7 +10,8 @@ import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 
-import { apiClient as helper } from './config';
+import { apiClient , convertSoundToBase64,convertImageToBase64 } from './config';
+
 
 function Addarticle() {
 
@@ -33,7 +34,7 @@ function Addarticle() {
     
 
     useEffect(() => {
-        helper.get(`api/book`)
+        apiClient.get(`api/book`)
           .then((response) => {
             // console.log(response.data);
             for(let i=0;i<response.data.length;i++)
@@ -67,12 +68,12 @@ function Addarticle() {
                 chapter: chapter,
                 level: chapter,
                 description: description,
-                image: imageFile ? await helper.convertImageToBase64(imageFile) : null ,
-                sound: soundFile ? await helper.convertSoundToBase64(soundFile) : null,
+                image: imageFile ? await convertImageToBase64(imageFile) : null ,
+                sound: soundFile ? await convertSoundToBase64(soundFile) : null,
                 };
                 
             // axios.post("http://localhost:5004/api/addarticle", data, {
-            helper.post('api/addarticle', data, {
+            apiClient.post('api/addarticle', data, {
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -178,7 +179,7 @@ function Addarticle() {
                                  <div className="btn-containerr">
                                     <div className="btn-group me-2">
                                         <Button 
-                                         type="submit" 
+                                        //  type="submit" 
                                          className="btn1 btn-warning"
                                          onClick={cancelArticle}
                                         >
@@ -187,7 +188,7 @@ function Addarticle() {
                                     </div>
                                     <div className="btn-group me-2">
                                         <Button 
-                                         type="submit" 
+                                        //  type="submit" 
                                          className="btn1 btn-primary"
                                          onClick={confirmBook}
                                         >

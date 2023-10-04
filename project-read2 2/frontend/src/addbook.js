@@ -8,12 +8,11 @@ import { Input, Space } from 'antd';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router-dom';
-import { apiClient as helper } from './config';
+import { apiClient , convertSoundToBase64,convertImageToBase64 } from './config';
 
 
 function Addbook() {
 
-    
     const [bookName, setBookName] = useState('');
     const [bookDetail, setBookDetail] = useState('');
     const [bookImage, setBookImage] = useState(null);
@@ -21,16 +20,20 @@ function Addbook() {
 
     const addBook = async () => {
         // Create a FormData object to send the data as a multipart/form-data request
-       
-        const data = {
-          book_name: bookName,
-          book_detail: bookDetail,
-          book_image: bookImage ? await helper.convertImageToBase64(bookImage) : null
-        };
-
+        try{
+        // const data = {
+        //   book_name: bookName,
+        //   book_detail: bookDetail,
+        //   book_image: bookImage ? await convertImageToBase64(bookImage) : null
+        // };
+        // console.log(data.book_image)
+        const formData = new FormData();
+          formData.append('book_name', bookName);
+          formData.append('book_detail', bookDetail);
+          formData.append('book_image', bookImage);
         // Send a POST request to the backend API to add the book
-        helper
-          .post('api/addbook', data) // Replace '/api/addbook' with your actual API endpoint
+        apiClient
+          .post('api/addbook', formData) // Replace '/api/addbook' with your actual API endpoint
           .then((response) => {
             // Handle a successful response here (e.g., show a success message)
             alert('Book added successfully');
@@ -44,6 +47,11 @@ function Addbook() {
             // Handle errors here (e.g., show an error message)
             console.error('Error adding book:', error);
           });
+        }
+        catch(err)
+        {
+          console.log(err);
+        }
       };
     
       const handleImageChange = (event) => {
@@ -127,7 +135,7 @@ function Addbook() {
                                  <div className="btn-containerr">
                                     <div className="btn-group me-2">
                                         <Button 
-                                         type="submit" 
+                                        //  type="submit" 
                                          className="btn1 btn-warning"
                                          onClick={cancelBook}
                                         >
@@ -136,7 +144,7 @@ function Addbook() {
                                     </div>
                                     <div className="btn-group me-2">
                                         <Button 
-                                         type="submit" 
+                                        
                                          className="btn1 btn-primary"
                                          onClick={addBook}
                                         >
