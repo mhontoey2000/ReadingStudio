@@ -113,49 +113,49 @@ function Addexam() {
       return;
     }
     try{
-    const data = {
-      book_id: bookid,
-      article_id: articleid,
-      total_questions: totalQuestions,
-      questions: await Promise.all(questions.map(async question => ({
-          text: question.text,
-          image: question.image ? await convertImageToBase64(question.image) : null,
-          options: question.options,
-          correctOption: question.correctOption
-      })))
-    };
+      questions.forEach((question, index) => {
 
-    // Send POST request
-    const response = await apiClient.post("api/add-data", data, {
-      headers: {
-          "Content-Type": "application/json"
-      }
-    });
-
-     if(response.status >= 200 && response.status< 300)
-     {
-      alert("Success");
-      console.log(response.data);
-      setQuestions([
+        const data = new FormData();
+        data.append('book_id', bookid);
+        data.append('article_id', articleid);
+        data.append('total_questions', questions.length);
+        data.append(`questionstext`, question.text);
+        data.append(`questionsimage`, question.image);
+        data.append(`questionsoptions`, JSON.stringify(question.options));
+        data.append(`questionscorrectOption`, question.correctOption);
+        
+        // Send POST request
+        apiClient.post("api/add-data", data)
+        .then((response) => {
+          console.log(index);
+          console.log(response.data);
+          if (index === questions.length - 1)
           {
-            text: "",
-            image: null,
-            options: ["", "", "", ""],
-            correctOption: 0,
-          },
-        ]);
-      }
-      else 
-        alert(response.error);
+            setQuestions([
+              {
+                text: "",
+                image: null,
+                options: ["", "", "", ""],
+                correctOption: 0,
+              },
+            ]);
+            alert("Success");
+
+          }
+        })
+        .catch((error) => {
+          // Handle errors here (e.g., show an error message)
+          console.error('Error adding book:', error);
+        });
+      });
     }
     catch(error){
       alert(error);
       console.error(error);
 
     }
-   
   };
-
+ 
   const cancelExam = () => {
     history.goBack();
 }
@@ -192,7 +192,7 @@ function Addexam() {
               />
             </div>
           </div>
-          <div className="col mb-3">
+          {/* <div className="col mb-3">
             <label className="form-label">จำนวนคำถามทั้งหมด</label>
             <input
               type="number"
@@ -200,7 +200,7 @@ function Addexam() {
               value={totalQuestions}
               onChange={(e) => setTotalQuestions(e.target.value)}
             />
-          </div>
+          </div> */}
 
           <div className="question-group-container">
             {questions.map((question, index) => (
