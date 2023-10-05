@@ -9,11 +9,10 @@
 //         cb(null, 'File_' + uniqueSuffix + file.originalname)
 //     }
 // })
-
 // exports.upload = multer({ storage: storage }).single('file')
 const fs = require('fs');
 
-async function SaveImageToFile(imageData , fileName) {
+async function saveImageToFile(imageData , fileName) {
   if(imageData == null)
     return;
   try {
@@ -23,9 +22,43 @@ async function SaveImageToFile(imageData , fileName) {
     console.log(`บันทึกรูปภาพเป็นไฟล์ ${fileName} สำเร็จ`);
   } catch (error) {
     console.error('เกิดข้อผิดพลาดในการบันทึกไฟล์รูปภาพ:', error);
+    return null;
   }
 }
 
+async function readFileAsync(filePath) {
+  if(filePath == null)
+    return null;
+  try {
+    const data = await fs.promises.readFile(filePath);
+    return data;
+  } catch (err) {
+    console.error('Error reading file:', err);
+    return null;
+  }
+}
+
+async function writeFileAsync(fileName, binaryData) {
+  if(binaryData == null)
+    return null;
+  try {
+    await fs.promises.writeFile(fileName, binaryData);
+    console.log('File saved:', fileName);
+    return fileName;
+  } catch (err) {
+    console.error('Error saving file:', err);
+    return null;
+  }
+}
+function generateUniqueFileName(floder) {
+  const timestamp = Date.now();
+  const name = floder === 'picture' ? 'image_' : 'sound_'
+  const type = floder === 'picture' ? 'jpg' : 'mp3'
+  const fileName = `../frontend/public/${floder}/${name}${timestamp}.${type}`;
+  const pathimage = fileName.replace('../frontend/public', '');
+  return { fileName, pathimage };
+}
+
 module.exports = {
-  SaveImageToFile
+  saveImageToFile,readFileAsync,writeFileAsync,generateUniqueFileName
 };

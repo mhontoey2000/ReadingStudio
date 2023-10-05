@@ -242,22 +242,23 @@ app.get('/api/book', function (req, res) {
     console.log(book_detail);
     const fs = require('fs');
 
-const filePath = req.file.path;
+    const filePath = req.file.path;
+    console.log(filePath);
 
-fs.readFile(filePath, (err, data) => {
-  if (err) {
-    console.error('Error reading file:', err);
-    return res.status(500).send('Error reading file');
-  }
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        console.error('Error reading file:', err);
+        return res.status(500).send('Error reading file');
+      }
 
-  const binaryData = data;
-  
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.error('Error deleting file:', err);
-    }
-    console.log('File deleted');
-  });
+    const binaryData = data;
+    
+    // fs.unlink(filePath, (err) => {
+    //   if (err) {
+    //     console.error('Error deleting file:', err);
+    //   }
+    //   console.log('File deleted');
+    // });
 
     let fileName = '../frontend/public/picture/'+Date.now() + '_image.jpg'; // ตำแหน่งของไฟล์ที่คุณต้องการบันทึก
     pathimage = fileName.replace('../frontend/public', '');
@@ -674,14 +675,40 @@ app.post('/api/add-data', /*upload.fields([{name:'questions'}]),*/ (req, res) =>
     }
   });
 });
+// สร้างเส้นทางสำหรับรับไฟล์ภาพและเสียง
+app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {
+  // ในที่นี้คุณสามารถเข้าถึงไฟล์ภาพและเสียงที่ถูกอัปโหลดผ่าน `req.files`
 
-app.post('/api/addarticle', (req, res) => {
-  const { book_id, chapter,level, description,image,sound } = req.body;
-  console.log(book_id);
-  console.log(chapter);
-  console.log(description);
-  console.log(image);
-  console.log(description);
+  const book_id = req.body.book_id;
+  const chapter = req.body.chapter;
+  const level = req.body.level;
+  const description = req.body.description;
+  const imageFile = req.files.image ? req.files.image[0] : null; // ไฟล์รูปภาพ
+  const soundFile = req.files.sound ? req.files.sound[0] : null; // ไฟล์เสียง
+
+  console.log(book_id, chapter, level, description, imageFile, soundFile);
+
+  let imagepath = null;
+  let soundpath = null;
+
+  let imageByte = null;
+  let soundByte = null;
+  if(imageFile)
+  {
+    imageByte = await helper.readFileAsync(imageFile.path);
+    console.log(imageFile,imageFile.path ,imageByte);
+    let img = helper.generateUniqueFileName('picture');
+    imagepath = img.pathimage;
+    await helper.writeFileAsync(img.fileName ,imageByte);
+  }
+  if(soundFile)
+  {
+    soundByte = await helper.readFileAsync(soundFile.path);
+    console.log(soundFile,soundFile.path, soundByte);
+    let sod = helper.generateUniqueFileName('sound');
+    soundpath = sod.pathimage;
+    await helper.writeFileAsync(sod.fileName,soundByte);
+  }
   connection.query("SELECT article_id FROM article ORDER BY article_id DESC LIMIT 1", (err, results) => {
     if (err) {
         console.error('Error fetching last article_id:', err);
@@ -694,18 +721,17 @@ app.post('/api/addarticle', (req, res) => {
         lastNumber = parseInt(lastBookId.replace('XOL', ''), 10); 
     }
     const newNumber = lastNumber + 1;
-    const articleid = `XOL${String(newNumber).padStart(3, '0')}`;
-    const insertOptionQuery = `INSERT INTO article (article_id ,book_id, article_name ,article_level ,article_detail  ,article_images ,article_sounds) VALUES (?,?,?,?,?,?,?)`;
-    connection.query(insertOptionQuery, [articleid,book_id, chapter,level, description , image , sound], (err, result) => {
+    const newarticleid = `XOL${String(newNumber).padStart(3, '0')}`;
+    console.log('articleid : ' + newarticleid);
+
+    const insertOptionQuery = `INSERT INTO article (article_id ,book_id, article_name ,article_level ,article_detail  ,article_images ,article_sounds,article_imagedata ,article_sounddata) VALUES (?,?,?,?,?,?,?,?,?)`;
+    connection.query(insertOptionQuery, [newarticleid,book_id, chapter,level, description , imagepath , soundpath,imageByte,soundByte], (err, results) => {
       if (err) {
         console.error('Error inserting exam data: ' + err.message);
         res.status(500).send('Error creating exam Insert Id');
       }else{
         res.status(200).send('creating exam Insert Id');
-
       }
     });
-   
   });
- 
 });

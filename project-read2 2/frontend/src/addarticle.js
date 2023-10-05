@@ -63,28 +63,40 @@ function Addarticle() {
         event.preventDefault();
         try
         {
-            const data = {
-                book_id: bookid,
-                chapter: chapter,
-                level: chapter,
-                description: description,
-                image: imageFile ? await convertImageToBase64(imageFile) : null ,
-                sound: soundFile ? await convertSoundToBase64(soundFile) : null,
-                };
+            // const data = {
+            //     book_id: bookid,
+            //     chapter: chapter,
+            //     level: chapter,
+            //     description: description,
+            //     image: imageFile ? await convertImageToBase64(imageFile) : null ,
+            //     sound: soundFile ? await convertSoundToBase64(soundFile) : null,
+            //     };
                 
-            // axios.post("http://localhost:5004/api/addarticle", data, {
-            apiClient.post('api/addarticle', data, {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then((response) => 
-            {
-                console.log(response.data);
-            }).catch((error) => 
-            {
-                console.error(error);
+            // // axios.post("http://localhost:5004/api/addarticle", data, {
+            // apiClient.post('api/addarticle', data, {
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     }
+            // }).then((response) => 
+            // {
+            //     console.log(response.data);
+            // }).catch((error) => 
+            // {
+            //     console.error(error);
+            // });
+            const data = new FormData();
+            data.append('book_id', bookid);
+            data.append('chapter', chapter);
+            data.append('level', chapter);
+            data.append('description', description);
+            data.append('image', imageFile);
+            data.append('sound', soundFile);
+            
+            apiClient.post('api/addarticle', data).then((response) => {
+              console.log(response.data);
+            }).catch((error) => {
+              console.error(error);
             });
-                
         }
            catch(error){
              alert(error);
