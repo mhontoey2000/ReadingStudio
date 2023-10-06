@@ -90,18 +90,25 @@ router.get('/tbl',async (req,res,next) => {
 
 //หน้า exams
 
-app.get('/api/exam', function (req, res) {
-  console.log('results Active');
- 
-  const query = `
-  SELECT exams.*, questions.*, options.*
+app.get('/api/exam/:id', function (req, res) {
+  console.log('article_id'+req.params.id);
+  const article_id = req.params.id;
+  connection.query(`SELECT * FROM exams WHERE exams.article_id = ?;`,[article_id], function(err, results) {
+    if (err) {
+      // จัดการข้อผิดพลาดที่เกิดขึ้น
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+    console.log(results);
+  });
+  const query = `SELECT exams.*, questions.*, options.*
   FROM exams
   LEFT JOIN questions ON exams.exam_id = questions.exam_id
   LEFT JOIN options ON questions.question_id = options.question_id
-  WHERE exams.exam_id = 61
-`;
+  WHERE exams.article_id = ?;`;
 
-connection.query(query, function(err, results) {
+connection.query(query,[article_id], function(err, results) {
   if (err) {
     // จัดการข้อผิดพลาดที่เกิดขึ้น
     console.error(err);
@@ -143,66 +150,12 @@ connection.query(query, function(err, results) {
   // แปลง Object ใน groupedData เป็น Array
   const result = Object.values(groupedData);
   // console.log(result.question_options[0]);
-  // console.log(result);
+  console.log(result);
   res.json(result);
   result.forEach(r =>{
     console.log(r);
   })
-
-//
-return;
-  // ทำการแยกข้อมูลตาม exam_id, question_id และเก็บเป็น Object
-  const data = {};
-  results.forEach(row => {
-    const examId = row.exam_id;
-    const questionId = row.question_id;
-
-    if (!data[examId]) {
-      data[examId] = { ...row, questions: [] };
-    }
-
-    if (!data[examId].questions[questionId]) {
-      data[examId].questions[questionId] = { ...row, options: [] };
-    }
-
-    if (row.option_id) {
-      data[examId].questions[questionId].options.push(row);
-    }
   });
-
-  // แปลง Object เป็น Array ของข้อมูลการสอบ
-  const examData = Object.values(data);
-
- 
-});
-
-    // connection.query('SELECT * FROM exams WHERE exams.exam_id = 61',
-    //   function(err, results) {
-    //     if (results.length > 0) 
-    //     {
-    //       const firstRow = results[0]; // หาแถวแรก
-    //       if (firstRow) {
-    //         const userId = firstRow.exam_id; // เรียกคอลัมน์ user_id
-    //         connection.query('SELECT * FROM questions WHERE questions.exam_id = '+userId,(err, res)=>{
-    //           console.log(res);
-    //           if (res.length > 0) 
-    //           {
-    //             res.forEach(element => {
-    //               connection.query('SELECT * FROM options WHERE options.question_id = '+ element.question_id,(err1, res1)=>{
-    //                 console.log(res1);
-
-    //               });
-    //             });
-    //           }
-    //         });
-    //       }
-    //     }
-    //     console.log(results);
-    //     res.json(results);
-    //   }
-    // );
-    // 'JOIN questions ON exams.exam_id = questions.exam_id'+
-    // ' JOIN options ON questions.question_id = options.question_id '
 });
 
 //close หน้า exam 
@@ -217,7 +170,7 @@ const storage = multer.diskStorage({
     cb(null, '../frontend/public/picture'); 
   },
   filename: (req, file, cb) => {
-    const fileName = Date.now() + '_' + file.originalname; 
+    const fileName =  'temp'; 
     cb(null, fileName);
   },
 });
@@ -242,7 +195,7 @@ app.get('/api/book', function (req, res) {
     console.log(book_detail);
     const fs = require('fs');
 
-    const filePath = req.file.path;
+    const filePath = req.file ? req.file.path : null;
     console.log(filePath);
 
     fs.readFile(filePath, (err, data) => {
@@ -622,12 +575,34 @@ app.get('/api/report', function (req, res) {
 
 const fs = require('fs');
 // app.use(bodyParser.json({ limit: '100mb' })); // ตั้งค่า limit สูงขึ้นถ้าข้อมูลที่คุณรับมีขนาดใหญ่
+app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
 
-app.post('/api/add-data', /*upload.fields([{name:'questions'}]),*/ (req, res) => {
-
-  const { book_id, article_id, total_questions,questions } = req.body;
-  console.log(req.body);
-  // const image = req.file.path.replace("..\\frontend\\public", ""); // ภาพที่ถูกอัปโหลด
+  // ตรวจสอบข้อมูลอื่น ๆ ที่ถูกส่งมาจาก FormData
+  const book_id = req.body.book_id;
+  const article_id = req.body.article_id;
+  const total_questions = req.body.total_questions;
+  const questionstext = req.body.questionstext;
+  const options = JSON.parse(req.body.questionsoptions);questionstext
+  const correctOption = req.body.questionscorrectOption;
+  const imageFile = req.file ? req.file : null; // ไฟล์รูปภาพ
+  console.log(book_id);
+  console.log(article_id);
+  console.log(total_questions);
+  console.log(questionstext);
+  console.log(options);
+  console.log(correctOption);
+  console.log(req.file);
+  let imagepath = null;
+  let imageByte = null;
+  if(imageFile)
+  {
+    imageByte = await helper.readFileAsync(imageFile.path);
+    console.log(imageFile,imageFile.path ,imageByte);
+    let img = helper.generateUniqueFileName('picture');
+    imagepath = img.pathimage;
+    await helper.writeFileAsync(img.fileName ,imageByte);
+    console.log(imageByte);
+  }
   const insertExamQuery = `INSERT INTO exams (book_id, article_id, total_questions) VALUES (?, ?, ?)`;
   connection.query(insertExamQuery, [book_id, article_id, total_questions], (err, result) => {
     if (err) {
@@ -635,21 +610,10 @@ app.post('/api/add-data', /*upload.fields([{name:'questions'}]),*/ (req, res) =>
       res.status(500).send('Error creating exam Insert Id');
     }
     else {
-      console.log('total_question '+total_questions);
+      console.log('total_question '+ total_questions);
       const examId = result.insertId;
-      const insertQuestionQuery = `INSERT INTO questions (exam_id, question_text,question_image) VALUES (?, ?, ?)`;
-      questions.forEach((question, index) => {
-        const { text, image, options, correctOption } = question;
-    
-        // แปลง Base64 ไปเป็นไฟล์
-        let fileName = null; 
-
-        if (image) {
-          const buffer = Buffer.from(image, 'base64');
-          fileName = Date.now() + '_' + 'examid_' + examId +'bookid_' + book_id +'index_'+ index; 
-          fs.writeFileSync(`../frontend/public/picture/`+ fileName +'.png', buffer); // บันทึกเป็นไฟล์, คุณอาจจะต้องปรับเปลี่ยนส่วนนี้ตามความต้องการ
-        }
-        connection.query( insertQuestionQuery, [examId, text,fileName], (err, questionResult) => {
+      const insertQuestionQuery = `INSERT INTO questions (exam_id, question_text,question_image,question_imagedata) VALUES (?, ?, ?, ?)`;
+        connection.query( insertQuestionQuery, [examId, questionstext,imagepath,imageByte], (err, questionResult) => {
           if (err) {
             console.error('Error inserting question data: ' + err.message);
             res.status(500).send('Error creating exam INSERT Question');
@@ -657,7 +621,7 @@ app.post('/api/add-data', /*upload.fields([{name:'questions'}]),*/ (req, res) =>
           else {
             const questionId = questionResult.insertId;
             const insertOptionQuery = `INSERT INTO options (question_id, option_text,is_correct) VALUES (?, ? , ?)`;
-            question.options.forEach((option, index) => {
+            options.forEach((option, index) => {
               console.log('total_question '+option);
               let correct = 0;
               if( correctOption.toString() === index.toString())
@@ -667,14 +631,12 @@ app.post('/api/add-data', /*upload.fields([{name:'questions'}]),*/ (req, res) =>
           }
         }
       );
-        // ทำอะไรกับข้อมูลอื่น ๆ ของคำถาม
-        console.log(text, options, correctOption);
-      });
-
+      // ทำอะไรกับข้อมูลอื่น ๆ ของคำถาม
       res.status(200).send('Exam created successfully');
     }
   });
 });
+
 // สร้างเส้นทางสำหรับรับไฟล์ภาพและเสียง
 app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {
   // ในที่นี้คุณสามารถเข้าถึงไฟล์ภาพและเสียงที่ถูกอัปโหลดผ่าน `req.files`

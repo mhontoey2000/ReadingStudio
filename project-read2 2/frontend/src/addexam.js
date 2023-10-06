@@ -120,7 +120,7 @@ function Addexam() {
         data.append('article_id', articleid);
         data.append('total_questions', questions.length);
         data.append(`questionstext`, question.text);
-        data.append(`questionsimage`, question.image);
+        data.append(`questionsImage`, question.image);
         data.append(`questionsoptions`, JSON.stringify(question.options));
         data.append(`questionscorrectOption`, question.correctOption);
         

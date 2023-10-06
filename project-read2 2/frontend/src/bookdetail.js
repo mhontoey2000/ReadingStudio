@@ -74,18 +74,19 @@ function Bookdetail(match) {
   }, [articleid]);
 
   useEffect(() => {
-    axios.get('http://localhost:5004/api/exam')
+    axios.get(`http://localhost:5004/api/exam/${articleid}`)
       .then((response) => {
-        let tempArr = []
-        for(let i = response.data.length-1; i>=0; i--){
-          tempArr[i] = response.data[i]
+        let tempArr = [];
+        for (let i = response.data.length - 1; i >= 0; i--) {
+          tempArr[i] = response.data[i];
         }
-      
+  
         setqItems(tempArr);
-        console.log(tempArr)
+        console.log(tempArr);
       })
       .catch((error) => {
         console.error(error);
+        // ทำการจัดการข้อผิดพลาดที่เกิดขึ้น ตามความเหมาะสม
       });
   }, []);
 
@@ -321,36 +322,34 @@ function Bookdetail(match) {
                             </Link>
                           </div>
                           )}
-                          {Array.isArray(qitems) && qitems.map((vocabs, index) => (
-                            <div className="v-item" key={vocabs.vocabs_id}>
-                              <div className="vno" key={`vocabs_${index}`}>
-                                <h5 className="v-title">{`${index + 1}. ${vocabs.question_text}`}</h5>
-                                <div>
-                                    {vocabs.question_options.map((option, optionIndex) => (
-                                      <div key={`option_${optionIndex}`}>
-                                        <input
-                                          type="radio"
-                                          className="v-text"
-                                          value={option.option_id}
-                                          name={`radioOption_${index}`} // Nombre único para cada grupo de opciones
-                                          id={`option_${optionIndex}`}   // Identificador único para cada opción
-                                        />
-                                        <label htmlFor={`option_${optionIndex}`}>{option.option_text}</label>
-                                      </div>
-                                    ))}
+                              {Array.isArray(qitems) && qitems.map((question, index) => (
+                                <div className="v-item" key={question.question_id}>
+                                  <div className="vno" key={`vocabs_${index}`}>
+                                    <h5 className="v-title">{`${index + 1}. ${question.question_text}`}</h5>
+                                    {question.question_image && (
+                                      <img
+                                        src={question.question_image}
+                                        alt={`Image for question ${index + 1}`}
+                                        style={{ maxWidth: '300px', maxHeight: '300px' }}
+                                      />
+                                    )}
+                                    <div>
+                                      {question.question_options.map((option, optionIndex) => (
+                                        <div key={`option_${optionIndex}`} className="option-container">
+                                          <input
+                                            type="radio"
+                                            className="v-text"
+                                            value={option.option_id}
+                                            name={`radioOption_${index}`} // ให้สร้างชื่อ name ที่ไม่ซ้ำกันสำหรับแต่ละคำถาม
+                                            id={`option_${optionIndex}`}
+                                          />
+                                          <label htmlFor={`option_${optionIndex}`}>{option.option_text}</label>
+                                        </div>
+                                      ))}
+                                    </div>
                                   </div>
-                                
-                                {/* {["admin", "creater"].includes(usertype) && (
-                                  <Button
-                                    className="btn btn-danger"
-                                    onClick={() => deleteVocab(vocabs.vocabs_id)}
-                                  >
-                                    Delete
-                                  </Button>
-                                )} */}
-                              </div>
-                            </div>
-                          ))}
+                                </div>
+                              ))}
                           </div>
                           
 
