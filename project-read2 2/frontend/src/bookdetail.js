@@ -328,7 +328,7 @@ function Bookdetail(match) {
                                     <h5 className="v-title">{`${index + 1}. ${question.question_text}`}</h5>
                                     {question.question_image && (
                                       <img
-                                        src={question.question_image}
+                                        src={question.question_imagedata}
                                         alt={`Image for question ${index + 1}`}
                                         style={{ maxWidth: '300px', maxHeight: '300px' }}
                                       />

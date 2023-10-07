@@ -124,15 +124,22 @@ connection.query(query,[article_id], function(err, results) {
       question_id,
       question_text,
       question_image,
+      question_imagedata,
       qusetopn_options,
     } = item;
-
+    let base64Image = null;
+    if(!groupedData[question_id]){
+      if(question_imagedata){
+         base64Image = `data:image/jpeg;base64,${Buffer.from(question_imagedata).toString('base64')}`;
+      }
+    }
     // ถ้ายังไม่มีข้อมูลสำหรับคำถามนี้ใน groupedData
     if (!groupedData[question_id]) {
       groupedData[question_id] = {
         question_id,
         question_text,
         question_image,
+        question_imagedata: base64Image,
         question_options: [],
       };
     }
@@ -680,7 +687,8 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
     let lastNumber = 0;
     if (results.length > 0) {
         const lastBookId = results[0].article_id;
-        lastNumber = parseInt(lastBookId.replace('XOL', ''), 10); 
+        if(lastBookId.toString().startsWith('XOL'))
+          lastNumber = parseInt(lastBookId.replace('XOL', ''), 10); 
     }
     const newNumber = lastNumber + 1;
     const newarticleid = `XOL${String(newNumber).padStart(3, '0')}`;

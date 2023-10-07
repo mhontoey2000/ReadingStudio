@@ -102,59 +102,55 @@ function Addexam() {
   };
 
 // แก้การส่งหน้าสร้างข้อสอบ
-  const submitExam = async () => {
-    if (
-      questions.some(
-        (question) =>
-          !question.text || !question.options.every((option) => option !== "")
-      )
-    ) {
-      alert("Please fill in all question details.");
-      return;
-    }
-    try{
-      questions.forEach((question, index) => {
+const submitExam = async () => {
+  if (
+    questions.some(
+      (question) =>
+        !question.text || !question.options.every((option) => option !== "")
+    )
+  ) {
+    alert("Please fill in all question details.");
+    return;
+  }
 
-        const data = new FormData();
-        data.append('book_id', bookid);
-        data.append('article_id', articleid);
-        data.append('total_questions', questions.length);
-        data.append(`questionstext`, question.text);
-        data.append(`questionsImage`, question.image);
-        data.append(`questionsoptions`, JSON.stringify(question.options));
-        data.append(`questionscorrectOption`, question.correctOption);
-        
-        // Send POST request
-        apiClient.post("api/add-data", data)
-        .then((response) => {
-          console.log(index);
-          console.log(response.data);
-          if (index === questions.length - 1)
+  try {
+    for (let index = 0; index < questions.length; index++) {
+      const question = questions[index];
+
+      const data = new FormData();
+      data.append('book_id', bookid);
+      data.append('article_id', articleid);
+      data.append('total_questions', questions.length);
+      data.append(`questionstext`, question.text);
+      data.append(`questionsImage`, question.image);
+      data.append(`questionsoptions`, JSON.stringify(question.options));
+      data.append(`questionscorrectOption`, question.correctOption);
+
+      // Send POST request
+      const response = await apiClient.post("api/add-data", data);
+
+      console.log(index);
+      console.log(response.data);
+
+      if (index === questions.length - 1) {
+        setQuestions([
           {
-            setQuestions([
-              {
-                text: "",
-                image: null,
-                options: ["", "", "", ""],
-                correctOption: 0,
-              },
-            ]);
-            alert("Success");
-
-          }
-        })
-        .catch((error) => {
-          // Handle errors here (e.g., show an error message)
-          console.error('Error adding book:', error);
-        });
-      });
+            text: "",
+            image: null,
+            options: ["", "", "", ""],
+            correctOption: 0,
+          },
+        ]);
+        alert("Success");
+      }
     }
-    catch(error){
-      alert(error);
-      console.error(error);
+  } catch (error) {
+    // Handle errors here (e.g., show an error message)
+    console.error('Error adding book:', error);
+    alert(error);
+  }
+};
 
-    }
-  };
  
   const cancelExam = () => {
     history.goBack();
