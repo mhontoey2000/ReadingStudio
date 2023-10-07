@@ -78,7 +78,7 @@ const Allbookadmin = () => {
                             <td>{book.book_name}</td>
                             <td>{book.book_detail}</td>
                             <td>
-                                <img src={book.book_image} width="100" height="100" />
+                                <img src={book.book_imagedata || book.book_image} width="100" height="100" />
                             </td>
                             <td>
                                 {/* <a href={'/admin/book/edit/' + book.book_id} className="btn btn-primary">Edit</a> */}

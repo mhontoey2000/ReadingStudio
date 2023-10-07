@@ -77,7 +77,7 @@ function Bookarticle({ match }) {
                 <div className="grid-item card" key={article.article_id}>
                   <img
                     className="card-img-top img-fluid simg"
-                    src={article.article_images}
+                    src={article.article_imagedata || article.article_images || 'url_to_default_image'}
                   />
                   <h4 className="card-title" style={{ fontWeight:"bold"}}>{article.article_name}</h4>
                   <span>{article.book_detail}</span>

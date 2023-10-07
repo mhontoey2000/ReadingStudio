@@ -90,7 +90,7 @@ const Allarticleadmin = () => {
                             <td></td>
                             <td>{article.article_name}</td>
                             <td>
-                                <img src={article.article_images} alt="book_image" width="100" height="100" />
+                                <img src={article.article_imagedata || article.article_images} alt="book_image" width="100" height="100" />
                             </td>
                             <td>
                                 {/* <a href={'/admin/book/edit/' + book.book_id} className="btn btn-primary">Edit</a> */}

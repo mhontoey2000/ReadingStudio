@@ -58,7 +58,12 @@ function generateUniqueFileName(floder) {
   const pathimage = fileName.replace('../frontend/public', '');
   return { fileName, pathimage };
 }
-
+function convertBlobToBase64(blobData) {
+  if (blobData  && blobData.length > 0) {
+    return `data:image/jpeg;base64,${Buffer.from(blobData).toString('base64')}`;
+  }
+  return null;
+}
 module.exports = {
-  saveImageToFile,readFileAsync,writeFileAsync,generateUniqueFileName
+  saveImageToFile,readFileAsync,writeFileAsync,generateUniqueFileName,convertBlobToBase64
 };

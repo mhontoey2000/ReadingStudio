@@ -190,7 +190,17 @@ app.get('/api/book', function (req, res) {
   connection.query(
       'SELECT * FROM book',
       function(err, results) {
-        res.json(results);
+        const bookdata = results.map((book) => {
+          const img = helper.convertBlobToBase64(book.book_imagedata);
+          return {
+            ...book,
+            book_imagedata: img,
+          };
+        });
+        // console.log(results);
+        console.log(bookdata);
+        res.json(bookdata);
+        // res.json(results);
       }
     );
 });
@@ -268,7 +278,16 @@ app.get('/api/book', function (req, res) {
     connection.query(
         'SELECT * FROM article',
         function(err, results) {
-          res.json(results);
+          const articledata = results.map((article) => {
+            const img = helper.convertBlobToBase64(article.article_imagedata);
+            return {
+              ...article,
+              article_imagedata: img,
+            };
+          });
+          console.log(articledata);
+          res.json(articledata);
+          // res.json(results);
         }
       );
   });
@@ -293,17 +312,32 @@ app.get('/api/book', function (req, res) {
   });
   
 
- app.get('/api/article/:id', function (req, res) {
- const book_id = req.params.id;
-
-  connection.query(
+  app.get('/api/article/:id', function (req, res) {
+    const book_id = req.params.id;
+  
+    connection.query(
       `SELECT * FROM article WHERE book_id = ?;`,
       [book_id],
       function(err, results) {
-        res.json(results);
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+        }
+  
+        const articlesWithImages = results.map((article) => {
+          const img = helper.convertBlobToBase64(article.article_imagedata);
+          return {
+            ...article,
+            article_imagedata: img,
+          };
+        });
+        console.log(articlesWithImages);
+        res.json(articlesWithImages);
       }
     );
-});
+  });
+  
 
 app.get('/api/articledetail/:id', function (req, res) {
   const article_id = req.params.id;
@@ -313,7 +347,16 @@ app.get('/api/articledetail/:id', function (req, res) {
        `SELECT * FROM article WHERE article_id = ?;`,
        [article_id],
        function(err, results) {
-         res.json(results);
+        const articlesWithImages = results.map((article) => {
+          const img = helper.convertBlobToBase64(article.article_imagedata);
+          return {
+            ...article,
+            article_imagedata: img,
+          };
+        });
+        console.log(articlesWithImages);
+        res.json(articlesWithImages);
+        //  res.json(results);
        }
      );
  });
@@ -662,6 +705,7 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
 
   let imageByte = null;
   let soundByte = null;
+  
   if(imageFile)
   {
     imageByte = await helper.readFileAsync(imageFile.path);

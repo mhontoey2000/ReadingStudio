@@ -60,7 +60,7 @@ function Home() {
                         
                         {items.map((book) => (
                             <div className="grid-item card" key={book.book_id}>
-                                <img className="card-img-top img-fluid simg" src={book.book_image}/>
+                                <img className="card-img-top img-fluid simg" src={book.book_imagedata || book.book_image}/>
                                 <h4 className="card-title" style={{ fontWeight:"bold"}}>{book.book_name}</h4>
                                 <span className="card-text" >{book.book_detail}</span>
                                 <div>
