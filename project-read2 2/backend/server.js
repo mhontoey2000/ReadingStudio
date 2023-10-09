@@ -177,7 +177,7 @@ const storage = multer.diskStorage({
     cb(null, '../frontend/public/picture'); 
   },
   filename: (req, file, cb) => {
-    const fileName =  'temp'; 
+    const fileName =  'temp'+Date.now() + path.extname(file.originalname); 
     cb(null, fileName);
   },
 });
@@ -624,6 +624,7 @@ app.get('/api/report', function (req, res) {
 });
 
 const fs = require('fs');
+const path = require('path');
 // app.use(bodyParser.json({ limit: '100mb' })); // ตั้งค่า limit สูงขึ้นถ้าข้อมูลที่คุณรับมีขนาดใหญ่
 app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
 
@@ -716,15 +717,17 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
     let img = helper.generateUniqueFileName('picture');
     imagepath = img.pathimage;
     await helper.writeFileAsync(img.fileName ,imageByte);
+    fs.unlinkSync(imageFile.path);
   }
-  // if(soundFile)
-  // {
-  //   soundByte = await helper.readFileAsync(soundFile.path);
-  //   console.log(soundFile,soundFile.path, soundByte);
-  //   let sod = helper.generateUniqueFileName('sound');
-  //   soundpath = sod.pathimage;
-  //   await helper.writeFileAsync(sod.fileName,soundByte);
-  // }
+  if(soundFile)
+  {
+    soundByte = await helper.readFileAsync(soundFile.path);
+    console.log(soundFile,soundFile.path, soundByte);
+    let sod = helper.generateUniqueFileName('sound');
+    soundpath = sod.pathimage;
+    await helper.writeFileAsync(sod.fileName,soundByte);
+    fs.unlinkSync(soundFile.path);
+  }
   connection.query("SELECT article_id FROM article ORDER BY article_id DESC LIMIT 1", (err, results) => {
     if (err) {
         console.error('Error fetching last article_id:', err);
