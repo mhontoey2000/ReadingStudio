@@ -695,10 +695,13 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
   const chapter = req.body.chapter;
   const level = req.body.level;
   const description = req.body.description;
-  const imageFile = req.files.image ? req.files.image[0] : null; // ไฟล์รูปภาพ
-  const soundFile = req.files.sound ? req.files.sound[0] : null; // ไฟล์เสียง
+  // const imageFile = req.files.image ? req.files.image[0] : null; // ไฟล์รูปภาพ
+  // const soundFile = req.files.sound ? req.files.sound[0] : null; // ไฟล์เสียง
+  const imageFile = req.files['image'] ?  req.files['image'][0] : null; // ข้อมูลรูปภาพในรูปแบบ Buffer
+  const soundFile = req.files['sound'] ?  req.files['sound'][0] : null; // ข้อมูลเสียงในรูปแบบ Buffer
 
   console.log(book_id, chapter, level, description, imageFile, soundFile);
+  // console.log(book_id, chapter, level, description, imageBuffer, soundBuffer);
 
   let imagepath = null;
   let soundpath = null;
@@ -714,14 +717,14 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
     imagepath = img.pathimage;
     await helper.writeFileAsync(img.fileName ,imageByte);
   }
-  if(soundFile)
-  {
-    soundByte = await helper.readFileAsync(soundFile.path);
-    console.log(soundFile,soundFile.path, soundByte);
-    let sod = helper.generateUniqueFileName('sound');
-    soundpath = sod.pathimage;
-    await helper.writeFileAsync(sod.fileName,soundByte);
-  }
+  // if(soundFile)
+  // {
+  //   soundByte = await helper.readFileAsync(soundFile.path);
+  //   console.log(soundFile,soundFile.path, soundByte);
+  //   let sod = helper.generateUniqueFileName('sound');
+  //   soundpath = sod.pathimage;
+  //   await helper.writeFileAsync(sod.fileName,soundByte);
+  // }
   connection.query("SELECT article_id FROM article ORDER BY article_id DESC LIMIT 1", (err, results) => {
     if (err) {
         console.error('Error fetching last article_id:', err);
