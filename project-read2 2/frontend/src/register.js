@@ -21,39 +21,32 @@ function Register() {
     const [key, setKey] = useState("");
     const [code, setCode] = useState("");
     const history = useHistory();
-
+    const [idcard, setIdCardImage] = useState(null);
+    const handleImageChange = (event) => {
+        // Handle the image selection here and update the bookImage state
+        const selectedImage = event.target.files[0];
+        setIdCardImage(selectedImage);
+      };
     const addAccount = (e) => {
         
         console.log("addAccount function called");
         e.preventDefault();
-        if(usertype === "creater"){
-            axios.get('http://localhost:5004/api/key',{
-                key
-            })
-            .then((response) => {
-                setCode(response.data.key);
-                if(code !== key){
-                    alert('กรุณาติดต่อผู้พัฒนา rds_contact@gmail.com เพื่อขอคีย์');
-                    setUsertype("");
-                    document.getElementById('floatingSelect').value = ""
-                    return  
-                }
-              })
-              .catch((error) => {
-                console.error(error);
-                
-              });}
-
-        if (name !== '' && surname !== '' && email !== '' && password !== '' && usertype !== '')
+        if(usertype === "creater" && idcard === null){
+            alert('กรุณาติดต่อผู้พัฒนา rds_contact@gmail.com เพื่อขอคีย์');
+            setCode('กรุณาติดต่อผู้พัฒนา');
+        }
+        else if (name !== '' && surname !== '' && email !== '' && password !== '' && usertype !== '')
         {
-        axios.post('http://localhost:5004/api/register',{
-            name,
-            surname,
-            email,
-            password,
-            usertype,
-            
-        })
+            const formData = new FormData();
+            // formData.append('book_name', bookName);
+            // formData.append('book_detail', bookDetail);
+            formData.append('name', name);
+            formData.append('surname', surname);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('usertype', usertype);
+            formData.append('idcard', idcard);
+            axios.post('http://localhost:5004/api/register',formData)
         .then((response) => {
             
             console.log(response);
@@ -157,17 +150,28 @@ function Register() {
                             </div>
                             
                                 {usertype === "creater" && (
-                                    <div className="mb-3 hide-required">
+                                    <div className="mb-3">
+                                    <label 
+                                    className="form-label" 
+                                    htmlFor="idcard"
+                                    >
+                                        อัพโหลดหลักฐานยืนยันตัวตน
+                                    </label>
                                     <input
-                                        type="text"
-                                        className="form-control hide-required"
-                                        id="key"
-                                        placeholder="กรุณากรอกคีย์"
-                                        onChange={(event) => {
-                                            setKey(event.target.value);
-                                        }}
+                                      type="file"
+                                      className="form-control"
+                                      id="idcard"
+                                      accept="image/*"
+                                      onChange={handleImageChange}
                                     />
-                                    </div>
+                                    {idcard && (
+                                      <img
+                                        src={URL.createObjectURL(idcard)}
+                                        alt="Uploaded Image"
+                                        style={{ maxWidth: '300px', maxHeight: '200px' }}
+                                      />
+                                    )}
+                                  </div>
                                 )}
                                 
                             

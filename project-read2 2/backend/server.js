@@ -444,10 +444,26 @@ app.post('/api/login', (req, res) => {
   );
 });
 
-app.post('/api/register', (req, res) => {
+app.post('/api/register',upload.single('idcard'),async (req, res) => {
   const { name, surname, email, password, usertype } = req.body;
   const saltRounds = 10;
-
+  const imageFile = req.file ? req.file : null;
+  let imagepath = null;
+  let imageByte = null;
+  console.log(name);
+  console.log(surname);
+  console.log(email);
+  console.log(password);
+  console.log(req.file.path);
+  if(imageFile)
+  {
+    imageByte = await helper.readFileAsync(imageFile.path);
+    console.log(imageFile,imageFile.path ,imageByte);
+    let img = helper.generateUniqueFileName('picture');
+    imagepath = img.pathimage;
+    await helper.writeFileAsync(img.fileName ,imageByte);
+    fs.unlinkSync(imageFile.path);
+  }
   //แก้หน้าสมัครใส่ดักอีเมลซ้ำ
   bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
     if (err) {
@@ -473,8 +489,8 @@ app.post('/api/register', (req, res) => {
             } else {
                 // Step 3: If email doesn't exist, proceed to insert user data
                 connection.query(
-                    "INSERT INTO user (user_name, user_surname, user_email, user_password, user_type) VALUES (?, ?, ?, ?, ?)",
-                    [name, surname, email, hashedPassword, usertype],
+                    "INSERT INTO user (user_name, user_surname, user_email, user_password, user_type, user_idcard) VALUES (?, ?, ?, ?, ?, ?)",
+                    [name, surname, email, hashedPassword, usertype,imageByte],
                     (err, result) => {
                         if (err) {
                             console.log(err);
