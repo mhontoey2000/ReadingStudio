@@ -72,19 +72,19 @@ function Addbook() {
 
 
         <section>
-            <h1>เพิ่มหนังสือ</h1> 
+            <h1>เพิ่มบทความ</h1> 
 
                 <div className="grid-containerr">
                       <div className="fg"> 
                       <form className="form-group">
-                          <h2>กรุณากรอกรายละเอียดหนังสือ</h2>
+                          <h2>กรุณากรอกรายละเอียดบทความ</h2>
                                 <div className="mb-3">
-                                    <label htmlFor="name">ชื่อหนังสือ</label>
+                                    <label htmlFor="name">ชื่อบทความ</label>
                                     <input 
                                       type="text"
                                       className ="form-control"  
                                       id="bookname" 
-                                      placeholder="กรุณากรอกชื่อหนังสือ"
+                                      placeholder="กรุณากรอกชื่อบทความ"
                                       required
                                       onChange={(event) => {
                                         setBookName(event.target.value)
@@ -97,7 +97,7 @@ function Addbook() {
                                     className="form-label" 
                                     htmlFor="bookimage"
                                     >
-                                        รูปหน้าปกหนังสือ
+                                        รูปหน้าปกบทความ
                                     </label>
                                     <input
                                       type="file"
@@ -116,7 +116,7 @@ function Addbook() {
                                   </div>
 
                                 <div className="mb-3">
-                                    <label htmlFor="article_detail">เนื้อหาของหนังสือ</label>
+                                    <label htmlFor="article_detail">เนื้อหาของบทความ</label>
                                     <textarea 
                                     type="text" 
                                     className="form-control"  
@@ -129,7 +129,7 @@ function Addbook() {
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <span style={{ fontStyle: "italic" }}>**ต้องสร้างหนังสือก่อนจึงจะสามารถสร้างบทต่างๆของหนังสือได้</span>
+                                    <span style={{ fontStyle: "italic" }}>**ต้องสร้างบทความก่อนจึงจะสามารถสร้างตอนต่างๆของบทความได้</span>
                                 </div>
 
                                  <div className="btn-containerr">

@@ -113,15 +113,15 @@ function Addarticle() {
 
 
         <section>
-            <h1>เพิ่มบทหนังสือ</h1> 
+            <h1>เพิ่มตอนบทความ</h1> 
 
 
                 <div className="grid-containerr">
                     <div className="fg"> 
                         <form className="form-group mb-3">
-                            <h2>กรุณากรอกรายละเอียดบทของหนังสือ</h2>
+                            <h2>กรุณากรอกรายละเอียดตอนของบทความ</h2>
                                 <div className="mb-3">
-                                    <label htmlFor="name">ชื่อหนังสือ</label>
+                                    <label htmlFor="name">ชื่อบทความ</label>
                                     <input 
                                     type="text"
                                     className ="form-control"  
@@ -132,7 +132,7 @@ function Addarticle() {
                                 </div>
 
                                 <div className="mb-3">
-                                    <label htmlFor="chapter">บทของหนังสือ</label>
+                                    <label htmlFor="chapter">ตอนของบทความ</label>
                                     <input 
                                     type="text" 
                                     className="form-control"  
@@ -147,7 +147,7 @@ function Addarticle() {
                                 </div>
 
                                 <div className="mb-3">
-                                    <label htmlFor="article_detail">เนื้อหาของหนังสือ</label>
+                                    <label htmlFor="article_detail">เนื้อหาของบทความ</label>
                                     <textarea 
                                     type="text" 
                                     className="form-control"  
@@ -174,7 +174,7 @@ function Addarticle() {
                                 </div>
 
                                 <div className="mb-3">
-                                    <label htmlFor="sound">เสียงของเนื้อ</label>
+                                    <label htmlFor="sound">เสียงของเนื้อหา</label>
                                     <input
                                         type="file"
                                         className="form-control"

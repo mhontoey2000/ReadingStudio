@@ -379,6 +379,25 @@ app.get('/api/articledetail/:id', function (req, res) {
       }
     );
 });
+app.post('/api/updateuser/:id', function (req, res) {
+  const userId = req.params.id;
+  const { status } = req.body;
+
+  console.log(status);
+
+  connection.query(
+    'UPDATE user SET approval_status = ? WHERE user_id = ?',
+    [status, userId],
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to update user' });
+      } else {
+        res.json({ message: 'User updated successfully' });
+      }
+    }
+  );
+});
 
 // deleting a user by user_id
 app.delete('/api/user/:id', function (req, res) {
@@ -450,11 +469,14 @@ app.post('/api/register',upload.single('idcard'),async (req, res) => {
   const imageFile = req.file ? req.file : null;
   let imagepath = null;
   let imageByte = null;
+  let approval = 'pending'; 
+  if(usertype === 'learner')
+    approval = 'approved'
   console.log(name);
   console.log(surname);
   console.log(email);
   console.log(password);
-  console.log(req.file.path);
+  console.log(req.file);
   if(imageFile)
   {
     imageByte = await helper.readFileAsync(imageFile.path);
@@ -488,9 +510,10 @@ app.post('/api/register',upload.single('idcard'),async (req, res) => {
                 res.status(400).send('This email is already in use');
             } else {
                 // Step 3: If email doesn't exist, proceed to insert user data
+               
                 connection.query(
-                    "INSERT INTO user (user_name, user_surname, user_email, user_password, user_type, user_idcard) VALUES (?, ?, ?, ?, ?, ?)",
-                    [name, surname, email, hashedPassword, usertype,imageByte],
+                    "INSERT INTO user (user_name, user_surname, user_email, user_password, user_type, user_idcard , approval_status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    [name, surname, email, hashedPassword, usertype,imageByte,approval],
                     (err, result) => {
                         if (err) {
                             console.log(err);

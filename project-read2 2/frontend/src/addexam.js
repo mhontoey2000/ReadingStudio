@@ -168,7 +168,7 @@ const submitExam = async () => {
             <h2>กรุณากรอกข้อมูลของข้อสอบ</h2>
           <div className="row">
             <div className="col mb-3">
-              <label className="form-label">ชื่อหนังสือ</label>
+              <label className="form-label">ชื่อบทความ</label>
               <input
                 type="text"
                 className="form-control"
@@ -178,7 +178,7 @@ const submitExam = async () => {
               />
             </div>
             <div className="col mb-3">
-              <label className="form-label">ชื่อบท</label>
+              <label className="form-label">ชื่อตอน</label>
               <input
                 type="text"
                 className="form-control"

@@ -12,7 +12,7 @@ function Addbookadmin() {
         </header>
 
                 <section >
-                    <p className='hbook'>หนังสือ<button class="buttonadd"> เพิ่ม </button> </p>
+                    <p className='hbook'>บทความ<button class="buttonadd"> เพิ่ม </button> </p>
                     
                     <div className='book'>
                         <div class="grid-container">

@@ -99,7 +99,7 @@ function Addvocab() {
                     <h2>กรุณากรอกคำศัพท์</h2>
 
                     <div className="mb-3">
-                        <label htmlFor="bookname">ชื่อหนังสือ</label>
+                        <label htmlFor="bookname">ชื่อบทความ</label>
                         <input 
                             type="text"
                             className ="form-control"  
@@ -110,7 +110,7 @@ function Addvocab() {
                     </div>
 
                     <div className="mb-3">
-                        <label htmlFor="articlename">ชื่อบท</label>
+                        <label htmlFor="articlename">ชื่อตอน</label>
                         <input 
                             type="text"
                             className ="form-control"  

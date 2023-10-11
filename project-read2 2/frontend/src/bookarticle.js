@@ -47,7 +47,7 @@ function Bookarticle({ match }) {
 
 
         <section>
-          <h1>บทของหนังสือ</h1>
+          <h1>ตอนของบทความ</h1>
 
           <div className="searchbar">
             <Searchbar/>
@@ -65,7 +65,7 @@ function Bookarticle({ match }) {
                           }}
                           className="btn btn-success btnt"
                           >
-                              เพิ่มบทหนังสือ
+                              เพิ่มตนของบทความ
                           </Link>
                       </div>
                     </div>
