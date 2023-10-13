@@ -50,7 +50,7 @@ function Home() {
                           className="btn btn-success btnt"
                           href="./addbook"
                           >
-                              เพิ่มหนังสือ
+                              เพิ่มบทความ
                           </Button>
                     </div>
                     </div>)}

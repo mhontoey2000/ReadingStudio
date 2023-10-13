@@ -15,7 +15,8 @@ const connection = mysql.createConnection({
 });
 process.env.ACCESS_TOKEN_SECRET = 'doraemon';
 dotenv.config()
-const helper = require('./upload')
+const helper = require('./upload');
+const sendMail = require('./sendmail');
 
 function generateAccessToken(user) {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 60 * 60 * 24 * 30 });
@@ -375,16 +376,29 @@ app.get('/api/articledetail/:id', function (req, res) {
   connection.query(
       `SELECT * FROM user`,
       function(err, results) {
-        console.log(res.json(results));
+        const user =  results.map((item)=>{
+            const img = helper.convertBlobToBase64(item.user_idcard);
+            return{
+              ...item,
+              user_idcard: img,
+            };
+        });
+        console.log(res.json(user));
       }
     );
 });
-app.post('/api/updateuser/:id', function (req, res) {
+app.post('/api/updateuser/:id',async function (req, res) {
   const userId = req.params.id;
-  const { status } = req.body;
+  const { status, email } = req.body;
 
+  
   console.log(status);
-
+  console.log(email);
+  if(status === 'rejected'||status ==='approved')
+  {
+  await sendMail(email,'การลงทะเบียนเข้าใช้งานเป็นผู้สร้างสำหรับ Reading Studio',status ==='approved' ?
+  'บัญชีของคุณได้รับการอนุมัติให้เข้าใช้งานเป็นผู้สร้างแล้ว สามารถเข้าสู่ระบบเพื่อใช้งาน' : 'บัญชีของคุณไม่ได้รับการอนุมัติให้เข้าใช้งานเป็นผู้สร้าง กรุณาลงทะเบียนใหม่อีกครั้ง');
+  }
   connection.query(
     'UPDATE user SET approval_status = ? WHERE user_id = ?',
     [status, userId],
@@ -444,19 +458,23 @@ app.post('/api/login', (req, res) => {
         console.error(err);
         res.status(500).send({ message: "Internal Server Error" });
       } else if (results.length === 0) {
-        res.status(401).send({ message: "Invalid email or password" });
+        res.status(401).send({ message: "อีเมล์หรือรหัสผ่านผิด กรุณาตรวจสอบ" });
       } else {
-        const user = results[0];
+        if(results.length > 0){
+          const user = results[0];
+          const passwordMatch = await bcrypt.compare(password, user.user_password);
 
-        const passwordMatch = await bcrypt.compare(password, user.user_password);
-
-        if (passwordMatch) {
-          const accessToken = generateAccessToken({ user_id: user.user_id });
-          res.status(200).send({ accessToken: accessToken, email: req.body.email });
-        } else {
-          res.status(401).send({ message: "Invalid email or password" });
+          if (passwordMatch) {
+            if(user.approval_status === 'approved'){
+              const accessToken = generateAccessToken({ user_id: user.user_id });
+              res.status(200).send({ accessToken: accessToken, email: req.body.email });
+            }else {
+              res.status(401).send({ message: "อีเมลยังไม่ได้รับการอนุมัติ" });
+            }
+          } else {
+            res.status(401).send({ message: "อีเมล์หรือรหัสผ่านผิด กรุณาตรวจสอบ" });
+          }
         }
-
 
       }
     }

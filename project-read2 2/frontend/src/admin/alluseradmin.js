@@ -26,7 +26,10 @@ const Alluseradmin = () => {
     }
     const approvalStatus = (status) => {
         if (!selectedUser) return;
-        const data = { status };
+        const email = selectedUser.user_email;
+        console.log(email);
+
+        const data = { status, email };
 
         axios.post(`http://localhost:5004/api/updateuser/${selectedUser.user_id}`,data)
             .then(response => {
@@ -83,6 +86,7 @@ const Alluseradmin = () => {
                                         <th>Usersurname</th>
                                         <th>UserEmail</th>
                                         <th>UserType</th>
+                                        <th>Status</th>
                                         <th>Edit</th>
                                     </tr>
                                 </thead>
@@ -94,12 +98,15 @@ const Alluseradmin = () => {
                                             <td>{item.user_surname}</td>
                                             <td>{item.user_email}</td>
                                             <td>{item.user_type}</td>
+                                            {/* <td>{item.approval_status}</td> */}
+                                            <td style={{ backgroundColor: item.approval_status === 'approved' ? '#72d572' :  item.approval_status === 'pending' ? '#ffb74d':'#f36c60' }}>{item.approval_status}</td>
+    
                                             <td>
                                                 <Button
                                                     className="btn btn-danger" 
                                                     onClick={() => handleEditClick(item)}
                                                 >
-                                                    แก้ไข
+                                                    จัดการ
                                                 </Button>
                                             </td>
                                         </tr>
@@ -122,6 +129,7 @@ const Alluseradmin = () => {
                     <p><strong>Surname:</strong> {selectedUser && selectedUser.user_surname}</p>
                     <p><strong>Email:</strong> {selectedUser && selectedUser.user_email}</p>
                     <p><strong>Stauts:</strong> {selectedUser && selectedUser.approval_status}</p>
+                    <img src={selectedUser && selectedUser.user_idcard} alt="รูปภาพ"  width="300" height="200" />
                     <p>
                     <Button variant="primary" onClick={() => approvalStatus('approved')}>อนุมัติ</Button>
                     <Button variant="secondary" onClick={() => approvalStatus('rejected')}>ปฏิเสธ</Button>
