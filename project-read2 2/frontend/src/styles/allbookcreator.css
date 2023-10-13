@@ -1,0 +1,44 @@
+
+.table{
+    background-color: white;
+}
+
+.table th {
+    text-align: center;
+    background-color: #0056b3;
+    color: white;
+  }
+  
+  .table tbody tr {
+    text-align: center;
+  }
+  
+  .table tfoot {
+    text-align: center;
+    background-color: #6499E9;
+  }
+  
+  .table tbody tr:hover {
+    background-color: #E4F1FF; 
+    cursor: pointer; 
+  }
+
+  .amt1{
+    color: white;
+  }
+
+  .amt1:hover{
+    color: white;
+    background-color: #C63D2F;
+    border: #C63D2F;
+  }
+
+  .amt2{
+    color: white;
+  }
+
+  .amt2:hover{
+    color: white;
+    background-color:#FFBB5C;
+    color: #FFBB5C;
+  }
