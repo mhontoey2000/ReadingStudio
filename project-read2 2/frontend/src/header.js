@@ -112,6 +112,10 @@ function Header() {
                           <i className="bi bi-person-workspace"></i>
                             Admin
                           </Nav.Link>)}
+                          {usertype === "creator" && (<Nav.Link href="./creator" className="list_item">
+                          <i className="bi bi-person-workspace"></i>
+                            Creator
+                          </Nav.Link>)}
                         <Nav.Link href="./logout" onClick={logout } className="list_item">
                           <i className="bi bi-box-arrow-right"></i>
                             Logout

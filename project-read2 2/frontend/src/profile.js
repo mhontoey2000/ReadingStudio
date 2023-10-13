@@ -12,13 +12,15 @@ function Profile() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [usertype, setUsertype] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     axios.get('http://localhost:5004/api/userdata?user_email=' + user)
       .then((response) => {
         setFirstname(response.data[0].user_name);
         setLastname(response.data[0].user_surname);
-        setUsertype(response.data[0].user_surname);
+        setUsertype(response.data[0].user_type);
+        setStatus(response.data[0].approval_status);
         })
       .catch(error => console.error(error));
   }, [user]);
@@ -91,6 +93,26 @@ function Profile() {
             <label className="form-label">ประเภทบัญชี</label>
             <input type="text" className="form-control" value={usertype} disabled readOnly></input>
           </div>
+
+          {["admin", "creator"].includes(usertype) && (
+            <div className="mb-3 form-group">
+              <label className="form-label">สถานะ</label>
+              <input 
+               type="text" 
+               className="form-control" 
+               value={status} 
+               disabled 
+               readOnly
+               style={{
+                color: 
+                  status === 'approved' ? 'green' :
+                  status === 'pending' ? 'orange' : 'red' ,
+                  fontWeight: 'bold'
+                }}
+              />
+                <cite>*ถ้า active จะสามารถสร้างหนังสือ ถ้า inactive จะไม่สามารถสร้างหนังสือได้</cite>
+            </div>
+          )}
 
         </div>
         <div className="btn-containerr">

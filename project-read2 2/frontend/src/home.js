@@ -39,7 +39,7 @@ function Home() {
             <Header/>
         
                 <section >
-                    <h1>หนังสือ</h1>
+                    <h1>บทความ</h1>
                     
                       <Searchbar/>
 

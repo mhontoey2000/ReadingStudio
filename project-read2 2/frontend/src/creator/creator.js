@@ -15,7 +15,7 @@ function Creator() {
   useEffect(() => {
     axios.get('http://localhost:5004/api/userdata?user_email=' + user)
       .then((response) => {
-        setStatus(response.data[0].status_u)
+        setStatus(response.data[0].approval_status)
         })
       .catch(error => console.error(error));
   }, [user]);
@@ -31,7 +31,7 @@ function Creator() {
           <div className="fgc"> 
             <div className="btn-toolbar d-flex justify-content-center">
 
-            {["active"].includes(status) && (<div>
+            {["approved"].includes(status) && (<div>
               <Button
                 type="button"
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
@@ -39,6 +39,7 @@ function Creator() {
               >
                 <i className="bi bi-file-earmark-plus-fill"></i> สร้างบทความ
               </Button>
+              </div>)}
 
               <Button
                 type="button"
@@ -47,7 +48,7 @@ function Creator() {
               >
                 <i className="bi bi-book-fill"></i> บทความของฉัน
               </Button>
-              </div>)}
+              
 
               {/* <Button
                 type="button"
