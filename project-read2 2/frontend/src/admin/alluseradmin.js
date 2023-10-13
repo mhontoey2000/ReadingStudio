@@ -86,6 +86,7 @@ const Alluseradmin = () => {
                                         <th>Usersurname</th>
                                         <th>UserEmail</th>
                                         <th>UserType</th>
+                                        <th>Status</th>
                                         <th>Edit</th>
                                     </tr>
                                 </thead>
@@ -97,6 +98,9 @@ const Alluseradmin = () => {
                                             <td>{item.user_surname}</td>
                                             <td>{item.user_email}</td>
                                             <td>{item.user_type}</td>
+                                            {/* <td>{item.approval_status}</td> */}
+                                            <td style={{ backgroundColor: item.approval_status === 'approved' ? '#72d572' :  item.approval_status === 'pending' ? '#ffb74d':'#f36c60' }}>{item.approval_status}</td>
+    
                                             <td>
                                                 <Button
                                                     className="btn btn-danger" 
