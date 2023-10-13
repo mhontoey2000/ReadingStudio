@@ -129,6 +129,7 @@ const Alluseradmin = () => {
                     <p><strong>Surname:</strong> {selectedUser && selectedUser.user_surname}</p>
                     <p><strong>Email:</strong> {selectedUser && selectedUser.user_email}</p>
                     <p><strong>Stauts:</strong> {selectedUser && selectedUser.approval_status}</p>
+                    <img src={selectedUser && selectedUser.user_idcard} alt="รูปภาพ"  width="300" height="200" />
                     <p>
                     <Button variant="primary" onClick={() => approvalStatus('approved')}>อนุมัติ</Button>
                     <Button variant="secondary" onClick={() => approvalStatus('rejected')}>ปฏิเสธ</Button>

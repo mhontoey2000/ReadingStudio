@@ -376,7 +376,14 @@ app.get('/api/articledetail/:id', function (req, res) {
   connection.query(
       `SELECT * FROM user`,
       function(err, results) {
-        console.log(res.json(results));
+        const user =  results.map((item)=>{
+            const img = helper.convertBlobToBase64(item.user_idcard);
+            return{
+              ...item,
+              user_idcard: img,
+            };
+        });
+        console.log(res.json(user));
       }
     );
 });
