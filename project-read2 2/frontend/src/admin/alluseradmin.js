@@ -99,7 +99,7 @@ const Alluseradmin = () => {
                                                     className="btn btn-danger" 
                                                     onClick={() => handleEditClick(item)}
                                                 >
-                                                    แก้ไข
+                                                    จัดการ
                                                 </Button>
                                             </td>
                                         </tr>

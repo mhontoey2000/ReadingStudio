@@ -39,7 +39,7 @@ function Home() {
             <Header/>
         
                 <section >
-                    <h1>หนังสือ</h1>
+                    <h1>บทความ</h1>
                     
                       <Searchbar/>
 
@@ -50,7 +50,7 @@ function Home() {
                           className="btn btn-success btnt"
                           href="./addbook"
                           >
-                              เพิ่มหนังสือ
+                              เพิ่มบทความ
                           </Button>
                     </div>
                     </div>)}

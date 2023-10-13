@@ -65,7 +65,7 @@ function Bookarticle({ match }) {
                           }}
                           className="btn btn-success btnt"
                           >
-                              เพิ่มตนของบทความ
+                              เพิ่มตอนของบทความ
                           </Link>
                       </div>
                     </div>
