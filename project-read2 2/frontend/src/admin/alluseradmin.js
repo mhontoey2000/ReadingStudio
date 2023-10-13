@@ -26,7 +26,10 @@ const Alluseradmin = () => {
     }
     const approvalStatus = (status) => {
         if (!selectedUser) return;
-        const data = { status };
+        const email = selectedUser.user_email;
+        console.log(email);
+
+        const data = { status, email };
 
         axios.post(`http://localhost:5004/api/updateuser/${selectedUser.user_id}`,data)
             .then(response => {

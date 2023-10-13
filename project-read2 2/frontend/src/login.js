@@ -43,7 +43,10 @@ const Login = () => {
         console.error(error);
         // Handle failed login here
         setShowAlert(true);
-        setAlertMessage("อีเมล์หรือรหัสผ่านผิด กรุณาตรวจสอบ");
+        if(error.response)
+          setAlertMessage(error.response.data.message);
+        else
+          setAlertMessage(error.message);
     });
   }};
   
