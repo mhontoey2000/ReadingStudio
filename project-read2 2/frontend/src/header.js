@@ -13,6 +13,7 @@ function Header() {
 
   const user = localStorage.getItem('email');
   const [firstname, setFirstname] = React.useState('');
+  const [surname, setSurname] = React.useState('');
   const [isSticky, setIsSticky] = useState(false);
   const [usertype, setUsertype] = useState("")
 
@@ -28,7 +29,8 @@ function Header() {
       .then(data => {
         // console.log(data)
         setFirstname(data[0].user_name);
-        setUsertype(data[0].user_type)
+        setSurname(data[0].user_surname);
+        setUsertype(data[0].user_type);
       })
       .catch(error => console.error(error));
   }, [user]);
@@ -78,7 +80,7 @@ function Header() {
               <img className='logohome' src="../picture/logo2.png"/>
             </Navbar.Brand>
             <div className="align-items-center ms-2"> {/* Wrap the text in a div */}
-              <p className="welcometext">ยินดีต้อนรับ,คุณ {firstname}</p>
+              <p className="welcometext">ยินดีต้อนรับ,คุณ {firstname} {surname}</p>
             </div>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
