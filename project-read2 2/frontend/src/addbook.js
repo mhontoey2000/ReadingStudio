@@ -129,7 +129,7 @@ function Addbook() {
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <span style={{ fontStyle: "italic" }}>**ต้องสร้างบทความก่อนจึงจะสามารถสร้างตอนต่างๆของบทความได้</span>
+                                    <span style={{ fontStyle: "italic" }}>**ต้องสร้างบทความก่อนจึงจะสามารถสร้างตอนต่างๆของได้</span>
                                 </div>
 
                                  <div className="btn-containerr">

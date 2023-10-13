@@ -106,8 +106,7 @@ const Allbookadmin = () => {
                                     <td>
                                         <Link
                                             className="btn btn-warning amt1"
-                                            to={{ pathname: '/Page/editbook',
-                                                state: { book_id: book.book_id } }}
+                                            to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
                                         >
                                             แก้ไข
                                         </Link>

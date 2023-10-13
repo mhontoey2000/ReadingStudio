@@ -189,7 +189,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Page/editbook"
+          path="/Page/editbook_:bookid"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Editbook />
           }
