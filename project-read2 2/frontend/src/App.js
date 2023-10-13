@@ -30,6 +30,9 @@ import Editbook from "./admin/editbook";
 import Editarticle from "./admin/editarticle";
 import Editexam from "./admin/editexam";
 import Allarticleadmin from "./admin/allarticleadmin";
+import Creator from "./creator/creator";
+import Allbookcreator from "./creator/allbookcreator";
+import Edituser from "./admin/edituser";
 import { useEffect, useState } from "react";
 
 const App = () => {
@@ -210,6 +213,24 @@ const App = () => {
           path="/Page/allarticleadmin"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Allarticleadmin />
+          }
+        />
+        <Route
+          path="/Page/creator"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Creator />
+          }
+        />
+        <Route
+          path="/Page/edituser"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Edituser />
+          }
+        />
+                <Route
+          path="/Page/allbookcreator"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Allbookcreator />
           }
         />
 
