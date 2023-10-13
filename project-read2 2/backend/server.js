@@ -205,7 +205,23 @@ app.get('/api/book', function (req, res) {
       }
     );
 });
+app.delete('/api/deletebook/:bookId', function (req, res) {
+  const bookid = req.params.bookId;
+  console.log('removed book : '+ bookid);
 
+  connection.query(
+      'DELETE FROM book WHERE book_id = ?',[bookid],
+      function(err, results) {
+        if (err) {s
+          console.error('Error removed book:', err);
+          res.status(500).json({ error: 'Error removed book' });
+      } else {
+          console.log('removed book successfully');
+          res.status(200).json({ message: 'removed book successfully' });
+      }
+      }
+    );
+});
 // แก้เพิ่ม
   app.post('/api/addbook',upload.single('book_image'),  (req, res) => {
     const { book_name, book_detail } = req.body;

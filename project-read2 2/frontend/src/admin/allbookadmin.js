@@ -5,106 +5,153 @@ import { useLocation } from 'react-router-dom';
 import Header from '../header';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import Modal from 'react-bootstrap/Modal';
 import "../styles/alladmin.css"
 
 const Allbookadmin = () => {
     const [items, setItems] = useState([]);
-    const [bookid, setBookid] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [bookToDelete, setBookToDelete] = useState(null);
 
     useEffect(() => {
         axios.get('http://localhost:5004/api/book')
-          .then((response) => {
-            setItems(response.data);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }, []);
+            .then((response) => {
+                setItems(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
 
-      
+    const deleteBook = (bookId) => {
+        const bookToDelete = items.find((book) => book.book_id === bookId);
+        setBookToDelete(bookToDelete);
+        setShowDeleteModal(true);
+    };
+
+    const deleteBookConfirmed = (bookId) => {
+        axios.delete(`http://localhost:5004/api/deletebook/${bookId}`)
+            .then(() => {
+                console.log(`หนังสือที่มี ID ${bookId} ถูกลบแล้ว.`);
+                // Refresh the book list after deletion
+                axios.get('http://localhost:5004/api/book')
+                    .then((response) => {
+                        setItems(response.data);
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            })
+            .catch((error) => {
+                console.error(`เกิดข้อผิดพลาดในการลบหนังสือที่มี ID ${bookId}: ${error}`);
+            });
+    };
 
     return (
         <div>
             <Header />
             <section>
-            <div className="grid-containerr">
-            <h1>หนังสือทั้งหมด</h1>
-            <table className="table table-hover">
-                <thead>
-                    <tr className="head" style={{ textAlign: "center"}}>
-                        <th 
-                         scope="col" 
-                         className='t-size'
-                         >
-                            ID
-                        </th>
-                        <th 
-                         scope="col" 
-                         className='t-size'
-                         >
-                            หนังสือ
-                        </th>
-                        <th 
-                         scope="col" 
-                         className='t-size'
-                         >
-                            คำอธิบายหนังสือ
-                        </th>
-                        <th
-                         scope="col" 
-                         className='t-size'
-                         >
-                            รูปหน้าปกหนังสือ
-                        </th>
-                        <th 
-                         scope="col" 
-                         className='t-size'
-                         >
-                            แก้ไข
-                        </th>
-                        <th
-                         scope="col" 
-                         className='t-size'
-                         >
-                            ลบ
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody className="table-group-divider">
-                    {items.map((book) => (
-                        <tr key={book.book_id}>
-                            <td>{book.book_id}</td>
-                            <td>{book.book_name}</td>
-                            <td>{book.book_detail}</td>
-                            <td>
-                                <img src={book.book_imagedata || book.book_image} width="100" height="100" />
-                            </td>
-                            <td>
-                                {/* <a href={'/admin/book/edit/' + book.book_id} className="btn btn-primary">Edit</a> */}
-                                <Link 
-                                 className="btn btn-warning amt1"
-                                 to={{ pathname: '/Page/editbook', 
-                                 state: { book_id: bookid } }}
+                <div className="grid-containerr">
+                    <h1>หนังสือทั้งหมด</h1>
+                    <table className="table table-hover">
+                        <thead>
+                            <tr className="head" style={{ textAlign: "center" }}>
+                                <th
+                                    scope="col"
+                                    className='t-size'
                                 >
-                                 แก้ไข
-                                 </Link>
-                            </td>
-                            <td>
-                                <Button
-                                 className="btn btn-danger amt2" 
-                                 //onClick={() => deleteBook(book.book_id)}
-                                 >
-                                    Delete
-                                </Button>
-                            </td>
-                        </tr>
-                    ))}
-
-                </tbody>
-            </table>
-            </div>
+                                    ID
+                                </th>
+                                <th
+                                    scope="col"
+                                    className='t-size'
+                                >
+                                    หนังสือ
+                                </th>
+                                <th
+                                    scope="col"
+                                    className='t-size'
+                                >
+                                    คำอธิบายหนังสือ
+                                </th>
+                                <th
+                                    scope="col"
+                                    className='t-size'
+                                >
+                                    รูปหน้าปกหนังสือ
+                                </th>
+                                <th
+                                    scope="col"
+                                    className='t-size'
+                                >
+                                    แก้ไข
+                                </th>
+                                <th
+                                    scope="col"
+                                    className='t-size'
+                                >
+                                    ลบ
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="table-group-divider">
+                            {items.map((book) => (
+                                <tr key={book.book_id}>
+                                    <td>{book.book_id}</td>
+                                    <td>{book.book_name}</td>
+                                    <td>{book.book_detail}</td>
+                                    <td>
+                                        <img src={book.book_imagedata || book.book_image} width="100" height="100" />
+                                    </td>
+                                    <td>
+                                        <Link
+                                            className="btn btn-warning amt1"
+                                            to={{ pathname: '/Page/editbook',
+                                                state: { book_id: book.book_id } }}
+                                        >
+                                            แก้ไข
+                                        </Link>
+                                    </td>
+                                    <td>
+                                        <Button
+                                            className="btn btn-danger amt2"
+                                            onClick={() => deleteBook(book.book_id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </section>
+
+            {/* Modal ยืนยันการลบ */}
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>ยืนยันการลบ</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {bookToDelete && (
+                        <p>คุณแน่ใจหรือไม่ที่ต้องการลบหนังสือ: {bookToDelete.book_name}?</p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        ยกเลิก
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            deleteBookConfirmed(bookToDelete.book_id);
+                            setShowDeleteModal(false);
+                        }}
+                    >
+                        ลบ
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 
