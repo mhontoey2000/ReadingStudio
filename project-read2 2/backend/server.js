@@ -602,6 +602,21 @@ app.post('/api/report', (req, res) => {
   });
 });
 
+app.post('/api/del_report/:id', (req, res) => {
+  const report_id = req.params.id;
+  connection.query(
+    `DELETE FROM reports WHERE report_id = ?;`,
+    [report_id],
+    function(err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+      } else {
+        res.status(200).json({ message: 'Report deleted successfully' });
+      }
+    }
+  );
+});
 
 app.post('/api/vocabs', async (req, res) => {
   const { articleid, Vname, Vdetail } = req.body;
