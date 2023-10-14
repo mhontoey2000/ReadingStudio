@@ -18,42 +18,70 @@ function Editarticle() {
 
     const [sounds, setSounds] = useState("");
     const [vocabs, setVocabs] = useState("");
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [audio] = useState(new Audio());
+    const [duration, setDuration] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
 
-    useEffect(() => {
-        axios.get(`http://localhost:5004/api/article`) 
-          .then((response) => {
-            for(let i=0; i<response.data.length; i++) {
-                if(response.data[i].article_id === articleid) {
-                    setBookName(response.data[i].book_name);
-                    setArticleName(response.data[i].article_name);
-                    setArticleDetail(response.data[i].article_detail);
-                    setImage(response.data[i].image);
-                    setSounds(response.data[i].sounds);
-                    setVocabs(response.data[i].vocabs);
-                    break;
-                }
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-    }, [articleid]);
+    const playAudio = () => {
+        if (audio.paused) {
+            audio.play();
+            setIsPlaying(true);
+        } else {
+            audio.pause();
+            setIsPlaying(false);
+        }
+    };
+
+    const updateAudioData = () => {
+        setDuration(audio.duration);
+        setCurrentTime(audio.currentTime);
+    };
+
+    audio.addEventListener("timeupdate", updateAudioData);
 
     const handleImageChange = (event) => {
         const selectedImage = event.target.files[0];
-        console.log("Selected image file:", selectedImage);
         setSelectedImageFile(selectedImage); 
         setImage(URL.createObjectURL(selectedImage)); 
-      };
-      
-    const handleSoundUpload =(event) => {
+    };
+
+    const handleSoundUpload = (event) => {
         const soundFile = event.target.files[0];
         setSounds(soundFile);
+        audio.src = URL.createObjectURL(soundFile);
     }
+
+    useEffect(() => {
+        axios.get(`http://localhost:5004/api/article`)
+            .then((response) => {
+                for (let i = 0; i < response.data.length; i++) {
+                    if (response.data[i].article_id === articleid) {
+                        setBookName(response.data[i].book_name);
+                        setArticleName(response.data[i].article_name);
+                        setArticleDetail(response.data[i].article_detail);
+                        setImage(response.data[i].article_imagedata);
+                        setSounds(response.data[i].article_sounddata);
+                        setVocabs(response.data[i].vocabs);
+                        audio.src = response.data[i].article_sounddata;
+                        break;
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+        return () => {
+            audio.removeEventListener("timeupdate", updateAudioData);
+            audio.pause();
+        };
+    }, [articleid]);
 
     const cancelEditArticle = () => {
         history.push('/Page/allarticleadmin');
     }
+
     const editArticle = () => {
         const formData = new FormData();
         formData.append('article_id', articleid);
@@ -117,36 +145,40 @@ function Editarticle() {
                                 />
                             </div>
                             <div className="mb-3">
-                    <label className="form-label" htmlFor="bookimage">
-                    รูปในเนื้อหา
-                    </label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="bookimage"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                    />
-                    {image && (
-                      <img
-                        src={image}
-                        alt="Uploaded Image"
-                        style={{ maxWidth: '100%', maxHeight: '200px' }}
-                      />
-                    )}
-                  </div>
-                            <div className="mb-3">
-                                    <label htmlFor="sound">เสียงของเนื้อหา</label>
-                                    <input
-                                        type="file"
-                                        className="form-control"
-                                        id="sound"
-                                        accept="audio/*"
-                                        onChange={handleSoundUpload}
+                                <label className="form-label" htmlFor="bookimage">
+                                    รูปในเนื้อหา
+                                </label>
+                                <input
+                                    type="file"
+                                    className="form-control"
+                                    id="bookimage"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                />
+                                {image && (
+                                    <img
+                                        src={image}
+                                        alt="Uploaded Image"
+                                        style={{ maxWidth: '100%', maxHeight: '200px' }}
                                     />
-                                </div>
-                            {/* Continue with the rest of the fields... */}
-                            
+                                )}
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="sound">เสียงของเนื้อหา</label>
+                                <input
+                                    type="file"
+                                    className="form-control"
+                                    id="sound"
+                                    accept="audio/*"
+                                    onChange={handleSoundUpload}
+                                />
+                            </div>
+                            <div>
+                                <Button className="play-button" onClick={playAudio}>
+                                    {isPlaying ? 'Pause' : 'Play'}
+                                </Button>
+                            </div>
+
                             <div className="btn-containerr">
                                 <div className="btn-group me-2">
                                     <Button
