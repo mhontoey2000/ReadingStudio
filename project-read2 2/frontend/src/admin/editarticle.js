@@ -3,27 +3,61 @@ import Header from "../header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import "../styles/editall.css";
-import { useHistory } from 'react-router-dom';
-import formatTime from '../formattime';
 
 function Editarticle() {
     const history = useHistory();
     const { articleid } = useParams();
+
     const [bookName, setBookName] = useState("");
     const [articleName, setArticleName] = useState("");
     const [articleDetail, setArticleDetail] = useState("");
     const [image, setImage] = useState("");
     const [selectedImageFile, setSelectedImageFile] = useState(null);
-
-    const [audioProgress, setAudioProgress] = useState(0);
     const [audioUrl, setAudioUrl] = useState(null);
     const [audioRef, setAudioRef] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
-    const [currentTime, setCurrentTime] = useState(0);
-    let selectedArticle = null; // Define the selectedArticle variable here
+
+    useEffect(() => {
+        fetchArticleData();
+    }, [articleid]);
+
+    useEffect(() => {
+        handleAudioPlayback();
+    }, [isPlaying, audioRef]);
+
+    const fetchArticleData = () => {
+        axios.get(`http://localhost:5004/api/article`)
+            .then((response) => {
+                const article = response.data.find(item => item.article_id === articleid);
+                if (article) {
+                    setArticleData(article);
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    const setArticleData = (article) => {
+        setBookName(article.book_name);
+        setArticleName(article.article_name);
+        setArticleDetail(article.article_detail);
+        setImage(article.article_imagedata);
+        playAudio(article.article_sounddata,article.article_sounds);
+    };
+
+    const handleAudioPlayback = () => {
+        if (audioRef) {
+            if (isPlaying) {
+                audioRef.play();
+            } else {
+                audioRef.pause();
+            }
+        }
+    };
 
     const handleImageChange = (event) => {
         const selectedImage = event.target.files[0];
@@ -31,7 +65,7 @@ function Editarticle() {
         setImage(URL.createObjectURL(selectedImage));
     };
 
-    const playAudio = async (audioData) => {
+    const playAudio = async (audioData,audiopath) => {
         if (isPlaying) {
             setIsPlaying(false);
             return;
@@ -42,27 +76,6 @@ function Editarticle() {
         setAudioUrl(blobUrl);
     };
 
-    const handlePause = () => {
-        setIsPlaying(false);
-        audioRef.pause();
-    };
-
-    const handleSeek = (time) => {
-        audioRef.currentTime = time;
-        setCurrentTime(time);
-        setAudioProgress((time / duration) * 100);
-    };
-
-    const handlePlayPause = () => {
-        if (isPlaying) {
-            setIsPlaying(false);
-            audioRef.pause();
-        } else {
-            setIsPlaying(true);
-            audioRef.play();
-        }
-    };
-
     const handleAudioRef = (ref) => {
         setAudioRef(ref);
         if (ref) {
@@ -70,43 +83,14 @@ function Editarticle() {
         }
     };
 
-    useEffect(() => {
-        if (audioRef) {
-            if (isPlaying) {
-                audioRef.play();
-            } else {
-                audioRef.pause();
-            }
-        }
-    }, [isPlaying, audioRef]);
-
-    useEffect(() => {
-        axios.get(`http://localhost:5004/api/article`)
-            .then((response) => {
-                for (let i = 0; i < response.data.length; i++) {
-                    if (response.data[i].article_id === articleid) {
-                        selectedArticle = response.data[i];
-                        setBookName(selectedArticle.book_name);
-                        setArticleName(selectedArticle.article_name);
-                        setArticleDetail(selectedArticle.article_detail);
-                        setImage(selectedArticle.article_imagedata);
-                        playAudio(selectedArticle.article_sounddata);
-                        break;
-                    }
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, [articleid]);
-
     const cancelEditArticle = () => {
         history.push('/Page/allarticleadmin');
-    }
+    };
 
     const editArticle = () => {
         // Add code for uploading audio files or remove unrelated parts
     };
+
 
     return (
         <div>
