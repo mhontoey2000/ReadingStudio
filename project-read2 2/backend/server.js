@@ -362,7 +362,23 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
     );
   });
   
-
+  app.delete('/api/deletearticle/:articleId', function (req, res) {
+    const articleId = req.params.articleId;
+    console.log('removed article : '+ articleId);
+  
+    connection.query(
+        'DELETE FROM article WHERE article_id = ?',[articleId],
+        function(err, results) {
+          if (err) {s
+            console.error('Error removed article:', err);
+            res.status(500).json({ error: 'Error removed article' });
+        } else {
+            console.log('removed article successfully');
+            res.status(200).json({ message: 'removed article successfully' });
+        }
+        }
+      );
+  });
   app.get('/api/article/:id', function (req, res) {
     const book_id = req.params.id;
   
