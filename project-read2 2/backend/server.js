@@ -222,6 +222,36 @@ app.delete('/api/deletebook/:bookId', function (req, res) {
       }
     );
 });
+
+app.post('/api/updatebook',upload.single('book_image'),async (req, res) => {
+  const { book_id,book_name, book_detail } = req.body;
+  console.log(book_id);
+  console.log(book_name);
+  console.log(book_detail);
+  const imageFile = req.file ? req.file : null; // ไฟล์รูปภาพ
+  let imagepath = null;
+  let imageByte = null;
+  if(imageFile)
+  {
+    imageByte = await helper.readFileAsync(imageFile.path);
+    console.log(imageFile,imageFile.path ,imageByte);
+    let img = helper.generateUniqueFileName('picture');
+    imagepath = img.pathimage;
+    await helper.writeFileAsync(img.fileName ,imageByte);
+    console.log(imageByte);
+  }
+  connection.query("UPDATE book SET book_name=?, book_detail=?, book_image=?, book_imagedata=? WHERE book_id=?", 
+  [book_name, book_detail,imagepath,imageByte,book_id], 
+  (err, result) => {
+      if (err) {s
+          console.error('Error update book:', err);
+          res.status(500).json({ error: 'Error update book' });
+      } else {
+          console.log('Book update successfully');
+          res.status(200).json({ message: 'Book update successfully' });
+      }
+  });
+});
 // แก้เพิ่ม
   app.post('/api/addbook',upload.single('book_image'),  (req, res) => {
     const { book_name, book_detail } = req.body;
@@ -285,8 +315,7 @@ app.delete('/api/deletebook/:bookId', function (req, res) {
           }
       });
     });
-});
-
+    });
   });
 
 

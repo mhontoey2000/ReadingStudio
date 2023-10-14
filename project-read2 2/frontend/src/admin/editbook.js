@@ -52,8 +52,22 @@ function Editbook() {
     }
 
     const editBook = () => {
-      // ทำการบันทึกการแก้ไขหนังสือที่นี่ (คุณต้องเพิ่มโค้ดส่วนนี้เอง)
-    }
+      const formData = new FormData();
+      formData.append('book_id', bookid);
+      formData.append('book_name', bname);
+      formData.append('book_detail', bdetail);
+      formData.append('book_image', bookImage);
+    
+      axios.post('http://localhost:5004/api/updatebook', formData)
+        .then((response) => {
+          // หลังจากการแก้ไขสำเร็จ คุณสามารถนำผู้ใช้ไปยังหน้าที่คุณต้องการ (เช่น หน้ารายการหนังสือทั้งหมด)
+          history.push('/Page/allbookadmin');
+        })
+        .catch((error) => {
+          console.error(error);
+          // คุณควรจัดการข้อผิดพลาดอย่างเหมาะสมที่นี่ เช่น แสดงข้อความข้อผิดพลาด
+        });
+    };
 
     return (
         <div>
