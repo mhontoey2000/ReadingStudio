@@ -13,6 +13,7 @@ function Editbook() {
     const [bname, setBname] = useState("");
     const [bdetail, setBdetail] = useState("");
     const [bookImage, setBookImage] = useState(null);
+    const [selectedImageFile, setSelectedImageFile] = useState(null);
 
     useEffect(() => {
 
@@ -49,18 +50,19 @@ function Editbook() {
     const handleImageChange = (event) => {
       const selectedImage = event.target.files[0];
       console.log("Selected image file:", selectedImage);
-      setBookImage(selectedImage); 
+      setSelectedImageFile(selectedImage); 
+      setBookImage(URL.createObjectURL(selectedImage)); 
     };
 
     const editBook = () => {
-      console.log("Image before sending:", bookImage);
+      console.log("Image before sending:", selectedImageFile);
       
       const formData = new FormData();
       formData.append('book_id', bookid);
       formData.append('book_name', bname);
       formData.append('book_detail', bdetail);
-      if (bookImage) {
-        formData.append('book_image', bookImage);
+      if (selectedImageFile) {
+        formData.append('book_image', selectedImageFile);
       }
     
       axios.post('http://localhost:5004/api/updatebook', formData)
