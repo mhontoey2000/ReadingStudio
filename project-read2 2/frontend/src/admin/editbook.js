@@ -34,11 +34,6 @@ function Editbook() {
           });
     }, [bookid]);
 
-    const handleImageChange = (event) => {
-      const selectedImage = event.target.files[0];
-      setBookImage(URL.createObjectURL(selectedImage));
-    };
-
     const cancelEditBook = () => {
         history.push("/Page/allbookadmin"); 
     }
@@ -51,21 +46,29 @@ function Editbook() {
       setBname(event.target.value);
     }
 
+    const handleImageChange = (event) => {
+      const selectedImage = event.target.files[0];
+      console.log("Selected image file:", selectedImage);
+      setBookImage(selectedImage); 
+    };
+
     const editBook = () => {
+      console.log("Image before sending:", bookImage);
+      
       const formData = new FormData();
       formData.append('book_id', bookid);
       formData.append('book_name', bname);
       formData.append('book_detail', bdetail);
-      formData.append('book_image', bookImage);
+      if (bookImage) {
+        formData.append('book_image', bookImage);
+      }
     
       axios.post('http://localhost:5004/api/updatebook', formData)
         .then((response) => {
-          // หลังจากการแก้ไขสำเร็จ คุณสามารถนำผู้ใช้ไปยังหน้าที่คุณต้องการ (เช่น หน้ารายการหนังสือทั้งหมด)
           history.push('/Page/allbookadmin');
         })
         .catch((error) => {
           console.error(error);
-          // คุณควรจัดการข้อผิดพลาดอย่างเหมาะสมที่นี่ เช่น แสดงข้อความข้อผิดพลาด
         });
     };
 

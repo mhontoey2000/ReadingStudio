@@ -223,27 +223,31 @@ app.delete('/api/deletebook/:bookId', function (req, res) {
     );
 });
 
-app.post('/api/updatebook',upload.single('book_image'),async (req, res) => {
-  const { book_id,book_name, book_detail } = req.body;
-  console.log(book_id);
-  console.log(book_name);
-  console.log(book_detail);
-  const imageFile = req.file ? req.file : null; // ไฟล์รูปภาพ
-  let imagepath = null;
-  let imageByte = null;
-  if(imageFile)
-  {
-    imageByte = await helper.readFileAsync(imageFile.path);
-    console.log(imageFile,imageFile.path ,imageByte);
-    let img = helper.generateUniqueFileName('picture');
-    imagepath = img.pathimage;
-    await helper.writeFileAsync(img.fileName ,imageByte);
-    console.log(imageByte);
+app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
+  const { book_id, book_name, book_detail } = req.body;
+  console.log("Received image file:", req.file);
+  let updateValues = [];
+  let updateQuery = "UPDATE book SET book_name=?, book_detail=?";
+
+  updateValues.push(book_name, book_detail);
+
+  if (req.file) {
+    const imageFile = req.file;
+    const imageByte = await helper.readFileAsync(imageFile.path);
+    const img = helper.generateUniqueFileName('picture');
+    const imagepath = img.pathimage;
+
+    await helper.writeFileAsync(img.fileName, imageByte);
+
+    updateQuery += ", book_image=?, book_imagedata=?";
+    updateValues.push(imagepath, imageByte);
   }
-  connection.query("UPDATE book SET book_name=?, book_detail=?, book_image=?, book_imagedata=? WHERE book_id=?", 
-  [book_name, book_detail,imagepath,imageByte,book_id], 
-  (err, result) => {
-      if (err) {s
+
+  updateQuery += " WHERE book_id=?";
+  updateValues.push(book_id);
+
+  connection.query(updateQuery, updateValues, (err, result) => {
+      if (err) {
           console.error('Error update book:', err);
           res.status(500).json({ error: 'Error update book' });
       } else {
@@ -252,6 +256,7 @@ app.post('/api/updatebook',upload.single('book_image'),async (req, res) => {
       }
   });
 });
+
 // แก้เพิ่ม
   app.post('/api/addbook',upload.single('book_image'),  (req, res) => {
     const { book_name, book_detail } = req.body;
