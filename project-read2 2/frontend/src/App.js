@@ -32,6 +32,8 @@ import Editexam from "./admin/editexam";
 import Allarticleadmin from "./admin/allarticleadmin";
 import Creator from "./creator/creator";
 import Allbookcreator from "./creator/allbookcreator";
+import Articleedit from "./creator/articleedit";
+import Detailedit from "./creator/detailedit";
 import Edituser from "./admin/edituser";
 import { useEffect, useState } from "react";
 
@@ -219,6 +221,18 @@ const App = () => {
           path="/Page/creator"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Creator />
+          }
+        />
+        <Route
+          path="/Page/articleedit"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Articleedit />
+          }
+        />
+        <Route
+          path="/Page/detailedit"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Detailedit />
           }
         />
         <Route

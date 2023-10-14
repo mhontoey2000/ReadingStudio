@@ -280,7 +280,7 @@ function Bookdetail(match) {
                                 <h5 className="v-title">{`${index + 1}. ${vocabs.vocabs_name}`}</h5>
                                 <h5 className="v-text">{vocabs.vocabs_detail}</h5>
                               
-                                {["admin", "creater"].includes(usertype) && (
+                                {["admin", "creator"].includes(usertype) && (
                                   <Button
                                     className="btn btn-danger"
                                     onClick={() => deleteVocab(vocabs.vocabs_id)}
@@ -293,7 +293,7 @@ function Bookdetail(match) {
                           ))}
                           </div>
                             <div >
-                              {["admin", "creater"].includes(usertype) && (
+                              {["admin", "creator"].includes(usertype) && (
                       
                                 
                                 <div className="addV">
@@ -312,7 +312,7 @@ function Bookdetail(match) {
 
                         <div className="grid-container" id="myDIV3" style={{ display: visibleDiv === 'ข้อสอบ' ? 'block' : 'none' }}>
                         <div>
-                        {["admin", "creater"].includes(usertype) && (
+                        {["admin", "creator"].includes(usertype) && (
                           <div className="addV">
                             <Link 
                             className="btn btn-warning tc"
@@ -353,7 +353,7 @@ function Bookdetail(match) {
                           </div>
                           
 
-                          {["admin", "creater"].includes(usertype) && (
+                          {["admin", "creator"].includes(usertype) && (
                     <div className="addV" style={{ textAlign: 'center' }}>
                             <Link  
                             style={{ background: 'red'}}

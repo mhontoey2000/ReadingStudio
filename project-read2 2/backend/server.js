@@ -205,6 +205,7 @@ app.get('/api/book', function (req, res) {
       }
     );
 });
+
 app.delete('/api/deletebook/:bookId', function (req, res) {
   const bookid = req.params.bookId;
   console.log('removed book : '+ bookid);
@@ -614,7 +615,53 @@ app.put('/api/userdata', (req, res) => {
   });
 });
 
+app.get('/api/allbookcreator', function (req, res) {
+  const email = req.query.user_email;
 
+  connection.query(
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator,
+            GROUP_CONCAT(article.article_name) AS article_name
+    FROM book
+    LEFT JOIN article ON book.book_id = article.book_id
+    WHERE book.book_creator = ? 
+    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator`,
+    [email],
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      const uniqueBooks = {}; // Store unique books by book_id
+  
+      results.forEach((row) => {
+        const book_id = row.book_id;
+        // If the book is not in the uniqueBooks object, add it
+        if (!uniqueBooks[book_id]) {
+          uniqueBooks[book_id] = {
+            book_id: book_id,
+            book_name: row.book_name,
+            book_detail: row.book_detail,
+            book_image: row.book_image,
+            book_creator: row.book_creator,
+            book_imagedata: null, // Set this to null for now
+            article_name: [],
+          };
+        }
+        // Add the article_name to the book's article_name array
+        if (row.article_name) {
+          uniqueBooks[book_id].article_name.push(row.article_name);
+        }
+      });
+  
+      const bookdata = Object.values(uniqueBooks);
+      console.log(bookdata)
+      res.json(bookdata);
+    }
+  );
+  
+});
 
 app.post('/api/report', (req, res) => {
   const { bookid, articleid, remail, rdetail } = req.body;

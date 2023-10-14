@@ -16,6 +16,7 @@ function Addbook() {
     const [bookName, setBookName] = useState('');
     const [bookDetail, setBookDetail] = useState('');
     const [bookImage, setBookImage] = useState(null);
+    const user = localStorage.getItem('email');
     const history = useHistory();
 
     const addBook = async () => {
@@ -31,6 +32,7 @@ function Addbook() {
           formData.append('book_name', bookName);
           formData.append('book_detail', bookDetail);
           formData.append('book_image', bookImage);
+          formData.append('book_creator',user);
         // Send a POST request to the backend API to add the book
         apiClient
           .post('api/addbook', formData) // Replace '/api/addbook' with your actual API endpoint

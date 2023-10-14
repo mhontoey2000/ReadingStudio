@@ -10,11 +10,12 @@ import "../styles/allbookcreator.css"
 
 function Allbookcreator() {
     const [items, setItems] = useState([]);
-    const [bookid, setBookid] = useState(false);
+    const user = localStorage.getItem('email'); 
 
     useEffect(() => {
-        axios.get('http://localhost:5004/api/abcreator')
+        axios.get('http://localhost:5004/api/allbookcreator?user_email=' + user)
           .then((response) => {
+            console.log(response)
             setItems(response.data);
           })
           .catch((error) => {
@@ -35,7 +36,7 @@ function Allbookcreator() {
                          scope="col" 
                          className='t-size'
                          >
-                            ID
+                            ลำดับ
                         </th>
                         <th 
                          scope="col" 
@@ -75,7 +76,14 @@ function Allbookcreator() {
                         <tr key={book.book_id}>
                             <td>{book.book_id}</td>
                             <td>{book.book_name}</td>
-                            <td>{book.book_detail}</td>
+                            <td>
+                            {book.article_name.map((article, index) => (
+                                <span key={index}>
+                                {article}
+                                {index < book.article_name.length - 1 && ", "} {/* Add a comma if not the last article */}
+                                </span>
+                            ))}
+                            </td>
                             <td>
                                 <img src={book.book_imagedata || book.book_image} width="100" height="100" />
                             </td>
@@ -83,8 +91,8 @@ function Allbookcreator() {
                                 {/* <a href={'/admin/book/edit/' + book.book_id} className="btn btn-primary">Edit</a> */}
                                 <Link 
                                  className="btn btn-warning amt1"
-                                 to={{ pathname: '/Page/editbook', 
-                                 state: { book_id: bookid } }}
+                                 to={{ pathname: '/Page/articleedit', 
+                                 state: { book_id: book.book_id } }}
                                 >
                                  แก้ไข
                                  </Link>

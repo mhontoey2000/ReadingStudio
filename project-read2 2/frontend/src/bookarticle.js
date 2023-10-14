@@ -54,7 +54,7 @@ function Bookarticle({ match }) {
           </div>
 
 
-          {["admin", "creater"].includes(usertype) && (<div>
+          {["admin", "creator"].includes(usertype) && (<div>
                     <div className="btnad d-grid d-md-flex justify-content-md-end">
                       <div key={bookid}>
                         <Link 

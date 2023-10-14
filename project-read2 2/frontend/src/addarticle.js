@@ -91,7 +91,7 @@ function Addarticle() {
             data.append('description', description);
             data.append('image', imageFile);
             data.append('sound', soundFile);
-            
+            console.log(bookid)
             apiClient.post('api/addarticle', data).then((response) => {
               console.log(response.data);
             }).catch((error) => {

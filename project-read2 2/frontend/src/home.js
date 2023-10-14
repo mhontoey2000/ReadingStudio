@@ -43,7 +43,7 @@ function Home() {
                     
                       <Searchbar/>
 
-                    {["admin", "creater"].includes(usertype) && (<div>
+                    {["admin", "creator"].includes(usertype) && (<div>
                     <div className="btnad d-grid d-md-flex justify-content-md-end">
                         <Button 
                           type="button" 
