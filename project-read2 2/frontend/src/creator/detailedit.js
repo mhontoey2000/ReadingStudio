@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import '../styles/bookdetail.css';
 import Header from '../header';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -21,6 +21,7 @@ function Detailedit(match) {
     const [Vitems, setVitems] = useState([]);
     const [bookid, setBookid] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isPlaying, setIsPlaying] = useState(false);
     const [audioUrl, setAudioUrl] = useState(null);
     const [audioRef, setAudioRef] = useState(null);
@@ -31,6 +32,8 @@ function Detailedit(match) {
     const [remail, setRemail] = useState("");
     const [qitems, setqItems] = useState([]);
     const [visibleDiv, setVisibleDiv] = useState('เนื้อหา');
+    const [text, setText] = useState('');
+    const textareaRef = useRef(null);
 
     const handleButtonClick = (divToShow) => {
         setVisibleDiv(divToShow);
@@ -72,6 +75,24 @@ function Detailedit(match) {
             console.error(error);
           });
       }, [articleid]);
+
+      useEffect(() => {
+        // Simulate data retrieval delay
+        setTimeout(() => {
+            if(items[0] != undefined){
+                setText(items[0].article_detail);
+                setIsLoading(false);
+            }
+        }, 2000); // Adjust the delay time as needed
+      }, [items]);
+
+      useEffect(() => {
+        if (!isLoading && textareaRef.current) {
+          // Adjust the height based on content
+          textareaRef.current.style.height = "auto";
+          textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+      }, [text, isLoading]);
     
       useEffect(() => {
         axios.get(`http://localhost:5004/api/exam/${articleid}`)
@@ -248,20 +269,33 @@ function Detailedit(match) {
                     </div> 
 
                 </div>
-            
-                <p className='detailtext'>{article.article_detail}</p>
-                
-                <div className="text-start">
-                    <Link 
-                        className="reporttext"
-                        to={{ pathname: '/Page/reportbook', state: { book_id: bookid,article_id: articleid } }}
-                    >
-                        รายงานเนื้อหา
-                    </Link>
-                </div>
-                                    
+                <textarea
+                    ref={textareaRef}
+                    className=""
+                    style={{
+                    width: "100%",
+                    height: "auto",
+                    overflow: "hidden",
+                    resize: "none",
+                    }}
+                    value={text}
+                ></textarea>
                 </div>
                         
+                <div className="btn-containerr">
+                    <div className="btn-group me-2">
+                        <Button 
+                         className="btn btn-success"
+                         >
+                            บันทึก
+                        </Button>
+                        <Button 
+                         className="btn btn-danger"
+                         >
+                            ยกเลิก
+                        </Button>
+                    </div>
+                </div>
                     
                 </div> 
                 ))}

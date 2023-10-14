@@ -32,6 +32,7 @@ import Editexam from "./admin/editexam";
 import Allarticleadmin from "./admin/allarticleadmin";
 import Creator from "./creator/creator";
 import Allbookcreator from "./creator/allbookcreator";
+import Allexamcreator from "./creator/allexamcreator";
 import Articleedit from "./creator/articleedit";
 import Detailedit from "./creator/detailedit";
 import Edituser from "./admin/edituser";
@@ -241,10 +242,16 @@ const App = () => {
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Edituser />
           }
         />
-                <Route
+        <Route
           path="/Page/allbookcreator"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Allbookcreator />
+          }
+        />
+        <Route
+          path="/Page/allexamcreator"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Allexamcreator />
           }
         />
 

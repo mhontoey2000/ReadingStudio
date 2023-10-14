@@ -279,49 +279,14 @@ function Bookdetail(match) {
                               <div className="vno" key={`vocabs_${index}`}>
                                 <h5 className="v-title">{`${index + 1}. ${vocabs.vocabs_name}`}</h5>
                                 <h5 className="v-text">{vocabs.vocabs_detail}</h5>
-                              
-                                {["admin", "creator"].includes(usertype) && (
-                                  <Button
-                                    className="btn btn-danger"
-                                    onClick={() => deleteVocab(vocabs.vocabs_id)}
-                                  >
-                                    Delete
-                                  </Button>
-                                )}
                               </div>
                             </div>
                           ))}
                           </div>
-                            <div >
-                              {["admin", "creator"].includes(usertype) && (
-                      
-                                
-                                <div className="addV">
-                                  <Link  
-                                  className="btn btn-warning tc"
-                                  to={{ pathname: "/Page/addvocab", state: { book_id: bookid, article_id: articleid } }}
-                                 
-                                  >
-                                    เพิ่มคำศัพท์
-                                  </Link>
-                                </div>
-                                
-                              )}
-                            </div>
                           </div>
 
                         <div className="grid-container" id="myDIV3" style={{ display: visibleDiv === 'ข้อสอบ' ? 'block' : 'none' }}>
                         <div>
-                        {["admin", "creator"].includes(usertype) && (
-                          <div className="addV">
-                            <Link 
-                            className="btn btn-warning tc"
-                            to={{ pathname: "/Page/addexam", state: { book_id: bookid,article_id: articleid } }}
-                            >
-                              เพิ่มข้อสอบ
-                            </Link>
-                          </div>
-                          )}
                               {Array.isArray(qitems) && qitems.map((question, index) => (
                                 <div className="v-item" key={question.question_id}>
                                   <div className="vno" key={`vocabs_${index}`}>
