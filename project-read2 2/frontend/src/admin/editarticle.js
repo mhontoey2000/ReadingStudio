@@ -53,13 +53,31 @@ function Editarticle() {
     };
 
     const setArticleData = (article) => {
-        setBookName(article.book_name);
+        axios.get(`http://localhost:5004/api/book/${article.book_id}`)
+        .then((response) => {
+            const book = response.data;
+            if (book.length > 0) {
+                setBookName(book[0].book_name);
+            } else {
+                console.log("ไม่พบข้อมูลหนังสือสำหรับบทความนี้");
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        });
         setArticleID(article.article_id);
         setArticleName(article.article_name);
         setArticleDetail(article.article_detail);
         setImage(article.article_imagedata);
-        console.log(article.article_sounddata);
-        setAudioUrl(article.article_sounddata);
+        if (article.article_sounddata && article.article_sounddata.type === 'Buffer') {
+            const audioBlob = new Blob([new Uint8Array(article.article_sounddata.data)], { type: 'audio/mpeg' }); // กำหนด MIME type ตามรูปแบบของไฟล์เสียงของคุณ
+            const blobUrl = URL.createObjectURL(audioBlob);
+            setAudioUrl(blobUrl);
+            console.log(article.article_sounddata);
+
+        } else {
+            setAudioUrl(article.article_sounddata);
+        }
     };
 
     const handleAudioPlayback = () => {
@@ -77,7 +95,11 @@ function Editarticle() {
         setSelectedImageFile(selectedImage);
         setImage(URL.createObjectURL(selectedImage));
     };
-
+    const handleSoundChange = (event) => {
+        const selectedSound = event.target.files[0];
+        setAudioFile(selectedSound);
+        setAudioUrl(URL.createObjectURL(selectedSound));
+    };
     const playAudio = () => {
         if (isPlaying) {
             setIsPlaying(false);
@@ -150,6 +172,7 @@ function Editarticle() {
                                     id="bookname"
                                     value={bookName}
                                     onChange={e => setBookName(e.target.value)}
+                                     disabled readOnly
                                 />
                             </div>
 
@@ -196,6 +219,16 @@ function Editarticle() {
                                     )}
                                 </div>
                             </div>
+                            <div className="mb-3">
+                                    <label htmlFor="sound">เสียงของเนื้อหา</label>
+                                    <input
+                                        type="file"
+                                        className="form-control"
+                                        id="sound"
+                                        accept="audio/*"
+                                        onChange={handleSoundChange}
+                                    />
+                                </div>
                             <div className='d-flex justify-content-center align-items-center'>
                                 {audioUrl && (
                                     <div>
@@ -207,13 +240,13 @@ function Editarticle() {
                                     </div>
                                 )}
                             </div>
-                            <div className="mb-3">
+                            {/* <div className="mb-3">
                                 <label>หรือลากและวางไฟล์เสียงที่นี่</label>
                                 <div {...getRootProps()} className="dropzone">
                                     <input {...getInputProps()} />
                                     <p>ลากและวางไฟล์เสียงที่นี่หรือคลิกเพื่อเลือก</p>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="btn-containerr">
                                 <div className="btn-group me-2">
                                     <Button

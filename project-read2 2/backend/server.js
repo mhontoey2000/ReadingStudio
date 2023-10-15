@@ -205,6 +205,25 @@ app.get('/api/book', function (req, res) {
       }
     );
 });
+app.get('/api/book/:bookId', function (req, res) {
+  const bookid = req.params.bookId;
+  connection.query(
+      'SELECT * FROM book WHERE book_id = ?',[bookid],
+      function(err, results) {
+        const bookdata = results.map((book) => {
+          const img = helper.convertBlobToBase64(book.book_imagedata);
+          return {
+            ...book,
+            book_imagedata: img,
+          };
+        });
+        // console.log(results);
+        console.log(bookdata);
+        res.json(bookdata);
+        // res.json(results);
+      }
+    );
+});
 app.delete('/api/deletebook/:bookId', function (req, res) {
   const bookid = req.params.bookId;
   console.log('removed book : '+ bookid);
