@@ -4,6 +4,7 @@ import Header from './header';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import './styles/profile.css';
 
 function Profile() {
@@ -13,6 +14,7 @@ function Profile() {
   const [lastname, setLastname] = useState("");
   const [usertype, setUsertype] = useState("");
   const [status, setStatus] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     axios.get('http://localhost:5004/api/userdata?user_email=' + user)
@@ -38,8 +40,11 @@ function Profile() {
 
   const editProfile = (e) => {
     e.preventDefault();
-    // send data to api
-    fetch('http://localhost:5004/api/userdata', {
+    setShowModal(true);
+    }
+
+    const handleSaveChangesConfirmed = () => {
+      fetch('http://localhost:5004/api/userdata', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -53,11 +58,11 @@ function Profile() {
     })
         .then(response => response)
         .then(data => {
-            alert('Profile updated successfully');
             window.location.href = '/Page/profile';
             
         })
         .catch(error => console.error(error));
+    
     }
 
     const cancelReport = () => {
@@ -138,6 +143,24 @@ function Profile() {
         </form>
       </div>
     </div>
+
+    <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Save Changes</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to save the changes?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleSaveChangesConfirmed}>
+            Save Changes
+          </Button>
+          <Button variant="warning" style={{ color: "white" }} onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </>
   );
 }
