@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import { useParams, useHistory } from "react-router-dom";
+import { useDropzone } from 'react-dropzone'; // เพิ่มการนำเข้า Dropzone
 import "../styles/editall.css";
 
 function Editarticle() {
@@ -11,6 +12,7 @@ function Editarticle() {
     const { articleid } = useParams();
 
     const [bookName, setBookName] = useState("");
+    const [articleId, setArticleID] = useState("");
     const [articleName, setArticleName] = useState("");
     const [articleDetail, setArticleDetail] = useState("");
     const [image, setImage] = useState("");
@@ -19,6 +21,15 @@ function Editarticle() {
     const [audioRef, setAudioRef] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
+    const [audioFile, setAudioFile] = useState(null); // เพิ่ม state สำหรับไฟล์เสียงใหม่
+
+    const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+        accept: 'audio/*',
+        onDrop: (acceptedFiles) => {
+            setAudioFile(acceptedFiles[0]);
+            setAudioUrl(URL.createObjectURL(acceptedFiles[0]));
+        },
+    });
 
     useEffect(() => {
         fetchArticleData();
@@ -43,10 +54,12 @@ function Editarticle() {
 
     const setArticleData = (article) => {
         setBookName(article.book_name);
+        setArticleID(article.article_id);
         setArticleName(article.article_name);
         setArticleDetail(article.article_detail);
         setImage(article.article_imagedata);
-        playAudio(article.article_sounddata,article.article_sounds);
+        console.log(article.article_sounddata);
+        setAudioUrl(article.article_sounddata);
     };
 
     const handleAudioPlayback = () => {
@@ -65,15 +78,18 @@ function Editarticle() {
         setImage(URL.createObjectURL(selectedImage));
     };
 
-    const playAudio = async (audioData,audiopath) => {
+    const playAudio = () => {
         if (isPlaying) {
             setIsPlaying(false);
-            return;
+            if (audioRef) {
+                audioRef.pause();
+            }
+        } else {
+            setIsPlaying(true);
+            if (audioRef) {
+                audioRef.play();
+            }
         }
-    
-        const blob = new Blob([new Uint8Array(audioData.data)], { type: 'audio/mpeg' });
-        const blobUrl = URL.createObjectURL(blob);
-        setAudioUrl(blobUrl);
     };
 
     const handleAudioRef = (ref) => {
@@ -88,9 +104,32 @@ function Editarticle() {
     };
 
     const editArticle = () => {
-        // Add code for uploading audio files or remove unrelated parts
-    };
+        const formData = new FormData();
+        formData.append("articleId", articleId);
+        formData.append("chapter", articleName);
+        formData.append("description", articleDetail);
+        formData.append("level", articleName);
 
+        if (selectedImageFile) {
+            formData.append("image", selectedImageFile);
+        }
+
+        if (audioFile) {
+            formData.append("sound", audioFile);
+        }
+
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
+
+        axios.post(`http://localhost:5004/api/updatearticle`, formData)
+            .then((response) => {
+                console.log('Article update successful', response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
 
     return (
         <div>
@@ -167,6 +206,13 @@ function Editarticle() {
                                         />
                                     </div>
                                 )}
+                            </div>
+                            <div className="mb-3">
+                                <label>หรือลากและวางไฟล์เสียงที่นี่</label>
+                                <div {...getRootProps()} className="dropzone">
+                                    <input {...getInputProps()} />
+                                    <p>ลากและวางไฟล์เสียงที่นี่หรือคลิกเพื่อเลือก</p>
+                                </div>
                             </div>
                             <div className="btn-containerr">
                                 <div className="btn-group me-2">

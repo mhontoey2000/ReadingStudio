@@ -336,7 +336,7 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
               article_imagedata: img,
             };
           });
-          console.log(articledata);
+          // console.log(articledata);
           res.json(articledata);
           // res.json(results);
         }
@@ -877,4 +877,73 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
       }
     });
   });
+  
+});
+app.post('/api/updatearticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {
+  const articleId = req.body.articleId;
+  const chapter = req.body.chapter;
+  const level = req.body.level;
+  const description = req.body.description;
+  const imageFile = req.files['image'] ?  req.files['image'][0] : null; // ข้อมูลรูปภาพในรูปแบบ Buffer
+  const soundFile = req.files['sound'] ?  req.files['sound'][0] : null; // ข้อมูลเสียงในรูปแบบ Buffer
+
+  console.log(articleId,chapter, level, description, imageFile, soundFile);
+  
+  let imagepath = null;
+  let soundpath = null;
+
+  let imageByte = null;
+  let soundByte = null;
+  connection.query("SELECT * FROM article WHERE article_id = ?", [articleId], async (err, results) => {
+    if (err) {
+        console.error('Error fetching article data:', err);
+        res.status(500).json({ error: 'Error fetching article data' });
+        return;
+    }
+    console.log('find article id ' + articleId);
+
+    if (results.length > 0) {
+        let updateValues = [chapter, level, description];
+        let updateQuery = `UPDATE article SET article_name=?,article_level=?,article_detail=?`;
+
+        if (imageFile) {
+            imageByte = await helper.readFileAsync(imageFile.path);
+            const img = helper.generateUniqueFileName('picture');
+            imagepath = img.pathimage;
+            await helper.writeFileAsync(img.fileName, imageByte);
+            fs.unlinkSync(imageFile.path);
+
+            updateQuery += ",article_images=? ,article_imagedata=?";
+            updateValues.push(imagepath,imageByte);
+        }
+
+        if (soundFile) {
+            soundByte = await helper.readFileAsync(soundFile.path);
+            const sod = helper.generateUniqueFileName('sound');
+            soundpath = sod.pathimage;
+            await helper.writeFileAsync(sod.fileName, soundByte);
+            fs.unlinkSync(soundFile.path);
+
+            updateQuery += ",article_sounds=?,article_sounddata=?";
+            updateValues.push(soundpath,soundByte);
+        }
+        updateQuery += " WHERE article_id=?"
+        updateValues.push(articleId);
+
+        connection.query(updateQuery, updateValues, async (err, updateResult) => {
+            if (err) {
+                console.error('Error updating article data:', err);
+                res.status(500).json({ error: 'Error updating article data' });
+                return;
+            }
+
+            res.status(200).send('Article updated successfully');
+        });
+    } else {
+        res.status(404).json({ error: 'Article not found' });
+    }
+});
+
+  
+  
 });
