@@ -75,7 +75,7 @@ function Bookarticle({ match }) {
           <div>
             <div className="grid-container">
             {filteredItems.length === 0 ? (
-                <p>No articles found or incorrect name.</p>
+                <p>ไม่มีรายการบทของหนังสือที่คุณค้นหา หรือคุณเขียนชื่อบทของหนังสือผิด.</p>
               ) : (
                 filteredItems.map((article) => (
                 <div className="grid-item card" key={article.article_id}>

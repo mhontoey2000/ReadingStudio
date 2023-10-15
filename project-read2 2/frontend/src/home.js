@@ -43,7 +43,7 @@ function Home() {
         
             <section>
                 <h1>บทความ</h1>
-                
+
                 <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
 
                 {["admin", "creator"].includes(usertype) && (
@@ -62,7 +62,7 @@ function Home() {
 
                 <div className="grid-container">
                 {filteredItems.length === 0 ? (
-                        <p>ไม่มีรายการที่คุณค้นหา หรือคุณเขียนผิด.</p>
+                        <p>ไม่มีรายการหนังสือที่คุณค้นหา หรือคุณเขียนชื่อหนังสือผิด.</p>
                     ) : (
                         filteredItems.map((book) => (
                             <div className="grid-item card" key={book.book_id}>

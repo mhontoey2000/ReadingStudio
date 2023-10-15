@@ -16,11 +16,14 @@ function Searchbar(props) {
 
     return (
         <div className="input-wrapper">
-            <input
-                placeholder="ค้นหา"
-                value={input}
-                onChange={handleInputChange}
-            />
+            <div className="search-inner">
+                <input
+                    placeholder="ค้นหา"
+                    value={input}
+                    className="form-control"
+                    onChange={handleInputChange}
+                />
+            </div>
         </div>
     );
 }
