@@ -42,17 +42,13 @@ function Bookarticle({ match }) {
   
     return (
       <div>
-
           <Header />
-
-
         <section>
           <h1>ตอนของบทความ</h1>
 
           <div className="searchbar">
             <Searchbar/>
           </div>
-
 
           {["admin", "creater"].includes(usertype) && (<div>
                     <div className="btnad d-grid d-md-flex justify-content-md-end">
@@ -78,6 +74,8 @@ function Bookarticle({ match }) {
                   <img
                     className="card-img-top img-fluid simg"
                     src={article.article_imagedata || article.article_images || 'url_to_default_image'}
+                    style={{ maxWidth: '100%', maxHeight: '200px' }}
+
                   />
                   <h4 className="card-title" style={{ fontWeight:"bold"}}>{article.article_name}</h4>
                   <span>{article.book_detail}</span>

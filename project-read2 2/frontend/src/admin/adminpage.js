@@ -28,7 +28,7 @@ function Adminpage() {
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./allbookadmin"
               >
-                <i className="bi bi-book-fill"></i> จัดการหนังสือ
+                <i className="bi bi-book-fill"></i> จัดการบทความ
               </Button>
 
               <Button
@@ -36,7 +36,7 @@ function Adminpage() {
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./allarticleadmin"
               >
-                <i className="bi bi-book-fill"></i> จัดการบท
+                <i className="bi bi-book-fill"></i> จัดการตอนของบทความ
               </Button>
 
               <Button

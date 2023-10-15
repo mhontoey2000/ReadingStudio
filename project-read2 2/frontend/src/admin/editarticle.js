@@ -97,14 +97,14 @@ function Editarticle() {
             <Header />
 
             <section>
-                <h1>แก้ไขบท</h1>
+                <h1>แก้ไขตอนของบทความ</h1>
 
                 <div className="grid-containerE">
                     <div className="fgE">
                         <form className="form-group">
-                            <h2>กรุณากรอกรายละเอียดบทที่ต้องการแก้ไข</h2>
+                            <h2>กรุณากรอกรายละเอียดตอนที่ต้องการแก้ไข</h2>
                             <div className="mb-3">
-                                <label htmlFor="bookname">ชื่อหนังสือ</label>
+                                <label htmlFor="bookname">ชื่อบทความ</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -115,7 +115,7 @@ function Editarticle() {
                             </div>
 
                             <div className="mb-3">
-                                <label htmlFor="articlename">ชื่อบท</label>
+                                <label htmlFor="articlename">ชื่อตอน</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -146,6 +146,7 @@ function Editarticle() {
                                     accept="image/*"
                                     onChange={handleImageChange}
                                 />
+                                <p></p>
                                 <div className='d-flex justify-content-center align-items-center'>
                                     {image && (
                                         <img

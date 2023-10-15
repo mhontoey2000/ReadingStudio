@@ -32,7 +32,7 @@ const Allbookadmin = () => {
     const deleteBookConfirmed = (bookId) => {
         axios.delete(`http://localhost:5004/api/deletebook/${bookId}`)
             .then(() => {
-                console.log(`หนังสือที่มี ID ${bookId} ถูกลบแล้ว.`);
+                console.log(`บทความที่มี ID ${bookId} ถูกลบแล้ว.`);
                 // Refresh the book list after deletion
                 axios.get('http://localhost:5004/api/book')
                     .then((response) => {
@@ -43,7 +43,7 @@ const Allbookadmin = () => {
                     });
             })
             .catch((error) => {
-                console.error(`เกิดข้อผิดพลาดในการลบหนังสือที่มี ID ${bookId}: ${error}`);
+                console.error(`เกิดข้อผิดพลาดในการลบบทความที่มี ID ${bookId}: ${error}`);
             });
     };
 
@@ -52,7 +52,7 @@ const Allbookadmin = () => {
             <Header />
             <section>
                 <div className="grid-containerr">
-                    <h1>หนังสือทั้งหมด</h1>
+                    <h1>บทความทั้งหมด</h1>
                     <table className="table table-hover">
                         <thead>
                             <tr className="head" style={{ textAlign: "center" }}>
@@ -66,19 +66,19 @@ const Allbookadmin = () => {
                                     scope="col"
                                     className='t-size'
                                 >
-                                    หนังสือ
+                                    บทความ
                                 </th>
                                 <th
                                     scope="col"
                                     className='t-size'
                                 >
-                                    คำอธิบายหนังสือ
+                                    คำอธิบายบทความ
                                 </th>
                                 <th
                                     scope="col"
                                     className='t-size'
                                 >
-                                    รูปหน้าปกหนังสือ
+                                    รูปหน้าปกบทความ
                                 </th>
                                 <th
                                     scope="col"
@@ -133,7 +133,7 @@ const Allbookadmin = () => {
                 </Modal.Header>
                 <Modal.Body>
                     {bookToDelete && (
-                        <p>คุณแน่ใจหรือไม่ที่ต้องการลบหนังสือ: {bookToDelete.book_name}?</p>
+                        <p>คุณแน่ใจหรือไม่ที่ต้องการลบบทความ: {bookToDelete.book_name}?</p>
                     )}
                 </Modal.Body>
                 <Modal.Footer>

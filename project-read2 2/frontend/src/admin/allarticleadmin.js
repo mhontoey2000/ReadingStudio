@@ -31,7 +31,7 @@ const Allarticleadmin = () => {
     const deleteArticleConfirmed = (articleId) => {
         axios.delete(`http://localhost:5004/api/deletearticle/${articleId}`)
             .then(() => {
-                console.log(`บทความที่มี ID ${articleId} ถูกลบแล้ว.`);
+                console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
                 // Refresh the article list after deletion
                 axios.get('http://localhost:5004/api/article')
                     .then((response) => {
@@ -42,7 +42,7 @@ const Allarticleadmin = () => {
                     });
             })
             .catch((error) => {
-                console.error(`เกิดข้อผิดพลาดในการลบบทความที่มี ID ${articleId}: ${error}`);
+                console.error(`เกิดข้อผิดพลาดในการลบตอนที่มี ID ${articleId}: ${error}`);
             });
     };
 
@@ -51,13 +51,13 @@ const Allarticleadmin = () => {
             <Header />
             <section>
                 <div className="grid-containerr">
-                    <h1>บททั้งหมด</h1>
+                    <h1>ตอนทั้งหมด</h1>
                     <table className="table table-hover">
                         <thead>
                             <tr className="head" style={{ textAlign: "center" }}>
                                 <th scope="col" className='t-size'>ID</th>
-                                <th scope="col" className='t-size'>ชื่อบท</th>
-                                <th scope="col" className='t-size'>รูปหน้าปกหนังสือ</th>
+                                <th scope="col" className='t-size'>ชื่อตอน</th>
+                                <th scope="col" className='t-size'>รูปหน้าปกตอน</th>
                                 <th scope="col" className='t-size'>แก้ไข</th>
                                 <th scope="col" className='t-size'>ลบ</th>
                             </tr>
@@ -68,7 +68,8 @@ const Allarticleadmin = () => {
                                     <td>{article.article_id}</td>
                                     <td>{article.article_name}</td>
                                     <td>
-                                        <img src={article.article_imagedata || article.article_images} alt="article_image" width="100" height="100" />
+                                        <img src={article.article_imagedata || article.article_images} 
+                                        alt="article_image" width="120" height="100" />
                                     </td>
                                     <td>
                                         <Link 
@@ -100,7 +101,7 @@ const Allarticleadmin = () => {
                 </Modal.Header>
                 <Modal.Body>
                     {articleToDelete && (
-                        <p>คุณแน่ใจหรือไม่ที่ต้องการลบบทความ: {articleToDelete.article_name}?</p>
+                        <p>คุณแน่ใจหรือไม่ที่ต้องการลบตอน: {articleToDelete.article_name}?</p>
                     )}
                 </Modal.Body>
                 <Modal.Footer>

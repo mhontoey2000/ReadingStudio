@@ -79,14 +79,14 @@ function Editbook() {
           <Header />
 
           <section>
-            <h1>แก้ไขหนังสือ</h1>
+            <h1>แก้ไขบทความ</h1>
 
             <div className="grid-containerE">
               <div className="fgE">
                 <form className="form-group">
-                  <h2>กรุณากรอกรายละเอียดหนังสือที่ต้องการแก้ไข</h2>
+                  <h2>กรุณากรอกรายละเอียดบทความที่ต้องการแก้ไข</h2>
                   <div className="mb-3">
-                    <label htmlFor="bookname">ชื่อหนังสือ</label>
+                    <label htmlFor="bookname">ชื่อบทความ</label>
                     <input
                       type="text"
                       className="form-control"
