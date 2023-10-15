@@ -20,7 +20,7 @@ function Searchbar(props) {
                 <input
                     placeholder="ค้นหา"
                     value={input}
-                    className="form-control"
+                    className="form-control1"
                     onChange={handleInputChange}
                 />
             </div>
