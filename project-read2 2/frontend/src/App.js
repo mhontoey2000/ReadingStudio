@@ -10,11 +10,9 @@ import Login from "./login";
 import Register from "./register";
 import Bookdetail from "./bookdetail";
 import Bookarticle from "./bookarticle";
-import Exampage from "./exampage";
 import Profile from "./profile";
 import One from "./one";
 import Allbookadmin from "./admin/allbookadmin";
-import Typebook from "./typebook";
 import Addbook from "./addbook";
 import Adminpage from "./admin/adminpage";
 import Allexamadmin from "./admin/allexamadmin";
@@ -111,12 +109,6 @@ const App = () => {
           }
         />
         <Route
-          path="/Page/exampage"
-          render={() =>
-            !isAuthenticated ? <Redirect to="/Page/one" /> : <Exampage />
-          }
-        />
-        <Route
           path="/Page/profile"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Profile />
@@ -132,12 +124,6 @@ const App = () => {
           path="/Page/alluseradmin"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Alluseradmin />
-          }
-        />
-        <Route
-          path="/Page/typebook"
-          render={() =>
-            !isAuthenticated ? <Redirect to="/Page/one" /> : <Typebook />
           }
         />
         <Route
