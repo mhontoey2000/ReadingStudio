@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './styles/addbook.css';
 import Header from './header';
 // import "bootstrap/dist/css/bootstrap.min.css";
-import { AudioOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-import { Input, Space } from 'antd';
-import axios from 'axios';
+// import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router-dom';
 import { apiClient , convertSoundToBase64,convertImageToBase64 } from './config';
+import Modal from 'react-bootstrap/Modal';
 
 
 function Addbook() {
@@ -18,43 +16,79 @@ function Addbook() {
     const [bookImage, setBookImage] = useState(null);
     const user = localStorage.getItem('email');
     const history = useHistory();
+    const [showModal, setShowModal] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
 
-    const addBook = async () => {
-        // Create a FormData object to send the data as a multipart/form-data request
-        try{
-        // const data = {
-        //   book_name: bookName,
-        //   book_detail: bookDetail,
-        //   book_image: bookImage ? await convertImageToBase64(bookImage) : null
-        // };
-        // console.log(data.book_image)
-        const formData = new FormData();
-          formData.append('book_name', bookName);
-          formData.append('book_detail', bookDetail);
-          formData.append('book_image', bookImage);
-          formData.append('book_creator',user);
-        // Send a POST request to the backend API to add the book
-        apiClient
-          .post('api/addbook', formData) // Replace '/api/addbook' with your actual API endpoint
-          .then((response) => {
-            // Handle a successful response here (e.g., show a success message)
-            alert('Book added successfully');
-            console.log('Book added successfully');
-            // Optionally, you can clear the input fields and image after adding the book
-            setBookName('');
-            setBookDetail('');
-            setBookImage(null);
-          })
-          .catch((error) => {
-            // Handle errors here (e.g., show an error message)
-            console.error('Error adding book:', error);
-          });
-        }
-        catch(err)
-        {
-          console.log(err);
-        }
-      };
+    // const addBook = async () => {
+    //     // Create a FormData object to send the data as a multipart/form-data request
+    //     try{
+    //     // const data = {
+    //     //   book_name: bookName,
+    //     //   book_detail: bookDetail,
+    //     //   book_image: bookImage ? await convertImageToBase64(bookImage) : null
+    //     // };
+    //     // console.log(data.book_image)
+    //     const formData = new FormData();
+    //       formData.append('book_name', bookName);
+    //       formData.append('book_detail', bookDetail);
+    //       formData.append('book_image', bookImage);
+    //       formData.append('book_creator',user);
+    //     // Send a POST request to the backend API to add the book
+    //     apiClient
+    //       .post('api/addbook', formData) // Replace '/api/addbook' with your actual API endpoint
+    //       .then((response) => {
+    //         // Handle a successful response here (e.g., show a success message)
+    //         alert('Book added successfully');
+    //         console.log('Book added successfully');
+    //         // Optionally, you can clear the input fields and image after adding the book
+    //         setBookName('');
+    //         setBookDetail('');
+    //         setBookImage(null);
+    //       })
+    //       .catch((error) => {
+    //         // Handle errors here (e.g., show an error message)
+    //         console.error('Error adding book:', error);
+    //       });
+    //     }
+    //     catch(err)
+    //     {
+    //       console.log(err);
+    //     }
+    //   };
+    
+    const handleSubmit = (e) => {
+      // Show the confirmation modal
+      setShowModal(true);
+      e.preventDefault()
+    };
+  
+    const handleConfirmed = () => {
+      // Close the confirmation modal
+      setShowModal(false);
+  
+      // Now, proceed to add the book
+      // Create a FormData object to send the data as a multipart/form-data request
+      const formData = new FormData();
+      formData.append('book_name', bookName);
+      formData.append('book_detail', bookDetail);
+      formData.append('book_image', bookImage);
+      formData.append('book_creator', user);
+  
+      // Send a POST request to the backend API to add the book
+      apiClient
+        .post('api/addbook', formData) // Replace '/api/addbook' with your actual API endpoint
+        .then((response) => {
+
+          // Close the confirmation modal
+          setShowModal(false);
+          // Show the success message modal
+          setSuccessModal(true);
+        })
+        .catch((error) => {
+          // Handle errors here (e.g., show an error message)
+          console.error('Error adding book:', error);
+        });
+    };
     
       const handleImageChange = (event) => {
         // Handle the image selection here and update the bookImage state
@@ -64,6 +98,12 @@ function Addbook() {
 
     const cancelBook = () => {
         history.goBack();
+    }
+
+    const handleSuccessModalOK = () => {
+      setSuccessModal(false);
+      //window.location.reload();
+      history.goBack();
     }
 
 
@@ -78,7 +118,7 @@ function Addbook() {
 
                 <div className="grid-containerr">
                       <div className="fg"> 
-                      <form className="form-group">
+                      <form className="form-group"  onSubmit={handleSubmit}>
                           <h2>กรุณากรอกรายละเอียดบทความ</h2>
                                 <div className="mb-3">
                                     <label htmlFor="name">ชื่อบทความ</label>
@@ -106,6 +146,7 @@ function Addbook() {
                                       className="form-control"
                                       id="bookimage"
                                       accept="image/*"
+                                      required
                                       onChange={handleImageChange}
                                     />
                                     {bookImage && (
@@ -148,7 +189,8 @@ function Addbook() {
                                         <Button 
                                         
                                          className="btn1 btn-primary"
-                                         onClick={addBook}
+                                         type="submit"  // Use type="button" to prevent form submission
+                                         //onClick={addBook}
                                         >
                                             ยืนยัน
                                         </Button>
@@ -161,8 +203,40 @@ function Addbook() {
         </div>
 
 
-    </section>        
+    </section>   
+
+    <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Save Changes</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          คุณต้องการสร้างบทความใช่ไหม?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleConfirmed}>
+            ตกลง
+          </Button>
+          <Button variant="warning" style={{ color: "white" }} onClick={() => setShowModal(false)}>
+            ยกเลิก
+          </Button>
+        </Modal.Footer>
+      </Modal>     
     
+      <Modal show={successModal} onHide={() => setSuccessModal(false)}>
+        <Modal.Header closeButton onClick={handleSuccessModalOK}>
+          <Modal.Title>Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Book added successfully</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={handleSuccessModalOK}
+          >
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      
     </div>
   )
 }

@@ -213,7 +213,7 @@ app.delete('/api/deletebook/:bookId', function (req, res) {
   connection.query(
       'DELETE FROM book WHERE book_id = ?',[bookid],
       function(err, results) {
-        if (err) {s
+        if (err) {
           console.error('Error removed book:', err);
           res.status(500).json({ error: 'Error removed book' });
       } else {
@@ -225,7 +225,7 @@ app.delete('/api/deletebook/:bookId', function (req, res) {
 });
 // แก้เพิ่ม
   app.post('/api/addbook',upload.single('book_image'),  (req, res) => {
-    const { book_name, book_detail } = req.body;
+    const { book_name, book_detail, book_creator } = req.body;
     console.log(book_name);
     console.log(book_detail);
     const fs = require('fs');
@@ -274,11 +274,12 @@ app.delete('/api/deletebook/:bookId', function (req, res) {
       const book_id = `book${String(newNumber).padStart(3, '0')}`;
       console.log(book_id);
 
-      connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata) VALUES (?, ?, ?, ?,?)", 
-      [book_id, book_name, book_detail,pathimage,binaryData], 
+      connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata, book_creator) VALUES (?, ?, ?, ?, ?, ?)", 
+      [book_id, book_name, book_detail,pathimage,binaryData,book_creator], 
       (err, result) => {
-          if (err) {s
+          if (err) {
               console.error('Error adding book:', err);
+              console.log(book_creator)
               res.status(500).json({ error: 'Error adding book' });
           } else {
               console.log('Book added successfully');

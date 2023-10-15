@@ -149,7 +149,7 @@ function Profile() {
           <Modal.Title>Confirm Save Changes</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to save the changes?
+          คุณต้องการบันทึกการเปลี่ยนแปลงใช่ไหม?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleSaveChangesConfirmed}>
