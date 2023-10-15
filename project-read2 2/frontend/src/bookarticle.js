@@ -17,7 +17,8 @@ function Bookarticle({ match }) {
     const location = useLocation();
     const bookid = location.state.book_id;
     const user = localStorage.getItem('email');
-    const [usertype, setUsertype] = useState("")
+    const [usertype, setUsertype] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
     // console.log(bookid)
 
     useEffect(() => {
@@ -32,13 +33,16 @@ function Bookarticle({ match }) {
         axios.get(`http://localhost:5004/api/article/${bookid}`)
           .then((response) => {
             setItems(response.data);
-            console.log(response.data);
+            // console.log(response.data);
           })
           .catch((error) => {
             console.error(error);
           });
       }, [bookid]);
 
+      const filteredItems = items.filter((article) => {
+        return article.article_name.includes(searchTerm);
+    });
   
     return (
       <div>
@@ -49,10 +53,7 @@ function Bookarticle({ match }) {
         <section>
           <h1>ตอนของบทความ</h1>
 
-          <div className="searchbar">
-            <Searchbar/>
-          </div>
-
+            <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)}/>
 
           {["admin", "creator"].includes(usertype) && (<div>
                     <div className="btnad d-grid d-md-flex justify-content-md-end">
@@ -73,7 +74,10 @@ function Bookarticle({ match }) {
           
           <div>
             <div className="grid-container">
-              {items.map((article) => (
+            {filteredItems.length === 0 ? (
+                <p>No articles found or incorrect name.</p>
+              ) : (
+                filteredItems.map((article) => (
                 <div className="grid-item card" key={article.article_id}>
                   <img
                     className="card-img-top img-fluid simg"
@@ -88,7 +92,8 @@ function Bookarticle({ match }) {
                     อ่าน
                   </Link>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </section>

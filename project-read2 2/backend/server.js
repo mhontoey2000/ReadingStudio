@@ -356,29 +356,7 @@ app.delete('/api/deletebook/:bookId', function (req, res) {
       }
     );
   });
-  
 
-app.get('/api/articledetail/:id', function (req, res) {
-  const article_id = req.params.id;
-  const searchTerm = req.query.q;
-  const sql = `SELECT * FROM articles WHERE article_name LIKE '%${searchTerm}%'`;
-   connection.query(
-       `SELECT * FROM article WHERE article_id = ?;`,
-       [article_id],
-       function(err, results) {
-        const articlesWithImages = results.map((article) => {
-          const img = helper.convertBlobToBase64(article.article_imagedata);
-          return {
-            ...article,
-            article_imagedata: img,
-          };
-        });
-        console.log(articlesWithImages);
-        res.json(articlesWithImages);
-        //  res.json(results);
-       }
-     );
- });
 
  app.get('/api/exam', function (req, res) {
    connection.query(
