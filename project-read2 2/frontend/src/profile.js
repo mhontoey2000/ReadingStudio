@@ -65,7 +65,7 @@ function Profile() {
     
     }
 
-    const cancelReport = () => {
+    const cancelProfile = () => {
       history.goBack();
   }
 
@@ -134,7 +134,7 @@ function Profile() {
               <Button 
                type="submit" 
                className="btn1 btn-warning"
-               onClick={cancelReport}
+               onClick={cancelProfile}
               >
                   ยกเลิก
               </Button>

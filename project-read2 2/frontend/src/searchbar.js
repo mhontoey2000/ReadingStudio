@@ -18,7 +18,7 @@ function Searchbar(props) {
         <div className="input-wrapper">
             <div className="search-inner">
                 <input
-                    placeholder="ค้นหา"
+                    placeholder="ค้นหาชื่อหนังสือ"
                     value={input}
                     className="form-control1"
                     onChange={handleInputChange}

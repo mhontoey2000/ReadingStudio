@@ -6,11 +6,12 @@ import Header from '../header';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import "../styles/allbookcreator.css"
-
+import Searchbar from "../searchbar";
 
 function Allbookcreator() {
     const [items, setItems] = useState([]);
-    const user = localStorage.getItem('email'); 
+    const user = localStorage.getItem('email');
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         axios.get('http://localhost:5004/api/allbookcreator?user_email=' + user)
@@ -22,98 +23,78 @@ function Allbookcreator() {
             console.error(error);
           });
       }, []);
-      
-  return (
-    <div>
-        <Header />
+
+    const filteredItems = items.filter((book) => {
+        return book.book_name.includes(searchTerm);
+    });
+
+    return (
+        <div>
+            <Header />
             <section>
-            <div className="grid-containerr">
-            <h1>บทความทั้งหมดของฉัน</h1>
-            <table className="table table-hover">
-                <thead>
-                    <tr className="head" style={{ textAlign: "center"}}>
-                        <th 
-                         scope="col" 
-                         className='t-size'
-                         >
-                            ลำดับ
-                        </th>
-                        <th 
-                         scope="col" 
-                         className='t-size'
-                         >
-                            หนังสือ
-                        </th>
-                        <th 
-                         scope="col" 
-                         className='t-size'
-                         >
-                            คำอธิบายหนังสือ
-                        </th>
-                        <th
-                         scope="col" 
-                         className='t-size'
-                         >
-                            รูปหน้าปกหนังสือ
-                        </th>
-                        <th 
-                         scope="col" 
-                         className='t-size'
-                         >
-                            แก้ไข
-                        </th>
-                        <th
-                         scope="col" 
-                         className='t-size'
-                         >
-                            ลบ
-                        </th>
+                <div className="grid-containerr">
+                    <h1>บทความทั้งหมดของฉัน</h1>
 
-                    </tr>
-                </thead>
-                <tbody className="table-group-divider">
-                    {items.map((book) => (
-                        <tr key={book.book_id}>
-                            <td>{book.book_id}</td>
-                            <td>{book.book_name}</td>
-                            <td>
-                            {book.article_name.map((article, index) => (
-                                <span key={index}>
-                                {article}
-                                {index < book.article_name.length - 1 && ", "} {/* Add a comma if not the last article */}
-                                </span>
-                            ))}
-                            </td>
-                            <td>
-                                <img src={book.book_imagedata || book.book_image} width="100" height="100" />
-                            </td>
-                            <td>
-                                {/* <a href={'/admin/book/edit/' + book.book_id} className="btn btn-primary">Edit</a> */}
-                                <Link 
-                                 className="btn btn-warning amt1"
-                                 to={{ pathname: '/Page/articleedit', 
-                                 state: { book_id: book.book_id } }}
-                                >
-                                 แก้ไข
-                                 </Link>
-                            </td>
-                            <td>
-                                <Button
-                                 className="btn btn-danger amt2" 
-                                 //onClick={() => deleteBook(book.book_id)}
-                                 >
-                                    Delete
-                                </Button>
-                            </td>
-                        </tr>
-                    ))}
+                    <div style={{ padding: "10px" }}>
+                        <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+                    </div>
 
-                </tbody>
-            </table>
-            </div>
+                    <table className="table table-hover">
+                        <thead>
+                            <tr className="head" style={{ textAlign: "center"}}>
+                                <th scope="col" className='t-size'>ลำดับ</th>
+                                <th scope="col" className='t-size'>หนังสือ</th>
+                                <th scope="col" className='t-size'>คำอธิบายหนังสือ</th>
+                                <th scope="col" className='t-size'>รูปหน้าปกหนังสือ</th>
+                                <th scope="col" className='t-size'>แก้ไข</th>
+                                <th scope="col" className='t-size'>ลบ</th>
+                            </tr>
+                        </thead>
+                        <tbody className="table-group-divider">
+                            {filteredItems.length === 0 ? (
+                                <tr>
+                                <td colSpan="6">
+                                  ไม่มีรายการบทของหนังสือที่คุณค้นหา หรือคุณเขียนชื่อบทของหนังสือผิด.
+                                </td>
+                              </tr>
+                            ) : (
+                                filteredItems.map((book, index) => (
+                                    <tr key={book.book_id}>
+                                        <td key={`book${index + 1}`}>{index + 1}</td>
+                                        <td>{book.book_name}</td>
+                                        <td>
+                                            {book.article_name.map((article, index) => (
+                                                <span key={index}>
+                                                    {article}
+                                                    {index < book.article_name.length - 1 && ", "} {/* Add a comma if not the last article */}
+                                                </span>
+                                            ))}
+                                        </td>
+                                        <td>
+                                            <img src={book.book_imagedata || book.book_image} width="100" height="100" alt={book.book_name} />
+                                        </td>
+                                        <td>
+                                            <Link
+                                                className="btn btn-warning amt1"
+                                                to={{ pathname: '/Page/articleedit', state: { book_id: book.book_id } }}
+                                            >
+                                                แก้ไข
+                                            </Link>
+                                        </td>
+                                        <td>
+                                            <Button className="btn btn-danger amt2">{/* onClick={() => deleteBook(book.book_id)} */}
+                                                Delete
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </section>
-    </div>
-  )
+        </div>
+    );
 }
 
-export default Allbookcreator
+export default Allbookcreator;

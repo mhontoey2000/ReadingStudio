@@ -215,7 +215,9 @@ function Bookdetail(match) {
                         <h5 className="leveltext">{article.article_level}</h5>
                       </div>
                       <div>
-                        <img src={article.article_imagedata||article.article_images} />
+                        <img 
+                         style={{ maxWidth: '300px', maxHeight: '300px' }}
+                         src={article.article_imagedata||article.article_images} />
                       </div>
 
                       <div style={{padding:"20px"}}>

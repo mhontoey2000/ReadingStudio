@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { Input, Space } from 'antd';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import Searchbar from '../searchbar';
+import Searchbar from "../searchbar";
 import Button from 'react-bootstrap/Button';
 
 
@@ -17,7 +17,8 @@ function Articleedit() {
     const location = useLocation();
     const bookid = location.state.book_id;
     const user = localStorage.getItem('email');
-    const [usertype, setUsertype] = useState("")
+    const [usertype, setUsertype] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
     // console.log(bookid)
 
     useEffect(() => {
@@ -39,17 +40,31 @@ function Articleedit() {
           });
       }, [bookid]);
 
+      const filteredItems = items.filter((article) => {
+        return article.article_name.includes(searchTerm);
+      });
+
   return (
     <div>
         
         <Header />
 
         <section>
-        <h1>ตอนของบทความทั้งหมด</h1>
+        <h1>เลือกตอนของบทความที่ต้องการแก้ไข</h1>
+
+        <div style={{ padding: "10px" }}>
+          <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+        </div>
         
         <div>
             <div className="grid-container">
-            {items.map((article) => (
+            {filteredItems.length === 0 ? (
+              <p>
+                ไม่มีรายการบทของหนังสือที่คุณค้นหา
+                หรือคุณเขียนชื่อบทของหนังสือผิด.
+              </p>
+            ) : (
+              filteredItems.map((article) => (
                 <div className="grid-item card" key={article.article_id}>
                 <img
                     className="card-img-top img-fluid simg"
@@ -64,7 +79,8 @@ function Articleedit() {
                     แก้ไข
                 </Link>
                 </div>
-            ))}
+            ))
+            )}
             </div>
         </div>
         </section>

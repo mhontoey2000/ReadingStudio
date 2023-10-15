@@ -44,9 +44,10 @@ function Home() {
             <section>
                 <h1>บทความ</h1>
 
-                <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
-
-                {["admin", "creator"].includes(usertype) && (
+                <div style={{padding:"10px"}}>
+                  <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+                </div>
+                {/* {["admin", "creator"].includes(usertype) && (
                     <div>
                         <div className="btnad d-grid d-md-flex justify-content-md-end">
                             <Button
@@ -58,7 +59,7 @@ function Home() {
                             </Button>
                         </div>
                     </div>
-                )}
+                )} */}
 
                 <div className="grid-container">
                 {filteredItems.length === 0 ? (

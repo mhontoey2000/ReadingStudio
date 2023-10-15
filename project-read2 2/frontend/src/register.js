@@ -118,7 +118,7 @@ function Register() {
                                 }}
                                 />
                                 {/* แก้เพิ่ม */}
-                                <div id="errorMessage" class="error-message"></div>
+                                <div id="errorMessage" className="error-message"></div>
                             </div>
 
                 
