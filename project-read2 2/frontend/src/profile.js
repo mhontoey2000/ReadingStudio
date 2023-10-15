@@ -126,7 +126,7 @@ function Profile() {
                type="submit"
                className="btn1 btn-primary"
                >
-                Save Changes
+                บันทึก
               </Button>
             </div>
 
@@ -153,10 +153,10 @@ function Profile() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleSaveChangesConfirmed}>
-            Save Changes
+            ตกลง
           </Button>
           <Button variant="warning" style={{ color: "white" }} onClick={() => setShowModal(false)}>
-            Cancel
+            ยกเลิก
           </Button>
         </Modal.Footer>
       </Modal>
