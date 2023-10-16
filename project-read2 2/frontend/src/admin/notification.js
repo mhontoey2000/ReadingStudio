@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Notification = () => {
 
@@ -70,25 +71,34 @@ const Notification = () => {
                                     <th>รายละเอียด</th>
                                     <th>ผู้แจ้ง</th>
                                     <th>เวลา</th>
-                                    <th>ลบ</th>
+                                    <th>สถานะ</th>
+                                    <th>ดู</th>
+                                    <th>จัดการ</th>
                                 </tr>
                             </thead>
+                            
                             <tbody>
                                 {report.map((item) => {
                                     return (
+                                        
                                         <tr key={item.report_id}>
                                             <td>{item.report_id}</td>
-                                            <td>{bname}</td>
-                                            <td>{aname}</td>
+                                            <td>{item.book_id}</td>
+                                            <td>{item.report_articlename}</td>
                                             <td>{item.report_detail}</td>
                                             <td>{item.reporter}</td>
                                             <td>{item.date_time}</td>
+                                            <td>{item.report_status}</td>
+                                            <td>
+                                                <Link  to={{ pathname: '/Page/bookdetail', state: { article_id: item.article_id } }}  className="btn btn-success" >
+                                                    ดู
+                                                </Link>
+                                            </td>
                                             <td><Button className="btn btn-danger" 
-                                                        onClick={() => deleteUser(item.user_id)}
-                                                        >
-                                                            Delete
-                                                        </Button>
-                                                        </td>
+                                                onClick={() => deleteUser(item.user_id)}>
+                                                    Delete
+                                                </Button>
+                                            </td>
                                         </tr>
                                     )
                                 }

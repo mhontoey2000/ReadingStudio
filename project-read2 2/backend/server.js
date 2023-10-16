@@ -757,13 +757,40 @@ app.delete('/api/vocabs/:id', function (req, res) {
 });
 
 app.get('/api/report', function (req, res) {
-  connection.query(
-      `SELECT * FROM reports`,
-      function(err, results) {
-        console.log(res.json(results));
-      }
-    );
+  connection.query(`SELECT * FROM reports`, function (err, results) {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to Find Report' });
+    } else {
+      const reportdata = results.map((report) => {
+        return new Promise((resolve, reject) => {
+          const entry = {
+            ...report,
+            report_articlename: "ไม่มีข้อมูล",
+            book_id: "ไม่มีข้อมูล",
+          };
+
+          connection.query(`SELECT * FROM article WHERE article_id = ?;`, [report.article_id], (err, article) => {
+            if (!err) {
+              entry.report_articlename = article[0] ? article[0].article_name : "ไม่มีข้อมูล";
+            }
+            connection.query(`SELECT * FROM book WHERE book_id = ?;`, [report.book_id], (err, book) => {
+              if (!err) {
+                entry.book_id = book[0] ? book[0].book_name : "ไม่มีข้อมูล";
+              }
+              resolve(entry);
+            });
+          });
+        });
+      });
+
+      Promise.all(reportdata).then((completedData) => {
+        res.json(completedData);
+      });
+    }
+  });
 });
+
 
 const fs = require('fs');
 const path = require('path');
