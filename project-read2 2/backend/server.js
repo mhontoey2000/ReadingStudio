@@ -689,11 +689,11 @@ app.post('/api/report', (req, res) => {
   const { bookid, articleid, remail, rdetail } = req.body;
 
   const insertReportQuery = `
-    INSERT INTO reports (book_id, article_id, reporter, report_detail)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO reports (book_id, article_id, reporter, report_detail,	report_status)
+    VALUES (?, ?, ?, ?,?)
   `;
 
-  connection.query(insertReportQuery, [bookid, articleid, remail, rdetail], (err, result) => {
+  connection.query(insertReportQuery, [bookid, articleid, remail, rdetail,	'NotCheckedYet'], (err, result) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Error inserting report data' });
@@ -701,6 +701,34 @@ app.post('/api/report', (req, res) => {
       const reportId = result.insertId;
       
       res.json({ message: 'Report data inserted successfully', report_id: reportId });
+    }
+  });
+});
+app.post('/api/updatereport', (req, res) => {
+  const report_id = req.body.report_id;
+  const report_status = req.body.report_status;
+
+  console.log(report_id);
+  console.log(report_status);
+  console.log(report_id);
+  console.log(report_status);
+  console.log(report_id);
+  console.log(report_status);
+  console.log(report_id);
+  console.log(report_status);
+  console.log(report_id);
+  console.log(report_status);
+  console.log(report_id);
+  console.log(report_status);
+  let updateQuery = `UPDATE reports SET report_status=? WHERE report_id=?`;
+
+  connection.query(updateQuery, [report_status, report_id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error updated report data' });
+    } else {
+      const reportId = result.insertId;
+      res.json({ message: 'Report data updated successfully', report_id: reportId });
     }
   });
 });
