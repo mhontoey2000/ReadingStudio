@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import "./styles/addvocab.css"
+import Modal from 'react-bootstrap/Modal';
 
 function Addvocab() {
 
@@ -19,6 +20,8 @@ function Addvocab() {
 
     const [Vname, setVname] = useState("");
     const [Vdetail, setVdetail] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
 
     useEffect(() => {
         axios.get(`http://localhost:5004/api/articledetail/${articleid}`)
@@ -56,30 +59,35 @@ function Addvocab() {
 
     const sendVocab = (e) => {
         e.preventDefault()
-        const isConfirmed = window.confirm("Are you sure you want to submit this form?");
-        if (isConfirmed) {
-            axios.post('http://localhost:5004/api/vocabs',{
-                articleid,
-                Vname,
-                Vdetail,
-                
-            })
-            .then((response) => {
-                
-                console.log(response);
-                setTimeout(() => {
-                    window.history.back(); // Redirect to home page after 2 seconds
-                }, 1000);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-        } else {
-            // User clicked "Cancel" in the confirmation dialog
-            console.log("Form submission cancelled.");
-        }
+        setShowModal(true);
     };
 
+    const handleConfirmed = () => {
+        setShowModal(false); // Close the confirmation modal
+
+        // Proceed with sending the vocabulary
+        axios.post('http://localhost:5004/api/vocabs', {
+            articleid,
+            Vname,
+            Vdetail,
+        })
+        .then((response) => {
+            console.log(response);
+
+            // Set successModal to true to show the success modal
+            setSuccessModal(true);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    };
+
+    const handleSuccessModalOK = () => {
+        setSuccessModal(false);
+        history.goBack(); // Redirect to the previous page
+    }
+
+    
     const cancelVocab = () => {
         history.goBack();
     }
@@ -170,6 +178,39 @@ function Addvocab() {
             </div>
 
         </section>
+
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยัน</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          คุณต้องเพิ่มคำศัพท์ใช่ไหม?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleConfirmed}>
+            ตกลง
+          </Button>
+          <Button variant="warning" style={{ color: "white" }} onClick={() => setShowModal(false)}>
+            ยกเลิก
+          </Button>
+        </Modal.Footer>
+      </Modal>     
+    
+      <Modal show={successModal} onHide={() => setSuccessModal(false)}>
+        <Modal.Header closeButton onClick={handleSuccessModalOK}>
+          {/* <Modal.Title>Success</Modal.Title> */}
+        </Modal.Header>
+        <Modal.Body>เพิ่มคำศัพท์เรียบร้อย</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={handleSuccessModalOK}
+          >
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   )
 }

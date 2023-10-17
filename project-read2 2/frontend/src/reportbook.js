@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { Rss } from 'react-bootstrap-icons';
 import { useHistory } from 'react-router-dom';
 import "./styles/reportbook.css"
+import Modal from 'react-bootstrap/Modal';
 
 function Reportbook() {
 
@@ -19,6 +20,8 @@ function Reportbook() {
     const [aname, setAname] = useState("");
     const [remail, setRemail] = useState("");
     const [rdetail, setRdetail] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
 
     // const user = JSON.parse(localStorage.getItem('email')); 
     const user = localStorage.getItem('email');
@@ -67,37 +70,38 @@ function Reportbook() {
 
     const sendReport = (e) => {
         e.preventDefault();
-
-        if (!rdetail.trim()) {
-            alert("กรุณาระบุสิ่งที่ต้องการรายงาน");
-            return;
-        }
-        
-        const confirmed = window.confirm("Are you sure you want to send this report?");
-        
-        if (confirmed) {
-            console.log(bookid, articleid, remail, rdetail);
-            axios.post('http://localhost:5004/api/report', {
-                bookid,
-                articleid,
-                remail,
-                rdetail,
-            })
-            .then((response) => {
-                console.log(response);
-                setTimeout(() => {
-                    window.history.back(); // Redirect to home page after 2 seconds
-                }, 1000);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-        }
-    }
+    
+        setShowModal(true); // Show the confirmation modal
+      };
+    
+      const handleConfirmed = () => {
+        setShowModal(false); // Close the modal
+        // Proceed with sending the report
+        axios.post('http://localhost:5004/api/report', {
+          bookid,
+          articleid,
+          remail,
+          rdetail,
+        })
+        .then((response) => {
+          console.log(response);
+          setSuccessModal(true);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      };
+    
 
     const cancelReport = () => {
         history.goBack();
     }
+
+    const handleSuccessModalOK = () => {
+        setSuccessModal(false);
+        //window.location.reload();
+        history.goBack();
+      }
 
   return (
     <div>
@@ -110,7 +114,7 @@ function Reportbook() {
 
             <div className="grid-containerr">
             <div className="fg"> 
-                <form className="form-group">
+                <form className="form-group" onSubmit={sendReport}>
                 <h2>กรุณากรอกรายละเอียดที่ต้องการรายงาน</h2>
                     <div className="mb-3">
                         <label htmlFor="bookname">ชื่อหนังสือ</label>
@@ -172,7 +176,6 @@ function Reportbook() {
                         <Button 
                          type="submit" 
                          className="btn1 btn-primary"
-                         onClick={sendReport}
                         >
                             ส่ง
                         </Button>
@@ -185,6 +188,39 @@ function Reportbook() {
             </div>
             </div>
         </section>
+
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยัน</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          คุณต้องรายงานบทความใช่ไหม?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleConfirmed}>
+            ตกลง
+          </Button>
+          <Button variant="warning" style={{ color: "white" }} onClick={() => setShowModal(false)}>
+            ยกเลิก
+          </Button>
+        </Modal.Footer>
+      </Modal>     
+    
+      <Modal show={successModal} onHide={() => setSuccessModal(false)}>
+        <Modal.Header closeButton onClick={handleSuccessModalOK}>
+          {/* <Modal.Title>Success</Modal.Title> */}
+        </Modal.Header>
+        <Modal.Body>รายงานเนื้อหาเรียบร้อย</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={handleSuccessModalOK}
+          >
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   )
 }
