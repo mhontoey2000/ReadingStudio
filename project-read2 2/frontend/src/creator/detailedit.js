@@ -226,15 +226,39 @@ function Detailedit(match) {
         <div className="grid-container" id="myDIV1"  style={{ display: visibleDiv === 'เนื้อหา' ? 'block' : 'none' }}>
         {items.map((article) => (
             <div className="grid-item" key={article.article_id}>
-            <h2 style={{ fontWeight:"bold"}}>{article.article_name}</h2>
+            <h2 
+             style={{ fontWeight:"bold"}}
+             contentEditable
+             //onInput={(e) => handleH2Change(article.article_id, e.currentTarget.textContent)}
+            >
+              {article.article_name}
+            </h2>
             <div>
-                <h5 className="leveltext">{article.article_level}</h5>
+                <h5
+                 className="leveltext"
+                 contentEditable
+                 //onInput={(e) => handleH5Change(article.article_id, e.currentTarget.textContent)}
+                >
+                  {article.article_level}
+                </h5>
             </div>
             <div>
-                <img src={article.article_imagedata||article.article_images} />
+                <img 
+                 style={{ maxWidth: '300px', maxHeight: '300px' }}
+                 src={article.article_imagedata||article.article_images} />
             </div>
 
             <div style={{padding:"20px"}}>
+            <input
+              type="text"
+              value={article.audioUrl}
+              //onChange={(e) => handleAudioChange(article.article_id, e.target.value)}
+            />
+            <input
+              type="text"
+              value={article.audioProgress}
+              //onChange={(e) => handleAudioProgressChange(article.article_id, e.target.value)}
+            />
                 <div>
                     {audioUrl && (
                         <div>
@@ -279,6 +303,7 @@ function Detailedit(match) {
                     resize: "none",
                     }}
                     value={text}
+                    //onChange={(e) => handleTextChange(article.article_id, e.target.value)}
                 ></textarea>
                 </div>
                         

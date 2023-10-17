@@ -8,13 +8,13 @@ import axios from 'axios';
 import "../styles/allbookcreator.css"
 import Searchbar from "../searchbar";
 
-function Allbookcreator() {
+function Articlecreator() {
     const [items, setItems] = useState([]);
     const user = localStorage.getItem('email');
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        axios.get('http://localhost:5004/api/allbookarticlecreator?user_email=' + user)
+        axios.get('http://localhost:5004/api/allbookcreator?user_email=' + user)
           .then((response) => {
             console.log(response)
             setItems(response.data);
@@ -33,7 +33,7 @@ function Allbookcreator() {
             <Header />
             <section>
                 <div className="grid-containerr">
-                    <h1>บทความทั้งหมดของฉัน</h1>
+                    <h1>เลือกบทความที่ต้องการเพิ่มตอน</h1>
 
                     <div style={{ padding: "10px" }}>
                         <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
@@ -63,22 +63,17 @@ function Allbookcreator() {
                                         <td key={`book${index + 1}`}>{index + 1}</td>
                                         <td>{book.book_name}</td>
                                         <td>
-                                            {book.article_name.map((article, index) => (
-                                                <span key={index}>
-                                                    {article}
-                                                    {index < book.article_name.length - 1 && ", "} {/* Add a comma if not the last article */}
-                                                </span>
-                                            ))}
+                                            {book.book_detail}
                                         </td>
                                         <td>
                                             <img src={book.book_imagedata || book.book_image} width="100" height="100" alt={book.book_name} />
                                         </td>
                                         <td>
                                             <Link
-                                                className="btn btn-warning amt1"
-                                                to={{ pathname: '/Page/articleedit', state: { book_id: book.book_id } }}
+                                                className="btn btn-success amt3"
+                                                to={{ pathname: '/Page/toaddarticle', state: { book_id: book.book_id } }}
                                             >
-                                                แก้ไข
+                                                เพิ่มตอน
                                             </Link>
                                         </td>
                                         <td>
@@ -97,4 +92,4 @@ function Allbookcreator() {
     );
 }
 
-export default Allbookcreator;
+export default Articlecreator;

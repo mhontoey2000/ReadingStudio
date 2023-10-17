@@ -31,10 +31,12 @@ import Allarticleadmin from "./admin/allarticleadmin";
 import Creator from "./creator/creator";
 import Allbookcreator from "./creator/allbookcreator";
 import Allexamcreator from "./creator/allexamcreator";
+import Articlecreator from "./creator/articlecreator";
 import Articleedit from "./creator/articleedit";
 import Detailedit from "./creator/detailedit";
 import Edituser from "./admin/edituser";
 import { useEffect, useState } from "react";
+import Toaddarticle from "./creator/toaddarticle";
 
 const App = () => {
   const user_data = localStorage.getItem("access_token");
@@ -238,6 +240,18 @@ const App = () => {
           path="/Page/allexamcreator"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Allexamcreator />
+          }
+        />
+        <Route
+          path="/Page/articlecreator"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Articlecreator />
+          }
+        />
+        <Route
+          path="/Page/toaddarticle"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Toaddarticle />
           }
         />
 

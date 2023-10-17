@@ -39,6 +39,14 @@
 
   .amt2:hover{
     color: white;
-    background-color:#FFBB5C;
-    color: #FFBB5C;
+    background-color:#C63D2F;
+  }
+
+  .amt3{
+    color: white;
+  }
+
+  .amt3:hover{
+    color: white;
+    background-color:green;
   }

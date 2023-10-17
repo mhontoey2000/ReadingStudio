@@ -60,8 +60,7 @@ function Articleedit() {
             <div className="grid-container">
             {filteredItems.length === 0 ? (
               <p>
-                ไม่มีรายการบทของหนังสือที่คุณค้นหา
-                หรือคุณเขียนชื่อบทของหนังสือผิด.
+                ไม่มีรายการตอนของบทความ
               </p>
             ) : (
               filteredItems.map((article) => (

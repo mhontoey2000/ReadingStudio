@@ -620,6 +620,29 @@ app.get('/api/allbookcreator', function (req, res) {
   const email = req.query.user_email;
 
   connection.query(
+    `SELECT * FROM book WHERE book.book_creator = ?`,
+    [email],
+      function(err, results) {
+        const bookdata = results.map((book) => {
+          const img = helper.convertBlobToBase64(book.book_imagedata);
+          return {
+            ...book,
+            book_imagedata: img,
+          };
+        });
+        // console.log(results);
+        console.log(bookdata);
+        res.json(bookdata);
+        // res.json(results);
+      }
+    );
+  
+});
+
+app.get('/api/allbookarticlecreator', function (req, res) {
+  const email = req.query.user_email;
+
+  connection.query(
     `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator,
             GROUP_CONCAT(article.article_name) AS article_name
     FROM book

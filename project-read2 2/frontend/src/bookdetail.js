@@ -174,10 +174,6 @@ function Bookdetail(match) {
             <section>
               <h1>เนื้อหา</h1>
 
-              <div className="searchbar">
-                <Searchbar/>
-              </div>
-
               <div className="book">
                 <div className="d-flex justify-content-center" style={{ margin:"20px" }}>
                 <div className="btn-toolbar">

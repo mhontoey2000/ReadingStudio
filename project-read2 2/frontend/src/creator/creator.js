@@ -37,7 +37,15 @@ function Creator() {
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./addbook"
               >
-                <i className="bi bi-file-earmark-plus-fill"></i> สร้างบทความ
+                <i className="bi bi-file-earmark-plus-fill"></i> 1.สร้างบทความ
+              </Button>
+
+              <Button
+                type="button"
+                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
+                href="./articlecreator"
+              >
+                <i className="bi bi-file-earmark-plus-fill"></i> 2.สร้างตอนของบทความ
               </Button>
               </div>)}
 
