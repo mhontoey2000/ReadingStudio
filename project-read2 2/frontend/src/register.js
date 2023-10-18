@@ -161,6 +161,7 @@ function Register() {
                                       type="file"
                                       className="form-control"
                                       id="idcard"
+                                      required
                                       accept="image/*"
                                       onChange={handleImageChange}
                                     />

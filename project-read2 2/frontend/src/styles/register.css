@@ -41,27 +41,41 @@ button.buttonreg {
     padding-top: 20px;
 }
 
-.heroreg{
+.heroreg {
     display: flex;
-    height: 100vh;
+    min-height: 100vh; 
     background-image: url('../../public/picture/one.jpg');
     background-size: cover;
     box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.05);
-}
-
-.boxreg{
+    justify-content: center; 
+    align-items: center; 
+    position: relative; 
+  }
+  
+  .boxreg {
     text-align: center;
     align-items: center;
     padding: 30px 100px;
-    margin: 80px 120px;
+    max-width: 100%; 
     background: linear-gradient(135deg, rgba(255, 255, 255, 0));
     border-radius: 20px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.37);
-
-}
+    position: relative; /* Add relative positioning */
+  }
+  
+  .heroreg footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    text-align: right;
+  }
 
 .buttonreg {
     background-color: #4f75b7;
