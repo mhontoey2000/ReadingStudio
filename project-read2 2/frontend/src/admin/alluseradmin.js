@@ -46,19 +46,20 @@ const Alluseradmin = () => {
     }
     const deleteUser = () => {
         if (!selectedUser) return;
+        if (window.confirm("Are you sure you want to delete this user?")) {
+                axios.delete(`http://localhost:5004/api/user/${selectedUser.user_id}`)
+                    .then(response => {
+                        console.log(`User with ID ${selectedUser.user_id} has been deleted.`);
+                        // Refresh the user list after deletion
+                        fetchUsers();
+                    })
+                    .catch(error => {
+                        console.error(`Error deleting user with ID ${selectedUser.user_id}: ${error}`);
+                    });
 
-        axios.delete(`http://localhost:5004/api/user/${selectedUser.user_id}`)
-            .then(response => {
-                console.log(`User with ID ${selectedUser.user_id} has been deleted.`);
-                // Refresh the user list after deletion
-                fetchUsers();
-            })
-            .catch(error => {
-                console.error(`Error deleting user with ID ${selectedUser.user_id}: ${error}`);
-            });
-
-        setShowModal(false);
-        setSelectedUser(null);
+                setShowModal(false);
+                setSelectedUser(null);
+        }
     }
     const handleEditClick = (user) => {
         setSelectedUser(user);

@@ -12,6 +12,7 @@ const Notification = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [selectedReport, setSelectedReport] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState('รอตรวจสอบ');
+    const [buttonColor, setButtonColor] = useState('');
     const [isLoaded, setIsLoaded] = useState(false);
     const [report, setReport] = useState([]);
     const [error, setError] = useState('');
@@ -55,15 +56,36 @@ const Notification = () => {
         setDropdownOpen(!dropdownOpen);
     };
 
-    const handleDropdownSelect = (status) => {
+    const handleDropdownSelect = (status, color) => {
         setSelectedStatus(status);
+        console.log(status);
         toggleDropdown();
         // Add logic to update the status in the database if needed
+        setButtonColor(color);
     };
-
+    const Getcolor = (value) =>{
+        if(value === 'InProgress')
+            return 'orange';
+        else if(value === 'Checked')
+            return 'green';
+        else
+            return '#007BFF';
+        
+    }
+    const Getth = (value) =>{
+        if(value === 'InProgress')
+            return 'กำลังดำเนินการ';
+        else if(value === 'Checked')
+            return 'ตรวจสอบแล้ว';
+        else
+            return 'รอตรวจสอบ';
+        
+    }
     const openModal = (report) => {
         setSelectedReport(report);
         setShowModal(true);
+        handleDropdownSelect(Getth(report.report_status), Getcolor(report.report_status))
+        setDropdownOpen(false);
     };
 
     const deleteUser = (id) => {
@@ -87,7 +109,7 @@ const Notification = () => {
                 });
         }
     };
-
+    
     return (
         <div>
             <Header />
@@ -122,7 +144,7 @@ const Notification = () => {
                                                 <td>{item.report_detail}</td>
                                                 <td>{item.reporter}</td>
                                                 <td>{item.date_time}</td>
-                                                <td>{item.report_status}</td>
+                                                <td>{ Getth(item.report_status)}</td>
                                                 <td>
                                                     <Link
                                                         to={{ pathname: '/Page/bookdetail', state: { article_id: item.article_id } }}
@@ -147,87 +169,115 @@ const Notification = () => {
             </section>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>ข้อมูลรายงาน</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {selectedReport && (
-                        <div>
-                            <p>Report ID: {selectedReport.report_id}</p>
-                            <p>Book ID: {selectedReport.book_id}</p>
-                            <p>ชื่อบท: {selectedReport.report_articlename}</p>
-                            <p>รายละเอียด: {selectedReport.report_detail}</p>
-                            <p>ผู้แจ้ง: {selectedReport.reporter}</p>
-                            <p>เวลา: {selectedReport.date_time}</p>
-                            <p>สถานะ: 
-                                <div
-                                    onClick={toggleDropdown}
-                                    style={{
-                                        position: 'relative',
-                                        display: 'inline-block',
-                                    }}
-                                >
-                                    <button
-                                        style={{
-                                            backgroundColor: '#007BFF',
-                                            color: 'white',
-                                            border: 'none',
-                                            padding: '5px 10px',
-                                            borderRadius: '5px',
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        {selectedStatus} {dropdownOpen ? '▲' : '▼'}
-                                    </button>
-                                    {dropdownOpen && (
-                                        <div
-                                            style={{
-                                                position: 'absolute',
-                                                top: '100%',
-                                                right: '0',
-                                                background: 'white',
-                                                border: '1px solid #ccc',
-                                                borderRadius: '5px',
-                                                boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-                                                zIndex: '1',
-                                            }}
-                                        >
-                                            <div
-                                                className="dropdown-item"
-                                                style={{ color: '#007BFF' }}
-                                                onClick={() => handleDropdownSelect('รอตรวจสอบ')}
-                                            >
-                                                รอตรวจสอบ
-                                            </div>
-                                            <div
-                                                className="dropdown-item"
-                                                style={{ color: 'green' }}
-                                                onClick={() => handleDropdownSelect('ตรวจสอบแล้ว')}
-                                            >
-                                                ตรวจสอบแล้ว
-                                            </div>
-                                            <div
-                                                className="dropdown-item"
-                                                style={{ color: 'orange' }}
-                                                onClick={() => handleDropdownSelect('กำลังดำเนินการ')}
-                                            >
-                                                กำลังดำเนินการ
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </p>
-                        </div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        ปิด
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+      <Modal.Header closeButton>
+        <Modal.Title>ข้อมูลรายงาน</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {selectedReport && (
+          <div>
+            <p>Report ID: {selectedReport.report_id}</p>
+            <p>Book ID: {selectedReport.book_id}</p>
+            <p>ชื่อบท: {selectedReport.report_articlename}</p>
+            <p>รายละเอียด: {selectedReport.report_detail}</p>
+            <p>ผู้แจ้ง: {selectedReport.reporter}</p>
+            <p>เวลา: {selectedReport.date_time}</p>
+            <p>สถานะ:
+              <div
+                onClick={toggleDropdown}
+                style={{
+                  position: 'relative',
+                  display: 'inline-block',
+                }}
+              >
+                <button
+                  style={{
+                    backgroundColor: buttonColor, // ใช้สีจาก state
+                    top: '100%',
+                    color: 'white',
+                    border: 'none',
+                    padding: '5px 10px',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    width: '150px',
+                    height: '40px',
+                  }}
+                >
+                  {selectedStatus} {dropdownOpen ? '▲' : '▼'}
+                </button>
+                {dropdownOpen && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      right: '0',
+                      width: '150px',
+                      height: '40px',
+                      color: 'white',
+                      background: 'white',
+                      border: '1px solid #ccc',
+                      borderRadius: '5px',
+                      boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+                      zIndex: '1',
+                    }}
+                  >
+                    <div
+                      className="dropdown-item"
+                      style={{ background: '#007BFF', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
+                      onClick={() => handleDropdownSelect('รอตรวจสอบ', '#007BFF')}
+                    >
+                      รอตรวจสอบ
+                    </div>
+                    <div
+                      className="dropdown-item"
+                      style={{ background: 'green', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
+                      onClick={() => handleDropdownSelect('ตรวจสอบแล้ว', 'green')}
+                    >
+                      ตรวจสอบแล้ว
+                    </div>
+                    <div
+                      className="dropdown-item"
+                      style={{ background: 'orange', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
+                      onClick={() => handleDropdownSelect('กำลังดำเนินการ', 'orange')}
+                    >
+                      กำลังดำเนินการ
+                    </div>
+                  </div>
+                )}
+              </div>
+            </p>
+            <p>&nbsp;</p>
+          </div>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowModal(false)}>
+          ปิด
+        </Button>
+        <Button variant="danger" onClick={deleteUser}>Delete</Button>
+      </Modal.Footer>
+    </Modal>
         </div>
     )
 }
-
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <button
+      type="button"
+      ref={ref}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick(e);
+      }}
+      style={{
+        backgroundColor: '#007BFF',
+        color: 'white',
+        border: 'none',
+        maxWidth: '150px',
+        padding: '5px 10px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+      }}
+    >
+      {children}
+    </button>
+  ));
 export default Notification;
