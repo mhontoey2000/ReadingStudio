@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./styles/header.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {  Button, Card, Row, Col, Container, Nav, Navbar, Jumbotron} from 'react-bootstrap';
+import {  Button, Card, Row, Col, Container, Nav, Navbar, Jumbotron, Modal} from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
@@ -13,8 +13,10 @@ function Header() {
 
   const user = localStorage.getItem('email');
   const [firstname, setFirstname] = React.useState('');
+  const [surname, setSurname] = React.useState('');
   const [isSticky, setIsSticky] = useState(false);
-  const [usertype, setUsertype] = useState("")
+  const [usertype, setUsertype] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   React.useEffect(() => {
     fetch('http://localhost:5004/api/userdata?user_email=' + user, {
@@ -28,7 +30,8 @@ function Header() {
       .then(data => {
         // console.log(data)
         setFirstname(data[0].user_name);
-        setUsertype(data[0].user_type)
+        setSurname(data[0].user_surname);
+        setUsertype(data[0].user_type);
       })
       .catch(error => console.error(error));
   }, [user]);
@@ -36,11 +39,12 @@ function Header() {
 
   const logout = (e) => {
     e.preventDefault();
-    const confirmation = window.confirm("Are you sure you want to logout?");
-    if (confirmation) {
-      localStorage.clear();
-      window.location.href = '/Page/login';
-    }
+    setShowModal(true); // Show the confirmation modal
+  }
+
+  const handleLogoutConfirmed = () => {
+    localStorage.clear();
+    window.location.href = '/Page/login';
   }
 
   const handleScroll = () => {
@@ -61,7 +65,6 @@ function Header() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
   
     return (
     <>
@@ -78,7 +81,7 @@ function Header() {
               <img className='logohome' src="../picture/logo2.png"/>
             </Navbar.Brand>
             <div className="align-items-center ms-2"> {/* Wrap the text in a div */}
-              <p className="welcometext">ยินดีต้อนรับ,คุณ {firstname}</p>
+              <p className="welcometext">ยินดีต้อนรับ,คุณ {firstname} {surname}</p>
             </div>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
@@ -112,6 +115,10 @@ function Header() {
                           <i className="bi bi-person-workspace"></i>
                             Admin
                           </Nav.Link>)}
+                          {usertype === "creator" && (<Nav.Link href="./creator" className="list_item">
+                          <i className="bi bi-person-workspace"></i>
+                            Creator
+                          </Nav.Link>)}
                         <Nav.Link href="./logout" onClick={logout } className="list_item">
                           <i className="bi bi-box-arrow-right"></i>
                             Logout
@@ -122,6 +129,24 @@ function Header() {
        </Container>     
   </Navbar>
 ))}
+
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Logout</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to log out?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="warning" style={{color:"white"}} onClick={handleLogoutConfirmed}>
+            Logout
+          </Button>
+          <Button variant="primary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          
+        </Modal.Footer>
+      </Modal>
   
 </> 
   );

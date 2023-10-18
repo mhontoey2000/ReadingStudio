@@ -4,6 +4,7 @@ import Header from './header';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import './styles/profile.css';
 
 function Profile() {
@@ -12,13 +13,16 @@ function Profile() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [usertype, setUsertype] = useState("");
+  const [status, setStatus] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     axios.get('http://localhost:5004/api/userdata?user_email=' + user)
       .then((response) => {
         setFirstname(response.data[0].user_name);
         setLastname(response.data[0].user_surname);
-        setUsertype(response.data[0].user_surname);
+        setUsertype(response.data[0].user_type);
+        setStatus(response.data[0].approval_status);
         })
       .catch(error => console.error(error));
   }, [user]);
@@ -36,8 +40,11 @@ function Profile() {
 
   const editProfile = (e) => {
     e.preventDefault();
-    // send data to api
-    fetch('http://localhost:5004/api/userdata', {
+    setShowModal(true);
+    }
+
+    const handleSaveChangesConfirmed = () => {
+      fetch('http://localhost:5004/api/userdata', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -51,14 +58,14 @@ function Profile() {
     })
         .then(response => response)
         .then(data => {
-            alert('Profile updated successfully');
             window.location.href = '/Page/profile';
             
         })
         .catch(error => console.error(error));
+    
     }
 
-    const cancelReport = () => {
+    const cancelProfile = () => {
       history.goBack();
   }
 
@@ -92,6 +99,26 @@ function Profile() {
             <input type="text" className="form-control" value={usertype} disabled readOnly></input>
           </div>
 
+          {["admin", "creator"].includes(usertype) && (
+            <div className="mb-3 form-group">
+              <label className="form-label">สถานะ</label>
+              <input 
+               type="text" 
+               className="form-control" 
+               value={status} 
+               disabled 
+               readOnly
+               style={{
+                color: 
+                  status === 'approved' ? 'green' :
+                  status === 'pending' ? 'orange' : 'red' ,
+                  fontWeight: 'bold'
+                }}
+              />
+                <cite>*ถ้า active จะสามารถสร้างหนังสือ ถ้า inactive จะไม่สามารถสร้างหนังสือได้</cite>
+            </div>
+          )}
+
         </div>
         <div className="btn-containerr">
             <div className="btn-group me-2">
@@ -99,7 +126,7 @@ function Profile() {
                type="submit"
                className="btn1 btn-primary"
                >
-                Save Changes
+                บันทึก
               </Button>
             </div>
 
@@ -107,7 +134,7 @@ function Profile() {
               <Button 
                type="submit" 
                className="btn1 btn-warning"
-               onClick={cancelReport}
+               onClick={cancelProfile}
               >
                   ยกเลิก
               </Button>
@@ -116,6 +143,24 @@ function Profile() {
         </form>
       </div>
     </div>
+
+    <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Save Changes</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          คุณต้องการบันทึกการเปลี่ยนแปลงใช่ไหม?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleSaveChangesConfirmed}>
+            ตกลง
+          </Button>
+          <Button variant="warning" style={{ color: "white" }} onClick={() => setShowModal(false)}>
+            ยกเลิก
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </>
   );
 }

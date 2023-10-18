@@ -9,6 +9,7 @@ import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
 
 import { apiClient , convertSoundToBase64,convertImageToBase64 } from './config';
 
@@ -21,6 +22,8 @@ function Addarticle() {
     const [bname, setBname] = useState("");
     const [chapter, setChapter] = useState("");
     const [description, setDescription] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
     let imageFile = null;
     let soundFile = null;
     
@@ -55,12 +58,15 @@ function Addarticle() {
           });
     }, [bookid]);
 
-    const cancelArticle = () => {
-        history.goBack();
-    }
+    const handleSubmit = (e) => {
+        // Show the confirmation modal
+        setShowModal(true);
+        e.preventDefault()
+      };
    
-    async function confirmBook(event) {
-        event.preventDefault();
+    async function confirmArticle(event) {
+        setShowModal(false);
+
         try
         {
             // const data = {
@@ -91,9 +97,14 @@ function Addarticle() {
             data.append('description', description);
             data.append('image', imageFile);
             data.append('sound', soundFile);
-            
+            console.log(bookid)
             apiClient.post('api/addarticle', data).then((response) => {
               console.log(response.data);
+             
+              // Close the confirmation modal
+              setShowModal(false);
+              // Show the success message modal
+              setSuccessModal(true);
             }).catch((error) => {
               console.error(error);
             });
@@ -102,6 +113,16 @@ function Addarticle() {
              alert(error);
              console.error(error);
         }
+    }
+
+    const cancelArticle = () => {
+        history.goBack();
+    }
+
+    const handleSuccessModalOK = () => {
+      setSuccessModal(false);
+      //window.location.reload();
+      history.goBack();
     }
        
 
@@ -118,7 +139,7 @@ function Addarticle() {
 
                 <div className="grid-containerr">
                     <div className="fg"> 
-                        <form className="form-group mb-3">
+                        <form className="form-group mb-3" onSubmit={handleSubmit}>
                             <h2>กรุณากรอกรายละเอียดตอนของบทความ</h2>
                                 <div className="mb-3">
                                     <label htmlFor="name">ชื่อบทความ</label>
@@ -200,9 +221,9 @@ function Addarticle() {
                                     </div>
                                     <div className="btn-group me-2">
                                         <Button 
-                                        //  type="submit" 
+                                         type="submit" 
                                          className="btn1 btn-primary"
-                                         onClick={confirmBook}
+                                         //onClick={confirmBook}
                                         >
                                             ยืนยัน
                                         </Button>
@@ -215,7 +236,40 @@ function Addarticle() {
         </div>
 
 
-    </section>        
+    </section>    
+
+    <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ทำการยืนยัน</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          คุณต้องการสร้างตอนของบทความใช่ไหม?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={confirmArticle}>
+            ตกลง
+          </Button>
+          <Button variant="warning" style={{ color: "white" }} onClick={() => setShowModal(false)}>
+            ยกเลิก
+          </Button>
+        </Modal.Footer>
+      </Modal>     
+    
+      <Modal show={successModal} onHide={() => setSuccessModal(false)}>
+        <Modal.Header closeButton onClick={handleSuccessModalOK}>
+          <Modal.Title>Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Book added successfully</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={handleSuccessModalOK}
+          >
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
 
   )

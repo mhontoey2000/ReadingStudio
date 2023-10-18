@@ -10,11 +10,9 @@ import Login from "./login";
 import Register from "./register";
 import Bookdetail from "./bookdetail";
 import Bookarticle from "./bookarticle";
-import Exampage from "./exampage";
 import Profile from "./profile";
 import One from "./one";
 import Allbookadmin from "./admin/allbookadmin";
-import Typebook from "./typebook";
 import Addbook from "./addbook";
 import Adminpage from "./admin/adminpage";
 import Allexamadmin from "./admin/allexamadmin";
@@ -30,7 +28,15 @@ import Editbook from "./admin/editbook";
 import Editarticle from "./admin/editarticle";
 import Editexam from "./admin/editexam";
 import Allarticleadmin from "./admin/allarticleadmin";
+import Creator from "./creator/creator";
+import Allbookcreator from "./creator/allbookcreator";
+import Allexamcreator from "./creator/allexamcreator";
+import Articlecreator from "./creator/articlecreator";
+import Articleedit from "./creator/articleedit";
+import Detailedit from "./creator/detailedit";
+import Edituser from "./admin/edituser";
 import { useEffect, useState } from "react";
+import Toaddarticle from "./creator/toaddarticle";
 
 const App = () => {
   const user_data = localStorage.getItem("access_token");
@@ -105,12 +111,6 @@ const App = () => {
           }
         />
         <Route
-          path="/Page/exampage"
-          render={() =>
-            !isAuthenticated ? <Redirect to="/Page/one" /> : <Exampage />
-          }
-        />
-        <Route
           path="/Page/profile"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Profile />
@@ -126,12 +126,6 @@ const App = () => {
           path="/Page/alluseradmin"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Alluseradmin />
-          }
-        />
-        <Route
-          path="/Page/typebook"
-          render={() =>
-            !isAuthenticated ? <Redirect to="/Page/one" /> : <Typebook />
           }
         />
         <Route
@@ -210,6 +204,54 @@ const App = () => {
           path="/Page/allarticleadmin"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Allarticleadmin />
+          }
+        />
+        <Route
+          path="/Page/creator"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Creator />
+          }
+        />
+        <Route
+          path="/Page/articleedit"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Articleedit />
+          }
+        />
+        <Route
+          path="/Page/detailedit"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Detailedit />
+          }
+        />
+        <Route
+          path="/Page/edituser"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Edituser />
+          }
+        />
+        <Route
+          path="/Page/allbookcreator"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Allbookcreator />
+          }
+        />
+        <Route
+          path="/Page/allexamcreator"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Allexamcreator />
+          }
+        />
+        <Route
+          path="/Page/articlecreator"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Articlecreator />
+          }
+        />
+        <Route
+          path="/Page/toaddarticle"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Toaddarticle />
           }
         />
 

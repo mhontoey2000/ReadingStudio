@@ -224,6 +224,7 @@ app.get('/api/book/:bookId', function (req, res) {
       }
     );
 });
+
 app.delete('/api/deletebook/:bookId', function (req, res) {
   const bookid = req.params.bookId;
   console.log('removed book : '+ bookid);
@@ -231,7 +232,7 @@ app.delete('/api/deletebook/:bookId', function (req, res) {
   connection.query(
       'DELETE FROM book WHERE book_id = ?',[bookid],
       function(err, results) {
-        if (err) {s
+        if (err) {
           console.error('Error removed book:', err);
           res.status(500).json({ error: 'Error removed book' });
       } else {
@@ -278,7 +279,7 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
 
 // แก้เพิ่ม
   app.post('/api/addbook',upload.single('book_image'),  (req, res) => {
-    const { book_name, book_detail } = req.body;
+    const { book_name, book_detail, book_creator } = req.body;
     console.log(book_name);
     console.log(book_detail);
     const fs = require('fs');
@@ -327,11 +328,12 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
       const book_id = `book${String(newNumber).padStart(3, '0')}`;
       console.log(book_id);
 
-      connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata) VALUES (?, ?, ?, ?,?)", 
-      [book_id, book_name, book_detail,pathimage,binaryData], 
+      connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata, book_creator) VALUES (?, ?, ?, ?, ?, ?)", 
+      [book_id, book_name, book_detail,pathimage,binaryData,book_creator], 
       (err, result) => {
-          if (err) {s
+          if (err) {
               console.error('Error adding book:', err);
+              console.log(book_creator)
               res.status(500).json({ error: 'Error adding book' });
           } else {
               console.log('Book added successfully');
@@ -683,7 +685,127 @@ app.put('/api/userdata', (req, res) => {
   });
 });
 
+app.get('/api/allbookcreator', function (req, res) {
+  const email = req.query.user_email;
 
+  connection.query(
+    `SELECT * FROM book WHERE book.book_creator = ?`,
+    [email],
+      function(err, results) {
+        const bookdata = results.map((book) => {
+          const img = helper.convertBlobToBase64(book.book_imagedata);
+          return {
+            ...book,
+            book_imagedata: img,
+          };
+        });
+        // console.log(results);
+        console.log(bookdata);
+        res.json(bookdata);
+        // res.json(results);
+      }
+    );
+  
+});
+
+app.get('/api/allbookarticlecreator', function (req, res) {
+  const email = req.query.user_email;
+
+  connection.query(
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator,
+            GROUP_CONCAT(article.article_name) AS article_name
+    FROM book
+    LEFT JOIN article ON book.book_id = article.book_id
+    WHERE book.book_creator = ? 
+    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator`,
+    [email],
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      const uniqueBooks = {}; // Store unique books by book_id
+  
+      results.forEach((row) => {
+        const book_id = row.book_id;
+        // If the book is not in the uniqueBooks object, add it
+        if (!uniqueBooks[book_id]) {
+          uniqueBooks[book_id] = {
+            book_id: book_id,
+            book_name: row.book_name,
+            book_detail: row.book_detail,
+            book_image: row.book_image,
+            book_creator: row.book_creator,
+            article_name: [],
+          };
+        }
+        // Add the article_name to the book's article_name array
+        if (row.article_name) {
+          uniqueBooks[book_id].article_name.push(row.article_name);
+        }
+      });
+  
+      const bookdata = Object.values(uniqueBooks);
+      console.log(bookdata)
+      res.json(bookdata);
+    }
+  );
+  
+});
+
+app.get('/api/allexamcreator', function (req, res) {
+  const email = req.query.user_email;
+
+  connection.query(
+    `SELECT b.book_id, b.book_name, b.book_image, b.book_creator,
+    GROUP_CONCAT(DISTINCT a.article_name) AS article_name,
+    e.exam_id
+    FROM book b
+    LEFT JOIN article a ON b.book_id = a.book_id
+    LEFT JOIN exams e ON b.book_id = e.book_id
+    LEFT JOIN questions q ON e.exam_id = q.exam_id
+    WHERE b.book_creator = ? AND e.exam_id IS NOT NULL
+    GROUP BY b.book_id, b.book_name, b.book_image, b.book_creator, e.exam_id
+    HAVING COUNT(DISTINCT a.article_name) = 1`,
+    [email],
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      const uniqueArticle = {}; // Store unique books by book_id
+      let exam_count = 1;
+      results.forEach((row) => {
+        const article_name = row.article_name;
+        // If the book is not in the uniqueBooks object, add it
+        if (!uniqueArticle[article_name]) {
+          exam_count++;
+          uniqueArticle[article_name] = {
+            book_id: row.book_id,
+            book_name: row.book_name,
+            book_image: row.book_image,
+            book_creator: row.book_creator,
+            exam_count: exam_count,
+            article_name: article_name
+          };
+        }
+        // Add the article_name to the book's article_name array
+        if (row.article_name) {
+          exam_count = 1;
+        }
+      });
+  
+      const examdata = Object.values(uniqueArticle);
+      console.log(examdata)
+      res.json(examdata);
+    }
+  );
+  
+});
 
 app.post('/api/report', (req, res) => {
   const { bookid, articleid, remail, rdetail } = req.body;
@@ -733,6 +855,21 @@ app.post('/api/updatereport', (req, res) => {
   });
 });
 
+app.post('/api/del_report/:id', (req, res) => {
+  const report_id = req.params.id;
+  connection.query(
+    `DELETE FROM reports WHERE report_id = ?;`,
+    [report_id],
+    function(err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+      } else {
+        res.status(200).json({ message: 'Report deleted successfully' });
+      }
+    }
+  );
+});
 
 app.post('/api/vocabs', async (req, res) => {
   const { articleid, Vname, Vdetail } = req.body;

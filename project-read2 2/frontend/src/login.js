@@ -14,6 +14,8 @@ const Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState('');
   const history = useHistory();
   const [showAlert, setShowAlert] = useState(false);
@@ -22,10 +24,22 @@ const Login = () => {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    const data = { email, password };
+    setEmailError(''); // Reset email error message
+    setPasswordError(''); // Reset password error message
+
+    if (email === '') {
+      setEmailError('กรุณาใส่อีเมลล์ email@example.com');
+    }
+
+    if (password === '') {
+      setPasswordError('กรุณาใส่รหัสผ่าน');
+    }
+
+    
     // setErrors(loginvalidation(values));
-    if ( email !== '' && password !== '' )
-        {
+    if ( email !== '' && password !== '' ){
+        const data = { email, password };
+        
     axios.post('http://localhost:5004/api/login', data)
     .then(response => {
         //console.log("response", response);
@@ -82,12 +96,12 @@ const Login = () => {
                     required
                     onChange={(e) => {
                       setEmail(e.target.value);
+                      setEmailError('');
                     }}
                     />
                     <div className="invalid-feedback">
-                        กรุณาใส่อีเมลล์ email@example.com
+                      {emailError}
                     </div>
-                    {/* {errors.email && <span className="text-danger">{errors.email}</span>} */}
                 </div>
 
                 <div className="form-group was-validated mb-3">
@@ -100,12 +114,12 @@ const Login = () => {
                     required
                     onChange={(e) => {
                       setPassword(e.target.value);
+                      setPasswordError('');
                     }}
                     />
                     <div className="invalid-feedback">
-                        กรุณาใส่รหัสผ่าน
+                      {passwordError}
                     </div>
-                    {/* {errors.password && <span className="text-danger">{errors.password}</span>} */}
                 </div>
 
             </div>
