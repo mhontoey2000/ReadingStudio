@@ -374,6 +374,22 @@ function Detailedit(match) {
             id="myDIV2"
             style={{ display: visibleDiv === "คำศัพท์" ? "block" : "none" }}
           >
+             <div>
+              {["admin", "creator"].includes(usertype) && (
+                <div className="addV">
+                  <Link
+                    className="btn btn-warning tc"
+                    to={{
+                      pathname: "/Page/addvocab",
+                      state: { book_id: bookid, article_id: articleid },
+                    }}
+                  >
+                    เพิ่มคำศัพท์
+                  </Link>
+                </div>
+              )}
+            </div>
+            
             {Array.isArray(Vitems) && Vitems.length > 0 ? (
               Vitems.map((vocabs, index) => (
                 <div className="v-item" key={vocabs.vocabs_id}>
@@ -397,21 +413,7 @@ function Detailedit(match) {
             ) : (
               <div>ไม่มีรายการคำศัพท์</div>
             )}
-            <div>
-              {["admin", "creator"].includes(usertype) && (
-                <div className="addV">
-                  <Link
-                    className="btn btn-warning tc"
-                    to={{
-                      pathname: "/Page/addvocab",
-                      state: { book_id: bookid, article_id: articleid },
-                    }}
-                  >
-                    เพิ่มคำศัพท์
-                  </Link>
-                </div>
-              )}
-            </div>
+           
           </div>
 
           <div

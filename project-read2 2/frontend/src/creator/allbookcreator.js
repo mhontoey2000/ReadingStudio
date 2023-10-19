@@ -46,7 +46,8 @@ function Allbookcreator() {
                                 <th scope="col" className='t-size'>หนังสือ</th>
                                 <th scope="col" className='t-size'>คำอธิบายหนังสือ</th>
                                 <th scope="col" className='t-size'>รูปหน้าปกหนังสือ</th>
-                                <th scope="col" className='t-size'>แก้ไข</th>
+                                <th scope="col" className='t-size'>แก้ไขบทความ</th>
+                                <th scope="col" className='t-size'>แก้ไขตอน</th>
                                 <th scope="col" className='t-size'>ลบ</th>
                             </tr>
                         </thead>
@@ -76,14 +77,22 @@ function Allbookcreator() {
                                         <td>
                                             <Link
                                                 className="btn btn-warning amt1"
+                                                to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
+                                            >
+                                                แก้ไขบทความ
+                                            </Link>
+                                        </td>
+                                        <td>
+                                            <Link
+                                                className="btn btn-warning amt1"
                                                 to={{ pathname: '/Page/articleedit', state: { book_id: book.book_id } }}
                                             >
-                                                แก้ไข
+                                                แก้ไขตอน
                                             </Link>
                                         </td>
                                         <td>
                                             <Button className="btn btn-danger amt2">{/* onClick={() => deleteBook(book.book_id)} */}
-                                                Delete
+                                                ลบ
                                             </Button>
                                         </td>
                                     </tr>

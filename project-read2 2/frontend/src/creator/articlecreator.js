@@ -43,11 +43,11 @@ function Articlecreator() {
                         <thead>
                             <tr className="head" style={{ textAlign: "center"}}>
                                 <th scope="col" className='t-size'>ลำดับ</th>
-                                <th scope="col" className='t-size'>หนังสือ</th>
-                                <th scope="col" className='t-size'>คำอธิบายหนังสือ</th>
-                                <th scope="col" className='t-size'>รูปหน้าปกหนังสือ</th>
-                                <th scope="col" className='t-size'>แก้ไข</th>
-                                <th scope="col" className='t-size'>ลบ</th>
+                                <th scope="col" className='t-size'>ชื่อบทความ</th>
+                                <th scope="col" className='t-size'>คำอธิบายบทความ</th>
+                                <th scope="col" className='t-size'>รูปหน้าปกบทความ</th>
+                                <th scope="col" className='t-size'>เพิ่มตอน</th>
+                                {/* <th scope="col" className='t-size'>ลบ</th> */}
                             </tr>
                         </thead>
                         <tbody className="table-group-divider">
@@ -76,11 +76,13 @@ function Articlecreator() {
                                                 เพิ่มตอน
                                             </Link>
                                         </td>
-                                        <td>
-                                            <Button className="btn btn-danger amt2">{/* onClick={() => deleteBook(book.book_id)} */}
+                                        {/* <td>
+                                            <Button className="btn btn-danger amt2" 
+                                             //onClick={() => deleteBook(book.book_id)}
+                                            >
                                                 Delete
                                             </Button>
-                                        </td>
+                                        </td> */}
                                     </tr>
                                 ))
                             )}

@@ -47,7 +47,7 @@ function Toaddarticle() {
       <Header />
 
       <section>
-        <h1>ตอนของบทความ</h1>
+        <h1>เพิ่มตอนของบทความ</h1>
 
         <div style={{ padding: "10px" }}>
           <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
@@ -56,6 +56,9 @@ function Toaddarticle() {
         {["admin", "creator"].includes(usertype) && (
           <div>
             <div className="btnad d-grid d-md-flex justify-content-md-end">
+              <div className="center-h6">
+                <h6 style={{ color: "red" }}>**หากต้องการเพิ่มตอนกรุณากดปุ่มเพิ่มตอน</h6>
+              </div>
               <div key={bookid}>
                 <Link
                   type="button"
@@ -65,7 +68,7 @@ function Toaddarticle() {
                   }}
                   className="btn btn-success btnt"
                 >
-                  เพิ่มตอนของบทความ
+                  เพิ่มตอน
                 </Link>
               </div>
             </div>

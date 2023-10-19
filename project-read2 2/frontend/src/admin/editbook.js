@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 
 function Editbook() {
     const history = useHistory();
-    const{bookid} = useParams();
+    const {bookid} = useParams();
     const [bname, setBname] = useState("");
     const [bdetail, setBdetail] = useState("");
     const [bookImage, setBookImage] = useState(null);
@@ -36,8 +36,8 @@ function Editbook() {
     }, [bookid]);
 
     const cancelEditBook = () => {
-        history.push("/Page/allbookadmin"); 
-    }
+      history.goBack();
+  }
 
     const updateBdetail = (event) => {
       setBdetail(event.target.value);

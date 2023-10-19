@@ -122,3 +122,8 @@ section h1 {
     text-align: start;
   }
   
+  .center-h6 {
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+  }
