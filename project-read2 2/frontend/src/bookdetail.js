@@ -243,7 +243,8 @@ function Bookdetail(match) {
 
           <div className="grid-container" id="myDIV2" style={{ display: visibleDiv === 'คำศัพท์' ? 'block' : 'none' }}>
             <div>
-              {Array.isArray(Vitems) && Vitems.map((vocabs, index) => (
+              {Array.isArray(Vitems) && Vitems.length > 0 ? (
+                Vitems.map((vocabs, index) => (
                 <div className="v-item" key={vocabs.vocabs_id}>
                   <div className="vno" key={`vocabs_${index}`}>
                     <h5 className="v-title">{`${index + 1}. ${vocabs.vocabs_name}`}</h5>
@@ -259,7 +260,10 @@ function Bookdetail(match) {
                     )}
                   </div>
                 </div>
-              ))}
+              )) 
+              ) : (
+                <div className="no-items">ไม่มีคำศัพท์ในตอนของบทความนี้.</div>
+              )}
             </div>
             <div>
               {["admin", "creater"].includes(usertype) && (
@@ -287,7 +291,8 @@ function Bookdetail(match) {
                   </Link>
                 </div>
               )}
-              {Array.isArray(qitems) && qitems.map((question, index) => (
+              {Array.isArray(qitems) && Vitems.length > 0 ? (
+                qitems.map((question, index) => (
                 <div className="v-item" key={question.question_id}>
                   <div className="vno" key={`vocabs_${index}`}>
                     <h5 className="v-title">{`${index + 1}. ${question.question_text}`}</h5>
@@ -314,7 +319,9 @@ function Bookdetail(match) {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))) : (
+                <div className="no-items">ไม่มีชุดข้อสอบในตอนของบทความนี้.</div>
+              )}
             </div>
             {["admin", "creater"].includes(usertype) && (
               <div className="addV" style={{ textAlign: 'center' }}>

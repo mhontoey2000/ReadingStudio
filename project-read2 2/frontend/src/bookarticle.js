@@ -17,7 +17,8 @@ function Bookarticle({ match }) {
     const location = useLocation();
     const bookid = location.state.book_id;
     const user = localStorage.getItem('email');
-    const [usertype, setUsertype] = useState("")
+    const [usertype, setUsertype] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
     // console.log(bookid)
 
     useEffect(() => {
@@ -39,16 +40,20 @@ function Bookarticle({ match }) {
           });
       }, [bookid]);
 
-  
+      // Function to filter items based on the search term
+      const filteredItems = items.filter((item) => {
+        return item.book_name.includes(searchTerm);
+    });
+
     return (
       <div>
           <Header />
         <section>
           <h1>ตอนของบทความ</h1>
 
-          <div className="searchbar">
-            <Searchbar/>
-          </div>
+         <div style={{padding:"10px"}}>
+                  <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+                </div>
 
           {["admin", "creater"].includes(usertype) && (<div>
                     <div className="btnad d-grid d-md-flex justify-content-md-end">
@@ -69,7 +74,10 @@ function Bookarticle({ match }) {
           
           <div>
             <div className="grid-container">
-              {items.map((article) => (
+            {filteredItems.length === 0 ? (
+                        <p>ไม่มีรายการหนังสือที่คุณค้นหา หรือคุณเขียนชื่อหนังสือผิด.</p>
+                    ) : (
+                        filteredItems.map((article) => (
                 <div className="grid-item card" key={article.article_id}>
                   <img
                     className="card-img-top img-fluid simg"
@@ -86,7 +94,8 @@ function Bookarticle({ match }) {
                     อ่าน
                   </Link>
                 </div>
-              ))}
+              ))
+            )}
             </div>
           </div>
         </section>

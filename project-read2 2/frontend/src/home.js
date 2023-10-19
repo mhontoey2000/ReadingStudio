@@ -30,7 +30,7 @@ function Home() {
           .catch((error) => {
             console.error(error);
           });
-    }, [searchTerm]); // Add searchTerm as a dependency
+    }, []); 
 
     // Function to filter items based on the search term
     const filteredItems = items.filter((item) => {
