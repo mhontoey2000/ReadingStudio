@@ -250,7 +250,7 @@ function Bookdetail(match) {
                     <h5 className="v-title">{`${index + 1}. ${vocabs.vocabs_name}`}</h5>
                     <h5 className="v-text">{vocabs.vocabs_detail}</h5>
 
-                    {["admin", "creater"].includes(usertype) && (
+                    {["admin", "creator"].includes(usertype) && (
                       <Button
                         className="btn btn-danger"
                         onClick={() => deleteVocab(vocabs.vocabs_id)}
@@ -266,7 +266,7 @@ function Bookdetail(match) {
               )}
             </div>
             <div>
-              {["admin", "creater"].includes(usertype) && (
+              {["admin", "creator"].includes(usertype) && (
                 <div className="addV">
                   <Link
                     className="btn btn-warning tc"
@@ -281,15 +281,17 @@ function Bookdetail(match) {
 
           <div className="grid-container" id="myDIV3" style={{ display: visibleDiv === 'ข้อสอบ' ? 'block' : 'none' }}>
             <div>
-              {["admin", "creater"].includes(usertype) && (
-                <div className="addV">
-                  <Link
-                    className="btn btn-warning tc"
-                    to={{ pathname: "/Page/addexam", state: { book_id: bookid, article_id: articleid } }}
-                  >
-                    เพิ่มข้อสอบ
-                  </Link>
-                </div>
+              {["admin", "creator"].includes(usertype) && (
+                 <div className="addV">
+                 {Array.isArray(qitems) && qitems.length > 0 && (
+                   <Link
+                     className="btn btn-warning tc"
+                     to={{ pathname: "/Page/addexam", state: { book_id: bookid, article_id: articleid } }}
+                   >
+                     เพิ่มข้อสอบ
+                   </Link>
+                 )}
+               </div>
               )}
               {Array.isArray(qitems) && Vitems.length > 0 ? (
                 qitems.map((question, index) => (
@@ -323,7 +325,7 @@ function Bookdetail(match) {
                 <div className="no-items">ไม่มีชุดข้อสอบในตอนของบทความนี้.</div>
               )}
             </div>
-            {["admin", "creater"].includes(usertype) && (
+            {["admin", "creator"].includes(usertype) && (
               <div className="addV" style={{ textAlign: 'center' }}>
                 <Link
                   style={{ background: 'red' }}

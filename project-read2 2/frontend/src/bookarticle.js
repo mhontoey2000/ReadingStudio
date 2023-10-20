@@ -33,7 +33,6 @@ function Bookarticle({ match }) {
         axios.get(`http://localhost:5004/api/article/${bookid}`)
           .then((response) => {
             setItems(response.data);
-            console.log(response.data);
           })
           .catch((error) => {
             console.error(error);
@@ -42,7 +41,7 @@ function Bookarticle({ match }) {
 
       // Function to filter items based on the search term
       const filteredItems = items.filter((item) => {
-        return item.book_name.includes(searchTerm);
+        return item.article_name.includes(searchTerm);
     });
 
     return (
@@ -55,14 +54,14 @@ function Bookarticle({ match }) {
                   <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
                 </div>
 
-          {["admin", "creater"].includes(usertype) && (<div>
+          {/* {["admin", "creator"].includes(usertype) && (
                     <div className="btnad d-grid d-md-flex justify-content-md-end">
                       <div key={bookid}>
                         <Link 
                           type="button" 
                           to={{ 
                             pathname: `/Page/addarticle_${bookid}`, 
-                            state: { book_id:bookid } 
+                            state: { book_id:bookid }
                           }}
                           className="btn btn-success btnt"
                           >
@@ -70,7 +69,7 @@ function Bookarticle({ match }) {
                           </Link>
                       </div>
                     </div>
-                    </div>)}
+                    )} */}
           
           <div>
             <div className="grid-container">
