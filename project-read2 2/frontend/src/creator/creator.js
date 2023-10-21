@@ -75,6 +75,15 @@ function Creator() {
                 ข้อสอบของฉัน
               </Button>
 
+              <Button
+                type="button"
+                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
+                href="./analysislevel"
+              >
+                <i class="bi bi-clipboard-data-fill"></i>{" "}
+                วิเคราะห์ระดับบทความ
+              </Button>
+
               {/* <Button
                 type="button"
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"

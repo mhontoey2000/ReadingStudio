@@ -3,10 +3,10 @@ import './styles/home.css';
 import Header from './header';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AudioOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 import { Input, Space } from 'antd';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import Searchbar from './searchbar';
 import Button from 'react-bootstrap/Button';
 
@@ -15,7 +15,8 @@ import Button from 'react-bootstrap/Button';
 function Bookarticle({ match }) {
     const [items, setItems] = useState([]);
     const location = useLocation();
-    const bookid = location.state.book_id;
+    const history = useHistory();
+    const [bookid, setBookID] = useState("");
     const user = localStorage.getItem('email');
     const [usertype, setUsertype] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
@@ -30,6 +31,12 @@ function Bookarticle({ match }) {
     }, [user]);
 
     useEffect(() => {
+      if (!location.state || location.state.book_id === undefined) {
+        // Redirect to the home page if book_id is not defined
+        history.push('/Page/home');
+        return;
+      }
+      setBookID(location.state.book_id)
         axios.get(`http://localhost:5004/api/article/${bookid}`)
           .then((response) => {
             setItems(response.data);
@@ -37,7 +44,7 @@ function Bookarticle({ match }) {
           .catch((error) => {
             console.error(error);
           });
-      }, [bookid]);
+      }, [location, history]);
 
       // Function to filter items based on the search term
       const filteredItems = items.filter((item) => {

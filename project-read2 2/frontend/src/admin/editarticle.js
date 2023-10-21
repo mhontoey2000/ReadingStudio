@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "../header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
@@ -11,6 +11,10 @@ function Editarticle() {
     const history = useHistory();
     const { articleid } = useParams();
 
+    const textareaRef = useRef(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
     const [bookName, setBookName] = useState("");
     const [articleId, setArticleID] = useState("");
     const [articleName, setArticleName] = useState("");
@@ -22,6 +26,24 @@ function Editarticle() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
     const [audioFile, setAudioFile] = useState(null); // เพิ่ม state สำหรับไฟล์เสียงใหม่
+
+
+    useEffect(() => {
+        // Simulate data retrieval delay
+        setTimeout(() => {
+            if (articleDetail != "") {
+                setIsLoading(false);
+            }
+        }, 2000); // Adjust the delay time as needed
+    }, [articleDetail]);
+
+    useEffect(() => {
+        if (!isLoading && textareaRef.current) {
+            // Adjust the height based on content
+            textareaRef.current.style.height = "auto";
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    }, [isLoading]);
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         accept: 'audio/*',
@@ -122,7 +144,7 @@ function Editarticle() {
     };
 
     const cancelEditArticle = () => {
-        history.push('/Page/allarticleadmin');
+        history.push('/Page/articleedit');
     };
 
     const editArticle = () => {
@@ -189,11 +211,18 @@ function Editarticle() {
 
                             <div className="mb-3">
                                 <label htmlFor="articledetail">เนื้อหา</label>
-                                <input
+                                <textarea
+                                    ref={textareaRef}
                                     type="text"
                                     className="form-control"
                                     id="articledetail"
                                     value={articleDetail}
+                                    style={{
+                                        width: "100%",
+                                        height: "auto",
+                                        overflow: "hidden",
+                                        resize: "none",
+                                    }}
                                     onChange={e => setArticleDetail(e.target.value)}
                                 />
                             </div>

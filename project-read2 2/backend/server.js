@@ -328,12 +328,11 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
       const book_id = `book${String(newNumber).padStart(3, '0')}`;
       console.log(book_id);
 
-      connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata, book_creator) VALUES (?, ?, ?, ?, ?, ?)", 
-      [book_id, book_name, book_detail,pathimage,binaryData,book_creator], 
+      connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata, book_creator, status_book) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+      [book_id, book_name, book_detail,pathimage,binaryData,book_creator,"pending"], 
       (err, result) => {
           if (err) {
               console.error('Error adding book:', err);
-              console.log(book_creator)
               res.status(500).json({ error: 'Error adding book' });
           } else {
               console.log('Book added successfully');
@@ -735,12 +734,12 @@ app.get('/api/allbookarticlecreator', function (req, res) {
   const email = req.query.user_email;
 
   connection.query(
-    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator,
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book,
             GROUP_CONCAT(article.article_name) AS article_name
     FROM book
     LEFT JOIN article ON book.book_id = article.book_id
     WHERE book.book_creator = ? 
-    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator`,
+    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book`,
     [email],
     function (err, results) {
       if (err) {
@@ -761,6 +760,7 @@ app.get('/api/allbookarticlecreator', function (req, res) {
             book_detail: row.book_detail,
             book_image: row.book_image,
             book_creator: row.book_creator,
+            status_book: row.status_book,
             article_name: [],
           };
         }
@@ -827,16 +827,15 @@ app.get('/api/allexamcreator', function (req, res) {
   const email = req.query.user_email;
 
   connection.query(
-    `SELECT b.book_id, b.book_name, b.book_image, b.book_creator,
-    GROUP_CONCAT(DISTINCT a.article_name) AS article_name,
-    e.exam_id
-    FROM book b
-    LEFT JOIN article a ON b.book_id = a.book_id
-    LEFT JOIN exams e ON b.book_id = e.book_id
-    LEFT JOIN questions q ON e.exam_id = q.exam_id
-    WHERE b.book_creator = ? AND e.exam_id IS NOT NULL
-    GROUP BY b.book_id, b.book_name, b.book_image, b.book_creator, e.exam_id
-    HAVING COUNT(DISTINCT e.exam_id) = 1`,
+    `SELECT b.book_id, b.book_name, a.article_name, a.article_images,
+    GROUP_CONCAT(DISTINCT e.exam_id)
+        FROM book b
+        LEFT JOIN article a ON a.book_id = b.book_id
+      LEFT JOIN exams e ON e.book_id = b.book_id AND e.article_id = a.article_id
+        LEFT JOIN questions q ON q.exam_id = e.exam_id
+      WHERE b.book_creator = ? AND e.exam_id IS NOT NULL
+      GROUP BY a.article_id
+        HAVING COUNT(DISTINCT a.article_id) = 1;`,
     [email],
     function (err, results) {
       if (err) {
@@ -855,10 +854,58 @@ app.get('/api/allexamcreator', function (req, res) {
           uniqueArticle[article_name] = {
             book_id: row.book_id,
             book_name: row.book_name,
-            book_image: row.book_image,
             book_creator: row.book_creator,
             exam_count: exam_count,
-            article_name: article_name
+            article_name: article_name,
+            article_imagedata: row.article_images
+          };
+        }
+        // Add the article_name to the book's article_name array
+        if (row.article_name) {
+          exam_count = 1;
+        }
+      });
+  
+      const examdata = Object.values(uniqueArticle);
+      console.log(examdata)
+      res.json(examdata);
+    }
+  );
+  
+});
+
+app.get('/api/allexamadmin', function (req, res) {
+
+  connection.query(
+    `SELECT b.book_id, b.book_name, a.article_name, a.article_images,
+    GROUP_CONCAT(DISTINCT e.exam_id)
+        FROM book b
+        LEFT JOIN article a ON a.book_id = b.book_id
+      LEFT JOIN exams e ON e.book_id = b.book_id AND e.article_id = a.article_id
+        LEFT JOIN questions q ON q.exam_id = e.exam_id
+      WHERE e.exam_id IS NOT NULL
+      GROUP BY a.article_id
+        HAVING COUNT(DISTINCT a.article_id) = 1;`,
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      const uniqueArticle = {}; // Store unique books by book_id
+      let exam_count = 1;
+      results.forEach((row) => {
+        const article_name = row.article_name;
+        // If the book is not in the uniqueBooks object, add it
+        if (!uniqueArticle[article_name]) {
+          exam_count++;
+          uniqueArticle[article_name] = {
+            book_id: row.book_id,
+            book_name: row.book_name,
+            exam_count: exam_count,
+            article_name: article_name,
+            article_imagedata: row.article_images
           };
         }
         // Add the article_name to the book's article_name array

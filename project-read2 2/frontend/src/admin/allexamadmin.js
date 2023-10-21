@@ -1,62 +1,117 @@
-import React, { useState, useEffect } from 'react';
-import Header from '../header';
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from 'axios';
-import Button from 'react-bootstrap/Button';
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import Header from "../header";
+import Button from "react-bootstrap/Button";
+import axios from "axios";
+import "../styles/allbookcreator.css";
+import Searchbar from "../searchbar";
 
 const Allexamadmin = () => {
 
-  const [exam, setExam] = useState([]);
-  const [error, setError] = useState('');
+    const [items, setItems] = useState([]);
+    const user = localStorage.getItem("email");
+    const [searchTerm, setSearchTerm] = useState("");
+  
+    useEffect(() => {
+      axios
+        .get("http://localhost:5004/api/allexamadmin")
+        .then((response) => {
+          console.log(response);
+          setItems(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }, []);
+  
+    const filteredItems = items.filter((book) => {
+      return book.book_name.includes(searchTerm);
+    });
 
   return (
     <div>
-      
-      <Header/>
-
+      <Header />
       <section>
-      <div className="grid-containerr">
-      <h1 style={{ margin:"auto", padding:"20px"}}>ข้อสอบทั้งหมด</h1>
-      <div className="row">
-                    <div className="col-12">
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>ชื่อหนังสือ</th>
-                                    <th>ชื่อบท</th>
-                                    <th>รายละเอียด</th>
-                                    <th>ผู้แจ้ง</th>
-                                    <th>เวลา</th>
-                                    <th>แก้ไข</th>
-                                    <th>ลบ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {exam.map((item, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{item.report_id}</td>
-                                            <td>{item.book_name}</td>
-                                            <td>{item.article_name}</td>
-                                            <td>{item.report_detail}</td>
-                                            <td>{item.reporter}</td>
-                                            <td>{item.date_time}</td>
-                                            <td><Button className="btn btn-danger" 
-                                                        //onClick={() => deleteUser(item.user_id)}
-                                                        >
-                                                            Delete
-                                                        </Button>
-                                                        </td>
-                                        </tr>
-                                    )
-                                }
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                </div>
+        <div className="grid-containerr">
+          <h1>ข้อสอบทั้งหมดของฉัน</h1>
+
+          <div style={{ padding: "10px" }}>
+            <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+          </div>
+
+          <table className="table table-hover">
+            <thead>
+              <tr className="head" style={{ textAlign: "center" }}>
+                <th scope="col" className="t-size">
+                  ลำดับ
+                </th>
+                <th scope="col" className="t-size">
+                  บทความ
+                </th>
+                <th scope="col" className="t-size">
+                  ตอน
+                </th>
+                <th scope="col" className="t-size">
+                  รูปหน้าปกหนังสือ
+                </th>
+                <th scope="col" className="t-size">
+                  แก้ไข
+                </th>
+                <th scope="col" className="t-size">
+                  ลบ
+                </th>
+              </tr>
+            </thead>
+            <tbody className="table-group-divider">
+              {filteredItems.length === 0 ? (
+                <tr>
+                  <td colSpan="6">
+                    ไม่มีรายการบทของหนังสือที่คุณค้นหา
+                    หรือคุณเขียนชื่อบทของหนังสือผิด.
+                  </td>
+                </tr>
+              ) : (
+                filteredItems.map((book, index) => (
+                  <tr key={book.book_id}>
+                        <td key={`book${index + 1}`}>{index + 1}</td>
+                        <td>{book.book_name}</td>
+                        <td>{book.article_name}</td>
+                        <td>
+                        <img
+                            src={book.article_imagedata || book.article_image}
+                            width="100"
+                            height="100"
+                        />
+                        </td>
+                    <td>
+                      {/* <a href={'/admin/book/edit/' + book.book_id} className="btn btn-primary">Edit</a> */}
+                      <Link
+                        className="btn btn-warning amt1"
+                        to={{
+                          pathname: `/Page/editexam_${ book.book_id }`,
+                          state: { book_id: book.book_id },
+                        //   to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
+                        }}
+                      >
+                        แก้ไขข้อสอบ
+                      </Link>
+                    </td>
+                    <td>
+                      <Button
+                        className="btn btn-danger amt2"
+                        //onClick={() => deleteBook(book.book_id)}
+                      >
+                        ลบข้อสอบ
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
     </div>
   )

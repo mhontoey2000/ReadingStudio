@@ -16,7 +16,7 @@ function Allbookcreator() {
     useEffect(() => {
         axios.get('http://localhost:5004/api/allbookarticlecreator?user_email=' + user)
           .then((response) => {
-            console.log(response)
+            console.log(response.data)
             setItems(response.data);
           })
           .catch((error) => {
@@ -43,9 +43,10 @@ function Allbookcreator() {
                         <thead>
                             <tr className="head" style={{ textAlign: "center"}}>
                                 <th scope="col" className='t-size'>ลำดับ</th>
-                                <th scope="col" className='t-size'>หนังสือ</th>
-                                <th scope="col" className='t-size'>คำอธิบายหนังสือ</th>
-                                <th scope="col" className='t-size'>รูปหน้าปกหนังสือ</th>
+                                <th scope="col" className='t-size'>บทความ</th>
+                                <th scope="col" className='t-size'>รายการตอนของบทความ</th>
+                                <th scope="col" className='t-size'>รูปหน้าปกบทความ</th>
+                                <th scope="col" className='t-size'>สถานะ</th>
                                 <th scope="col" className='t-size'>แก้ไขบทความ</th>
                                 <th scope="col" className='t-size'>แก้ไขตอน</th>
                                 <th scope="col" className='t-size'>ลบ</th>
@@ -74,6 +75,11 @@ function Allbookcreator() {
                                         <td>
                                             <img src={book.book_imagedata || book.book_image} width="100" height="100" alt={book.book_name} />
                                         </td>
+                                        
+                                        <td>
+                                            <Button>{book.status_book}</Button>
+                                        </td>
+                                        
                                         <td>
                                             <Link
                                                 className="btn btn-warning amt1"

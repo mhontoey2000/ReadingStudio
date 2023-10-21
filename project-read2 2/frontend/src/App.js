@@ -38,6 +38,7 @@ import Edituser from "./admin/edituser";
 import { useEffect, useState } from "react";
 import Toaddarticle from "./creator/toaddarticle";
 import Toaddarticleadmin from "./admin/toaddarticleadmin";
+import Analysislevel from "./creator/analysislevel";
 
 
 const App = () => {
@@ -260,6 +261,12 @@ const App = () => {
           path="/Page/toaddarticleadmin"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Toaddarticleadmin />
+          }
+        />
+        <Route
+          path="/Page/analysislevel"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Analysislevel />
           }
         />
 

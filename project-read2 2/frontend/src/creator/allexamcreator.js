@@ -50,7 +50,7 @@ function Allexamcreator() {
                   บทความ
                 </th>
                 <th scope="col" className="t-size">
-                  ตอน
+                  รายการตอนของบทความ
                 </th>
                 <th scope="col" className="t-size">
                   รูปหน้าปกหนังสือ
@@ -79,7 +79,7 @@ function Allexamcreator() {
                         <td>{book.article_name}</td>
                         <td>
                         <img
-                            src={book.book_imagedata || book.book_image}
+                            src={book.article_imagedata || book.article_image}
                             width="100"
                             height="100"
                         />
@@ -89,7 +89,7 @@ function Allexamcreator() {
                       <Link
                         className="btn btn-warning amt1"
                         to={{
-                          pathname: "/Page/articleedit",
+                          pathname: "/Page/editexam",
                           state: { book_id: book.book_id },
                         }}
                       >
