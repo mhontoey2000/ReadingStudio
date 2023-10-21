@@ -4,7 +4,7 @@ import Header from './header';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Searchbar from './searchbar';
 import formatTime from './formattime';
@@ -28,6 +28,30 @@ function Bookdetail(match) {
   const [qitems, setqItems] = useState([]);
   const [visibleDiv, setVisibleDiv] = useState('เนื้อหา');
 
+  const history = useHistory();
+  const [submittedAnswers, setSubmittedAnswers] = useState([]);
+
+  const handleAnswerChange = (questionIndex, selectedOptionId) => {
+    // Clone the submittedAnswers array to avoid mutating the state directly
+    const newSubmittedAnswers = [...submittedAnswers];
+  
+    // Update the answer for the specified question
+    newSubmittedAnswers[questionIndex] = selectedOptionId;
+  
+    // Update the state with the new answers
+    setSubmittedAnswers(newSubmittedAnswers);
+  };
+  
+  const handleExamSubmit = () => {
+    // CalculathandleExamSubmite the score by comparing submitted answers to correct answers
+    //const score = calculateScore(submittedAnswers, qitems);
+    // Redirect to the Score page and pass the score and exam details
+    history.push({
+      pathname: '/Page/score',
+      state: { submittedAnswers: submittedAnswers, examDetails: qitems, articleid: articleid },
+    });
+  };
+
   const handleButtonClick = (divToShow) => {
     setVisibleDiv(divToShow);
   };
@@ -46,6 +70,7 @@ function Bookdetail(match) {
       .then((response) => {
         let tempArr = response.data.slice().reverse();
         setVitems(tempArr);
+        console.log("tempArr",tempArr)
       })
       .catch((error) => {
         console.error(error);
@@ -281,7 +306,7 @@ function Bookdetail(match) {
 
           <div className="grid-container" id="myDIV3" style={{ display: visibleDiv === 'ข้อสอบ' ? 'block' : 'none' }}>
             <div>
-              {["admin", "creator"].includes(usertype) && (
+              {/* {["admin", "creator"].includes(usertype) && (
                  <div className="addV">
                  {Array.isArray(qitems) && qitems.length > 0 && (
                    <Link
@@ -292,8 +317,8 @@ function Bookdetail(match) {
                    </Link>
                  )}
                </div>
-              )}
-              {Array.isArray(qitems) && Vitems.length > 0 ? (
+              )} */}
+              {Array.isArray(qitems) && qitems.length > 0 ? (
                 qitems.map((question, index) => (
                 <div className="v-item" key={question.question_id}>
                   <div className="vno" key={`vocabs_${index}`}>
@@ -314,6 +339,7 @@ function Bookdetail(match) {
                             value={option.option_id}
                             name={`radioOption_${index}`}
                             id={`option_${optionIndex}`}
+                            onChange={() => handleAnswerChange(index, option.option_id)}
                           />
                           <label htmlFor={`option_${optionIndex}`}>{option.option_text}</label>
                         </div>
@@ -325,17 +351,20 @@ function Bookdetail(match) {
                 <div className="no-items">ไม่มีชุดข้อสอบในตอนของบทความนี้.</div>
               )}
             </div>
-            {["admin", "creator"].includes(usertype) && (
+            {/* {["admin", "creator"].includes(usertype) && ( */}
               <div className="addV" style={{ textAlign: 'center' }}>
-                <Link
+                {/* <Link
                   style={{ background: 'red' }}
                   className="btn btn-warning tc"
                   to={{ pathname: "/Page/score", state: { book_id: bookid, article_id: articleid } }}
                 >
                   ส่งคำตอบ
-                </Link>
+                </Link> */}
+                <button className="btn btn-warning tc" onClick={handleExamSubmit}>
+                  ส่งคำตอบ
+                </button>
               </div>
-            )}
+            {/* )} */}
           </div>
         </div>
       </section>
