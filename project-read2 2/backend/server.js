@@ -768,7 +768,7 @@ app.get('/api/allexamcreator', function (req, res) {
     LEFT JOIN questions q ON e.exam_id = q.exam_id
     WHERE b.book_creator = ? AND e.exam_id IS NOT NULL
     GROUP BY b.book_id, b.book_name, b.book_image, b.book_creator, e.exam_id
-    HAVING COUNT(DISTINCT a.article_name) = 1`,
+    HAVING COUNT(DISTINCT e.exam_id) = 1`,
     [email],
     function (err, results) {
       if (err) {
