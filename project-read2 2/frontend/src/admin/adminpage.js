@@ -15,6 +15,23 @@ function Adminpage() {
 
           <div className="fga"> 
             <div className="btn-toolbar d-flex justify-content-center">
+              
+            <Button
+                type="button"
+                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
+                href="./addbook"
+              >
+                <i className="bi bi-file-earmark-plus-fill"></i> 1.สร้างบทความ
+              </Button>
+
+              <Button
+                type="button"
+                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
+                href="./toaddarticleadmin"
+              >
+                <i className="bi bi-file-earmark-plus-fill"></i> 2.สร้างตอนของบทความ
+              </Button>
+
               <Button
                 type="button"
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
@@ -31,13 +48,13 @@ function Adminpage() {
                 <i className="bi bi-book-fill"></i> จัดการบทความ
               </Button>
 
-              <Button
+              {/* <Button
                 type="button"
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./allarticleadmin"
               >
                 <i className="bi bi-book-fill"></i> จัดการตอนของบทความ
-              </Button>
+              </Button> */}
 
               <Button
                 type="button"
