@@ -24,15 +24,16 @@ function Addarticle() {
     const [description, setDescription] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
-    let imageFile = null;
-    let soundFile = null;
-    
-    function handleImageUpload(event) {
-      imageFile = event.target.files[0];
+    const [imageFile, setimageFile] = useState(null);
+    const [soundFile, setsoundFile] = useState(null);
+
+    const handleImageUpload = (event) => {
+      const aimageFile = event.target.files[0];
+      setimageFile(aimageFile)
     }
-    
-    function handleSoundUpload(event) {
-      soundFile = event.target.files[0];
+    const handleSoundUpload = (event) => {
+      const asoundFile = event.target.files[0];
+      setsoundFile(asoundFile)
     }
     
 
