@@ -47,7 +47,7 @@ function Allexamcreator() {
                   ลำดับ
                 </th>
                 <th scope="col" className="t-size">
-                  หนังสือ
+                  บทความ
                 </th>
                 <th scope="col" className="t-size">
                   ตอน
@@ -93,7 +93,7 @@ function Allexamcreator() {
                           state: { book_id: book.book_id },
                         }}
                       >
-                        แก้ไข
+                        แก้ไขข้อสอบ
                       </Link>
                     </td>
                     <td>
@@ -101,7 +101,7 @@ function Allexamcreator() {
                         className="btn btn-danger amt2"
                         //onClick={() => deleteBook(book.book_id)}
                       >
-                        Delete
+                        ลบข้อสอบ
                       </Button>
                     </td>
                   </tr>

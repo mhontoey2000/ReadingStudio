@@ -37,6 +37,8 @@ import Detailedit from "./creator/detailedit";
 import Edituser from "./admin/edituser";
 import { useEffect, useState } from "react";
 import Toaddarticle from "./creator/toaddarticle";
+import Toaddarticleadmin from "./admin/toaddarticleadmin";
+
 
 const App = () => {
   const user_data = localStorage.getItem("access_token");
@@ -252,6 +254,12 @@ const App = () => {
           path="/Page/toaddarticle"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Toaddarticle />
+          }
+        />
+        <Route
+          path="/Page/toaddarticleadmin"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Toaddarticleadmin />
           }
         />
 

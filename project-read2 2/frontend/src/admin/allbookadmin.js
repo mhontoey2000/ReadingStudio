@@ -12,11 +12,13 @@ const Allbookadmin = () => {
     const [items, setItems] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [bookToDelete, setBookToDelete] = useState(null);
+    const user = localStorage.getItem('email');
 
     useEffect(() => {
-        axios.get('http://localhost:5004/api/book')
+        axios.get('http://localhost:5004/api/allbookarticleadmin')
             .then((response) => {
                 setItems(response.data);
+                console.log(items)
             })
             .catch((error) => {
                 console.error(error);
@@ -52,77 +54,118 @@ const Allbookadmin = () => {
             <Header />
             <section>
                 <div className="grid-containerr">
+                    <div className='row'>
                     <h1>บทความทั้งหมด</h1>
                     <table className="table table-hover">
                         <thead>
                             <tr className="head" style={{ textAlign: "center" }}>
                                 <th
                                     scope="col"
-                                    className='t-size'
+                                    className='col-sm-1'
                                 >
-                                    ID
+                                    ลำดับ
                                 </th>
                                 <th
                                     scope="col"
-                                    className='t-size'
+                                    className='col-sm-2'
                                 >
                                     บทความ
                                 </th>
                                 <th
                                     scope="col"
-                                    className='t-size'
+                                    className='col-sm-5'
                                 >
-                                    คำอธิบายบทความ
+                                    รายการตอนของบทความ
                                 </th>
                                 <th
                                     scope="col"
-                                    className='t-size'
+                                    className='col-sm-1'
                                 >
                                     รูปหน้าปกบทความ
                                 </th>
                                 <th
                                     scope="col"
-                                    className='t-size'
+                                    className='col-sm-1'
                                 >
-                                    แก้ไข
+                                    สถานะ
                                 </th>
                                 <th
                                     scope="col"
-                                    className='t-size'
+                                    className='col-sm-1'
+                                >
+                                    แก้ไขบทความ
+                                </th>
+                                <th
+                                    scope="col"
+                                    className='col-sm-1'
+                                >
+                                    แก้ไขตอน
+                                </th>
+                                <th
+                                    scope="col"
+                                    className='col-sm-1'
                                 >
                                     ลบ
                                 </th>
                             </tr>
                         </thead>
                         <tbody className="table-group-divider">
-                            {items.map((book) => (
+                            {items.map((book, index) => (
                                 <tr key={book.book_id}>
-                                    <td>{book.book_id}</td>
-                                    <td>{book.book_name}</td>
-                                    <td>{book.book_detail}</td>
-                                    <td>
+                                    <td className='col-sm-1' key={`book${index + 1}`}>{index + 1}</td>
+                                    <td className='col-sm-2'>{book.book_name}</td>
+                                    {/* <td className='col-sm-4'>{book.book_detail}</td> */}
+                                    <td className='col-sm-4'>
+                                            {book.article_name.map((article, index) => (
+                                                <span key={index}>
+                                                    {article}
+                                                    {index < book.article_name.length - 1 && ", "} {/* Add a comma if not the last article */}
+                                                </span>
+                                            ))}
+                                        </td>
+                                    <td className='col-sm-1'>
                                         <img src={book.book_imagedata || book.book_image} width="100" height="100" />
                                     </td>
-                                    <td>
+                                    <td className='col-sm-1'>
+                                            <Button
+                                                className="btn btn-success"
+                                            >
+                                                {book.status_book}
+                                            </Button>
+                                        </td>
+                                    <td className='col-sm-1'>
+                                        {user.includes(book.book_creator) && (
                                         <Link
                                             className="btn btn-warning amt1"
                                             to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
                                         >
-                                            แก้ไข
+                                            แก้ไขบทความ
                                         </Link>
+                                        )}
                                     </td>
-                                    <td>
+                                    <td className='col-sm-1'>
+                                    {user.includes(book.book_creator) && (
+                                            <Link
+                                                className="btn btn-warning amt1"
+                                                to={{ pathname: '/Page/articleedit', state: { book_id: book.book_id } }}
+                                            >
+                                                แก้ไขตอน
+                                            </Link>
+                                            )}
+                                        </td>
+                                    <td className='col-sm-1'>
                                         <Button
                                             className="btn btn-danger amt2"
                                             onClick={() => deleteBook(book.book_id)}
                                         >
-                                            Delete
+                                            ลบบทความ
                                         </Button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </section>
 

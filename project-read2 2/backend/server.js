@@ -708,6 +708,29 @@ app.get('/api/allbookcreator', function (req, res) {
   
 });
 
+app.get('/api/allbookadmin', function (req, res) {
+  const email = req.query.user_email;
+
+  connection.query(
+    `SELECT * FROM book`,
+    [email],
+      function(err, results) {
+        const bookdata = results.map((book) => {
+          const img = helper.convertBlobToBase64(book.book_imagedata);
+          return {
+            ...book,
+            book_imagedata: img,
+          };
+        });
+        // console.log(results);
+        console.log(bookdata);
+        res.json(bookdata);
+        // res.json(results);
+      }
+    );
+  
+});
+
 app.get('/api/allbookarticlecreator', function (req, res) {
   const email = req.query.user_email;
 
@@ -738,6 +761,51 @@ app.get('/api/allbookarticlecreator', function (req, res) {
             book_detail: row.book_detail,
             book_image: row.book_image,
             book_creator: row.book_creator,
+            article_name: [],
+          };
+        }
+        // Add the article_name to the book's article_name array
+        if (row.article_name) {
+          uniqueBooks[book_id].article_name.push(row.article_name);
+        }
+      });
+  
+      const bookdata = Object.values(uniqueBooks);
+      console.log(bookdata)
+      res.json(bookdata);
+    }
+  );
+  
+});
+
+app.get('/api/allbookarticleadmin', function (req, res) {
+
+  connection.query(
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book,
+            GROUP_CONCAT(article.article_name) AS article_name
+    FROM book
+    LEFT JOIN article ON book.book_id = article.book_id
+    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book`,
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      const uniqueBooks = {}; // Store unique books by book_id
+  
+      results.forEach((row) => {
+        const book_id = row.book_id;
+        // If the book is not in the uniqueBooks object, add it
+        if (!uniqueBooks[book_id]) {
+          uniqueBooks[book_id] = {
+            book_id: book_id,
+            book_name: row.book_name,
+            book_detail: row.book_detail,
+            book_image: row.book_image,
+            book_creator: row.book_creator,
+            status_book: row.status_book,
             article_name: [],
           };
         }
