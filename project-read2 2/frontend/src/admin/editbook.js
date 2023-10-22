@@ -97,7 +97,7 @@ function Editbook() {
                   </div>
                   <div className="mb-3">
                     <label htmlFor="articledetail">เนื้อหา</label>
-                    <input
+                    <textarea
                       type="text"
                       className="form-control"
                       id="articledetail"
