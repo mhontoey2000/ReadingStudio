@@ -217,6 +217,9 @@ function Addarticle() {
                   accept="audio/*"
                   onChange={handleSoundUpload}
                 />
+                
+              </div>
+              <div className='d-flex justify-content-center align-items-center'>
                 {uploadedSound && (
                 <div className="uploaded-sound-container">
                   <audio controls>
@@ -226,6 +229,7 @@ function Addarticle() {
                 </div>
               )}
               </div>
+              
               <div className="btn-containerr">
                 <div className="btn-group me-2">
                   <Button
