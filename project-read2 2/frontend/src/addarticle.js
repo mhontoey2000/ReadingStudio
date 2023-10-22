@@ -201,7 +201,10 @@ function Addarticle() {
                   accept="image/*"
                   onChange={handleImageUpload}
                 />
-                {uploadedImage && (
+                
+              </div>
+              <div className='d-flex justify-content-center align-items-center'>
+              {uploadedImage && (
                   <div className="uploaded-image-container">
                     <img src={uploadedImage} alt="Uploaded Image" style={{ maxWidth: '100%', maxHeight: '200px' }}/>
                   </div>
@@ -276,12 +279,12 @@ function Addarticle() {
 
       <Modal show={successModal} onHide={() => setSuccessModal(false)}>
         <Modal.Header closeButton onClick={handleSuccessModalOK}>
-          <Modal.Title>Success</Modal.Title>
+          <Modal.Title>เรียบร้อย</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Book added successfully</Modal.Body>
+        <Modal.Body>ตอนถูกเพิ่มแล้ว</Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleSuccessModalOK}>
-            OK
+            ตกลง
           </Button>
         </Modal.Footer>
       </Modal>
