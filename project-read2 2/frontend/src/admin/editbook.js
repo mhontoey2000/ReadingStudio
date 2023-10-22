@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import "../styles/editall.css";
 import { useHistory } from 'react-router-dom';
 
+
 function Editbook() {
     const history = useHistory();
     const {bookid} = useParams();
@@ -124,6 +125,7 @@ function Editbook() {
                       />
                     )}
                   </div>
+                  <hr className="line1"/>
                   <div className="btn-containerr">
                     <div className="btn-group me-2">
                       <Button

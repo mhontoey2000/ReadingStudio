@@ -382,10 +382,12 @@ function Editarticle() {
               </div>
 
               <hr className="line1"/>
-              <div className="ExamBox">
+              <div className="ExamBox d-flex">
+                <div className="tfe">
+                    <h3>ข้อสอบ:</h3>
+                </div>
                 {Array.isArray(qitems) && qitems.length > 0 ? (
-                    <div className="d-flex">
-                        <h3>ข้อสอบ:</h3>
+                        
                         <Link
                             className="btn btn-warning amt1"
                             style={{marginLeft:"10px"}}
@@ -397,7 +399,6 @@ function Editarticle() {
                         >
                             แก้ไขข้อสอบ
                         </Link>
-                    </div>
                     ) : (
                         <div>
                             <Link
