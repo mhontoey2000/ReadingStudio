@@ -47,6 +47,16 @@ function Creator() {
               >
                 <i className="bi bi-file-earmark-plus-fill"></i> 2.สร้างตอนของบทความ
               </Button>
+
+              <Button
+                type="button"
+                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
+                href="./analysislevel"
+              >
+                <i class="bi bi-clipboard-data-fill"></i>{" "}
+                3.วิเคราะห์ระดับบทความ
+              </Button>
+              
               </div>)}
 
               <Button
@@ -73,15 +83,6 @@ function Creator() {
               >
                 <i className="bi bi-file-earmark-spreadsheet-fill"></i>{" "}
                 ข้อสอบของฉัน
-              </Button>
-
-              <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./analysislevel"
-              >
-                <i class="bi bi-clipboard-data-fill"></i>{" "}
-                วิเคราะห์ระดับบทความ
               </Button>
 
               {/* <Button

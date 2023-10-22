@@ -329,7 +329,7 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
       console.log(book_id);
 
       connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata, book_creator, status_book) VALUES (?, ?, ?, ?, ?, ?, ?)", 
-      [book_id, book_name, book_detail,pathimage,binaryData,book_creator,"pending"], 
+      [book_id, book_name, book_detail,pathimage,binaryData,book_creator,"creating"], 
       (err, result) => {
           if (err) {
               console.error('Error adding book:', err);
@@ -741,6 +741,53 @@ app.get('/api/allbookarticlecreator', function (req, res) {
     WHERE book.book_creator = ? 
     GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book`,
     [email],
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      const uniqueBooks = {}; // Store unique books by book_id
+  
+      results.forEach((row) => {
+        const book_id = row.book_id;
+        // If the book is not in the uniqueBooks object, add it
+        if (!uniqueBooks[book_id]) {
+          uniqueBooks[book_id] = {
+            book_id: book_id,
+            book_name: row.book_name,
+            book_detail: row.book_detail,
+            book_image: row.book_image,
+            book_creator: row.book_creator,
+            status_book: row.status_book,
+            article_name: [],
+          };
+        }
+        // Add the article_name to the book's article_name array
+        if (row.article_name) {
+          uniqueBooks[book_id].article_name.push(row.article_name);
+        }
+      });
+  
+      const bookdata = Object.values(uniqueBooks);
+      console.log(bookdata)
+      res.json(bookdata);
+    }
+  );
+  
+});
+
+
+app.get('/api/forapprove', function (req, res) {
+
+  connection.query(
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book,
+            GROUP_CONCAT(article.article_name) AS article_name
+    FROM book
+    LEFT JOIN article ON book.book_id = article.book_id
+    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book`,
+    
     function (err, results) {
       if (err) {
         console.error(err);

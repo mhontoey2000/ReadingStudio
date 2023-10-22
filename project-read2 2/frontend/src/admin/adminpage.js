@@ -72,6 +72,14 @@ function Adminpage() {
               >
                 <i className="bi bi-file-person-fill"></i> จัดการบัญชี
               </Button>
+
+              <Button
+                type="button"
+                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
+                href="./forapprovebook"
+              >
+                <i className="bi bi-file-person-fill"></i> คำขออนุมัติบทความ
+              </Button>
             </div>
           </div>
 
