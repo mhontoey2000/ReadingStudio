@@ -89,14 +89,14 @@ function Articleedit() {
                 <th scope="col" className="t-size">
                   ลำดับ
                 </th>
-                <th scope="col" className="t-size">
+                {/* <th scope="col" className="t-size">
                   หนังสือ
+                </th> */}
+                <th scope="col" className="t-size">
+                  ชื่อตอน
                 </th>
                 <th scope="col" className="t-size">
-                  คำอธิบายหนังสือ
-                </th>
-                <th scope="col" className="t-size">
-                  รูปหน้าปกหนังสือ
+                  รูปหน้าปกของตอน
                 </th>
                 <th scope="col" className="t-size">
                   แก้ไข
@@ -119,7 +119,7 @@ function Articleedit() {
                   <tr key={article.article_id}>
                     <td key={`article${index + 1}`}>{index + 1}</td>
                     <td>{article.article_name}</td>
-                    <td>{article.article_detail}</td>
+                    {/* <td>{article.article_detail}</td> */}
                     <td>
                       <img
                         src={article.article_imagedata || article.article_images || 'url_to_default_image'}
@@ -131,10 +131,7 @@ function Articleedit() {
                     <td>
                       <Link
                         className="btn btn-warning amt2"
-                        to={{
-                          pathname: "/Page/detailedit",
-                          state: { article_id: article.article_id },
-                        }}
+                        to={{ pathname: `/Page/editarticle_${ article.article_id }`, state: { article_id: article.article_id } }}              
                       >
                         แก้ไข
                       </Link>
@@ -142,7 +139,7 @@ function Articleedit() {
                     <td>
                       <Button className="btn btn-danger amt2">
                         {/* onClick={() => deleteBook(book.book_id)} */}
-                        Delete
+                        ลบตอน
                       </Button>
                     </td>
                   </tr>
