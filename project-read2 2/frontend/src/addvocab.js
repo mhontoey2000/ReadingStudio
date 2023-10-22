@@ -167,7 +167,7 @@ function Addvocab() {
                              className="btn1 btn-primary"
                              onClick={sendVocab}
                             >
-                                ส่ง
+                                เพิ่ม
                             </Button>
                         </div>
                     </div>

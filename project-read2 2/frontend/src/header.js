@@ -81,7 +81,7 @@ function Header() {
               <img className='logohome' src="../picture/logo2.png"/>
             </Navbar.Brand>
             <div className="align-items-center ms-2"> {/* Wrap the text in a div */}
-              <p className="welcometext">ยินดีต้อนรับ,คุณ {firstname} {surname}</p>
+              <p className="welcometext">ยินดีต้อนรับ,คุณ {firstname}</p>
             </div>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas

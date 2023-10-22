@@ -23,7 +23,8 @@
 .btn-containerr {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 40px;
+    
   }
   
 .btnE{
@@ -41,4 +42,23 @@
 .fgE h2{
     text-align: center;
     padding-bottom: 10px;
+}
+
+.VocabBox{
+  margin-top: 20px;
+  border-radius: 20px;
+  border: 1px solid #b4dcfc;
+  padding: 20px;
+  background-color: #b4dcfc;
+}
+
+.ExamBox{
+  margin-top: 20px;
+}
+
+.line1{
+  border: none;
+  height: 1px; /* Adjust the height as needed */
+  background-color: #000; /* Adjust the color as needed */
+  margin: 20px 50px; 
 }
