@@ -278,39 +278,26 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
 });
 
 // แก้เพิ่ม
-  app.post('/api/addbook',upload.single('book_image'),  (req, res) => {
+  app.post('/api/addbook',upload.single('book_image'),async (req, res) => {
     const { book_name, book_detail, book_creator } = req.body;
     console.log(book_name);
     console.log(book_detail);
     const fs = require('fs');
 
-    const filePath = req.file ? req.file.path : null;
-    console.log(filePath);
+    const imageFile = req.file ? req.file : null;
 
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        console.error('Error reading file:', err);
-        return res.status(500).send('Error reading file');
-      }
-
-    const binaryData = data;
+    let imagepath = null;
+    let imageByte = null;
     
-    // fs.unlink(filePath, (err) => {
-    //   if (err) {
-    //     console.error('Error deleting file:', err);
-    //   }
-    //   console.log('File deleted');
-    // });
-
-    let fileName = '../frontend/public/picture/'+Date.now() + '_image.jpg'; // ตำแหน่งของไฟล์ที่คุณต้องการบันทึก
-    pathimage = fileName.replace('../frontend/public', '');
-    fs.writeFile(fileName, binaryData, (err) => {
-      if (err) {
-        console.error('Error saving file:', err);
-      }
-      
-      console.log('File saved:', fileName);
-    });
+    if(imageFile)
+    {
+      imageByte = await helper.readFileAsync(imageFile.path);
+      console.log(imageFile,imageFile.path ,imageByte);
+      let img = helper.generateUniqueFileName('picture');
+      imagepath = img.pathimage;
+      await helper.writeFileAsync(img.fileName ,imageByte);
+      fs.unlinkSync(imageFile.path);
+    }
     connection.query("SELECT book_id FROM book ORDER BY book_id DESC LIMIT 1", (err, results) => {
       if (err) {
           console.error('Error fetching last book_id:', err);
@@ -329,7 +316,7 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
       console.log(book_id);
 
       connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata, book_creator, status_book) VALUES (?, ?, ?, ?, ?, ?, ?)", 
-      [book_id, book_name, book_detail,pathimage,binaryData,book_creator,"creating"], 
+      [book_id, book_name, book_detail,imagepath,imageByte,book_creator,"creating"], 
       (err, result) => {
           if (err) {
               console.error('Error adding book:', err);
@@ -339,7 +326,6 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
               res.status(200).json({ message: 'Book added successfully' });
           }
       });
-    });
     });
   });
 
@@ -736,12 +722,12 @@ app.get('/api/allbookarticlecreator', function (req, res) {
   const email = req.query.user_email;
 
   connection.query(
-    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book,
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image,book.book_imagedata, book.book_creator, book.status_book,
             GROUP_CONCAT(article.article_name) AS article_name
     FROM book
     LEFT JOIN article ON book.book_id = article.book_id
     WHERE book.book_creator = ? 
-    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book`,
+    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image,book.book_imagedata, book.book_creator, book.status_book`,
     [email],
     function (err, results) {
       if (err) {
@@ -755,12 +741,14 @@ app.get('/api/allbookarticlecreator', function (req, res) {
       results.forEach((row) => {
         const book_id = row.book_id;
         // If the book is not in the uniqueBooks object, add it
+        const img = helper.convertBlobToBase64(row.book_imagedata);
         if (!uniqueBooks[book_id]) {
           uniqueBooks[book_id] = {
             book_id: book_id,
             book_name: row.book_name,
             book_detail: row.book_detail,
             book_image: row.book_image,
+            book_imagedata: img,
             book_creator: row.book_creator,
             status_book: row.status_book,
             article_name: [],
@@ -784,11 +772,11 @@ app.get('/api/allbookarticlecreator', function (req, res) {
 app.get('/api/forapprove', function (req, res) {
 
   connection.query(
-    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book,
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image,book.book_imagedata, book.book_creator, book.status_book,
             GROUP_CONCAT(article.article_name) AS article_name
     FROM book
     LEFT JOIN article ON book.book_id = article.book_id
-    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book`,
+    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image,book.book_imagedata, book.book_creator, book.status_book`,
     
     function (err, results) {
       if (err) {
@@ -802,12 +790,15 @@ app.get('/api/forapprove', function (req, res) {
       results.forEach((row) => {
         const book_id = row.book_id;
         // If the book is not in the uniqueBooks object, add it
+        const img = helper.convertBlobToBase64(row.book_imagedata);
+
         if (!uniqueBooks[book_id]) {
           uniqueBooks[book_id] = {
             book_id: book_id,
             book_name: row.book_name,
             book_detail: row.book_detail,
             book_image: row.book_image,
+            book_imagedata: img,
             book_creator: row.book_creator,
             status_book: row.status_book,
             article_name: [],
@@ -830,11 +821,11 @@ app.get('/api/forapprove', function (req, res) {
 app.get('/api/allbookarticleadmin', function (req, res) {
 
   connection.query(
-    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book,
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image,,book.book_imagedata, book.book_creator, book.status_book,
             GROUP_CONCAT(article.article_name) AS article_name
     FROM book
     LEFT JOIN article ON book.book_id = article.book_id
-    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image, book.book_creator, book.status_book`,
+    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image,book.book_imagedata, book.book_creator, book.status_book`,
     function (err, results) {
       if (err) {
         console.error(err);
@@ -846,13 +837,14 @@ app.get('/api/allbookarticleadmin', function (req, res) {
   
       results.forEach((row) => {
         const book_id = row.book_id;
-        // If the book is not in the uniqueBooks object, add it
+        const img = helper.convertBlobToBase64(row.book_imagedata);
         if (!uniqueBooks[book_id]) {
           uniqueBooks[book_id] = {
             book_id: book_id,
             book_name: row.book_name,
             book_detail: row.book_detail,
             book_image: row.book_image,
+            book_imagedata: img,
             book_creator: row.book_creator,
             status_book: row.status_book,
             article_name: [],
