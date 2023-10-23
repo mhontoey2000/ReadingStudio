@@ -56,14 +56,14 @@ function Adminpage() {
                 <i className="bi bi-book-fill"></i> จัดการตอนของบทความ
               </Button> */}
 
-              <Button
+              {/* <Button
                 type="button"
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./allexamadmin"
               >
                 <i className="bi bi-file-earmark-spreadsheet-fill"></i>{" "}
                 จัดการข้อสอบ
-              </Button>
+              </Button> */}
 
               <Button
                 type="button"

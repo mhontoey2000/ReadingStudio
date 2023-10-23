@@ -12,7 +12,8 @@ import formatTime from './formattime';
 function Bookdetail(match) {
   const [items, setItems] = useState([]);
   const location = useLocation();
-  const [articleid, setArticleid] = useState("");
+  // const [articleid, setArticleid] = useState("");
+  const articleid = location.state.article_id;
   const user = localStorage.getItem('email');
   const [Vitems, setVitems] = useState([]);
   const [bookid, setBookid] = useState(false);
@@ -78,12 +79,12 @@ function Bookdetail(match) {
   }, [articleid]);
 
   useEffect(() => {
-    if (!location.state || location.state.article_id === undefined) {
-      // Redirect to the home page if book_id is not defined
-      history.push('/Page/home');
-      return;
-    }
-    setArticleid(location.state.article_id)
+    // if (!location.state || location.state.article_id === undefined) {
+      
+    //   history.push('/Page/home');
+    //   return;
+    // }
+    // setArticleid(location.state.article_id)
     axios.get(`http://localhost:5004/api/articledetail/${articleid}`)
     .then((response) => {
       setItems(response.data);

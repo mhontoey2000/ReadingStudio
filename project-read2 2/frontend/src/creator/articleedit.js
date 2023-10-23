@@ -28,24 +28,43 @@ function Articleedit() {
   // console.log(bookid)
 
   useEffect(() => {
+    setLoading(true); 
+
+  setTimeout(() => {
     
     axios
       .get("http://localhost:5004/api/userdata?user_email=" + user)
       .then((response) => {
         setUsertype(response.data[0].user_type);
+        setLoading(false); 
+        setScreenLoaded(true);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setLoading(false); 
+        setScreenLoaded(true);
+      });
+      
+      }, 5000);
   }, [user]);
 
   useEffect(() => {
+    setLoading(true); 
+
+  setTimeout(() => {
     axios
       .get(`http://localhost:5004/api/article/${bookid}`)
       .then((response) => {
         setItems(response.data);
+        setLoading(false); 
+        setScreenLoaded(true); 
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false); 
+        setScreenLoaded(true);
       });
+    }, 5000);
   }, [bookid]);
 
   const filteredItems = items.filter((article) => {
@@ -161,6 +180,9 @@ function Articleedit() {
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
           </div>
 
+          {loadingVisible ? ( 
+            <Loading />
+          ) : (
           <table className="table table-hover">
             <thead>
               <tr className="head" style={{ textAlign: "center" }}>
@@ -171,10 +193,10 @@ function Articleedit() {
                   ชื่อตอน
                 </th>
                 <th scope="col" className="t-size">
-                  รายละเอียด
+                  รูปหน้าปกของตอน
                 </th>
                 <th scope="col" className="t-size">
-                  รูปหน้าปกของตอน
+                  ระดับบทความ
                 </th>
                 <th scope="col" className="t-size">
                   วิเคราะห์ระดับบทความ
@@ -211,7 +233,7 @@ function Articleedit() {
                         height="100"
                       />
                     </td>
-                    <td>{article.article_detail}</td>
+                    <td>{article.article_level}</td>
                     <td>
                       <Button
                         className="btn btn-warning amt2"
@@ -242,6 +264,7 @@ function Articleedit() {
               )}
             </tbody>
           </table>
+          )}
         </div>
       </section>
 

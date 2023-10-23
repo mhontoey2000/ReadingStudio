@@ -16,7 +16,8 @@ function Bookarticle({ match }) {
     const [items, setItems] = useState([]);
     const location = useLocation();
     const history = useHistory();
-    const [bookid, setBookID] = useState("");
+    // const [bookid, setBookID] = useState("");
+    const bookid = location.state.book_id;
     const user = localStorage.getItem('email');
     const [usertype, setUsertype] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
@@ -31,12 +32,12 @@ function Bookarticle({ match }) {
     }, [user]);
 
     useEffect(() => {
-      if (!location.state || location.state.book_id === undefined) {
-        // Redirect to the home page if book_id is not defined
-        history.push('/Page/home');
-        return;
-      }
-      setBookID(location.state.book_id)
+      // if (!location.state || location.state.book_id === undefined) {
+      //   // Redirect to the home page if book_id is not defined
+      //   history.push('/Page/home');
+      //   return;
+      // }
+      // setBookID(location.state.book_id)
         axios.get(`http://localhost:5004/api/article/${bookid}`)
           .then((response) => {
             setItems(response.data);
@@ -44,7 +45,7 @@ function Bookarticle({ match }) {
           .catch((error) => {
             console.error(error);
           });
-      }, [location, history]);
+      }, [bookid]);
 
       // Function to filter items based on the search term
       const filteredItems = items.filter((item) => {
