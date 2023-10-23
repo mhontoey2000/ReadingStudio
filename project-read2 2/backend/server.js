@@ -551,7 +551,9 @@ app.post('/api/login', (req, res) => {
           const passwordMatch = await bcrypt.compare(password, user.user_password);
 
           if (passwordMatch) {
-            if(user.approval_status === 'approved'){
+            // if(user.approval_status === 'approved')
+            if(true)
+            {
               const accessToken = generateAccessToken({ user_id: user.user_id });
               res.status(200).send({ accessToken: accessToken, email: req.body.email });
             }else {
