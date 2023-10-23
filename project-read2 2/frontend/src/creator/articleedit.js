@@ -31,7 +31,6 @@ function Articleedit() {
     setLoading(true); 
 
   setTimeout(() => {
-    
     axios
       .get("http://localhost:5004/api/userdata?user_email=" + user)
       .then((response) => {
@@ -45,7 +44,7 @@ function Articleedit() {
         setScreenLoaded(true);
       });
       
-      }, 5000);
+      }, 0);
   }, [user]);
 
   useEffect(() => {
@@ -64,7 +63,7 @@ function Articleedit() {
         setLoading(false); 
         setScreenLoaded(true);
       });
-    }, 5000);
+    }, 0);
   }, [bookid]);
 
   const filteredItems = items.filter((article) => {
