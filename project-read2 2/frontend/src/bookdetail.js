@@ -325,36 +325,37 @@ function Bookdetail(match) {
                  )}
                </div>
               )} */}
-              {Array.isArray(qitems) && qitems.length > 0 ? (
+             {Array.isArray(qitems) && qitems.length > 0 ? (
                 qitems.map((question, index) => (
-                <div className="v-item" key={question.question_id}>
-                  <div className="vno" key={`vocabs_${index}`}>
-                    <h5 className="v-title">{`${index + 1}. ${question.question_text}`}</h5>
-                    {question.question_image && (
-                      <img
-                        src={question.question_imagedata}
-                        alt={`Image for question ${index + 1}`}
-                        style={{ maxWidth: '100%', maxHeight: '200px' }}
-                      />
-                    )}
-                    <div>
-                      {question.question_options.map((option, optionIndex) => (
-                        <div key={`option_${optionIndex}`} className="option-container">
-                          <input
-                            type="radio"
-                            className="v-text"
-                            value={option.option_id}
-                            name={`radioOption_${index}`}
-                            id={`option_${optionIndex}`}
-                            onChange={() => handleAnswerChange(index, option.option_id)}
-                          />
-                          <label htmlFor={`option_${optionIndex}`}>{option.option_text}</label>
-                        </div>
-                      ))}
+                  <div className="v-item" key={question.question_id}>
+                    <div className="vno" key={`vocabs_${index}`}>
+                      <h5 className="v-title">{`${index + 1}. ${question.question_text}`}</h5>
+                      {question.question_image && (
+                        <img
+                          src={question.question_imagedata}
+                          alt={`Image for question ${index + 1}`}
+                          style={{ maxWidth: '100%', maxHeight: '200px' }}
+                        />
+                      )}
+                      <div>
+                        {question.question_options.map((option) => (
+                          <div key={`option_${option.option_id}`} className="option-container">
+                            <input
+                              type="radio"
+                              className="v-text"
+                              value={option.option_id}
+                              name={`radioOption_${index}`}
+                              id={`option_${option.option_id}`}
+                              onChange={() => handleAnswerChange(index, option.option_id)}
+                            />
+                            <label htmlFor={`option_${option.option_id}`}>{option.option_text}</label>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))) : (
+                ))
+              ) : (
                 <div className="no-items">ไม่มีชุดข้อสอบในตอนของบทความนี้.</div>
               )}
             </div>
