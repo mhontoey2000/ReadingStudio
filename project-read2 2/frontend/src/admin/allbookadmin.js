@@ -15,10 +15,14 @@ const Allbookadmin = () => {
     const user = localStorage.getItem('email');
 
     useEffect(() => {
+        console.log(user)
         axios.get('http://localhost:5004/api/userdata?user_email=' + user)
             .then(userresponse => {
+            console.log(userresponse)
+
             axios.get('http://localhost:5004/api/allbookarticleadmin')
                 .then((response) => {
+                    console.log(response)
                     const filteredData = response.data.filter(item => {
                         return canEditChapter(userresponse.data[0].user_type ,item.book_creator);
                     });
@@ -158,7 +162,7 @@ const Allbookadmin = () => {
                                     { (
                                             <Link
                                                 className="btn btn-warning amt1"
-                                                to={{ pathname: '/Page/articleedit', state: { book_id: book.book_id } }}
+                                                to={{ pathname: `/Page/articleedit_${book.book_id}`, state: { book_id: book.book_id } }}
                                             >
                                                 แก้ไขตอน
                                             </Link>

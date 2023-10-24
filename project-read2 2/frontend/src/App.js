@@ -216,7 +216,7 @@ const App = () => {
           }
         />
         <Route
-          path="/Page/articleedit"
+          path="/Page/articleedit_:articleid"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Articleedit />
           }

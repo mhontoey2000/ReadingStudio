@@ -125,7 +125,6 @@ const Alluseradmin = () => {
                     <Modal.Title>Confirm Deletion</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Are you sure you want to delete the following user?
                     <p><strong>Name:</strong> {selectedUser && selectedUser.user_name}</p>
                     <p><strong>Surname:</strong> {selectedUser && selectedUser.user_surname}</p>
                     <p><strong>Email:</strong> {selectedUser && selectedUser.user_email}</p>
