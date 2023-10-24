@@ -23,6 +23,7 @@ function Addarticle() {
   const history = useHistory();
   const [bname, setBname] = useState("");
   const [chapter, setChapter] = useState("");
+  const [level, setLevel] = useState("ไม่มีระดับของบทความ");
   const [description, setDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
@@ -104,7 +105,7 @@ function Addarticle() {
       const data = new FormData();
       data.append("book_id", bookid);
       data.append("chapter", chapter);
-      data.append("level", chapter);
+      data.append("level", level);
       data.append("description", description);
       data.append("image", imageFile);
       data.append("sound", soundFile);
