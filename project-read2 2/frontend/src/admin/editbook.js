@@ -37,7 +37,7 @@ function Editbook() {
     }, [bookid]);
 
     const cancelEditBook = () => {
-      history.goBack();
+      history.replace('/Page/allbookadmin')
   }
 
     const updateBdetail = (event) => {
@@ -68,7 +68,7 @@ function Editbook() {
     
       axios.post('http://localhost:5004/api/updatebook', formData)
         .then((response) => {
-          history.push('/Page/allbookadmin');
+          history.replace('/Page/allbookadmin');
         })
         .catch((error) => {
           console.error(error);

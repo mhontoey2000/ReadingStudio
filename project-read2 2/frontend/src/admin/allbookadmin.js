@@ -15,15 +15,26 @@ const Allbookadmin = () => {
     const user = localStorage.getItem('email');
 
     useEffect(() => {
-        axios.get('http://localhost:5004/api/allbookarticleadmin')
-            .then((response) => {
-                setItems(response.data);
-                console.log(items)
+        axios.get('http://localhost:5004/api/userdata?user_email=' + user)
+            .then(userresponse => {
+            axios.get('http://localhost:5004/api/allbookarticleadmin')
+                .then((response) => {
+                    const filteredData = response.data.filter(item => {
+                        return canEditChapter(userresponse.data[0].user_type ,item.book_creator);
+                    });
+                    setItems(filteredData);
+                    console.log(items)
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
             })
-            .catch((error) => {
-                console.error(error);
-            });
+            .catch(error => console.error(error));
     }, []);
+    function canEditChapter(usertype,bookcreator) {
+        console.log(usertype)
+        return usertype === "admin" || user.includes(bookcreator);
+    }
 
     const deleteBook = (bookId) => {
         const bookToDelete = items.find((book) => book.book_id === bookId);
@@ -134,7 +145,7 @@ const Allbookadmin = () => {
                                             </Button>
                                         </td>
                                     <td className='col-sm-1'>
-                                        {user.includes(book.book_creator) && (
+                                        {(
                                         <Link
                                             className="btn btn-warning amt1"
                                             to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
@@ -144,7 +155,7 @@ const Allbookadmin = () => {
                                         )}
                                     </td>
                                     <td className='col-sm-1'>
-                                    {user.includes(book.book_creator) && (
+                                    { (
                                             <Link
                                                 className="btn btn-warning amt1"
                                                 to={{ pathname: '/Page/articleedit', state: { book_id: book.book_id } }}

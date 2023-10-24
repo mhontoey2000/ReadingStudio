@@ -16,9 +16,10 @@ function Header() {
   const [surname, setSurname] = React.useState('');
   const [isSticky, setIsSticky] = useState(false);
   const [usertype, setUsertype] = useState("");
+  const [userstatus, setStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  React.useEffect(() => {
+  const fetchData = () => {
     fetch('http://localhost:5004/api/userdata?user_email=' + user, {
       method: 'GET',
       headers: {
@@ -28,14 +29,16 @@ function Header() {
     })
       .then(response => response.json())
       .then(data => {
-        // console.log(data)
         setFirstname(data[0].user_name);
         setSurname(data[0].user_surname);
+        setStatus(data[0].approval_status);
         setUsertype(data[0].user_type);
       })
       .catch(error => console.error(error));
+  }
+  useEffect(() => {
+    fetchData(); // Fetch data when the component mounts
   }, [user]);
-
 
   const logout = (e) => {
     e.preventDefault();
@@ -115,7 +118,7 @@ function Header() {
                           <i className="bi bi-person-workspace"></i>
                             Admin
                           </Nav.Link>)}
-                          {usertype === "creator" && (<Nav.Link href="./creator" className="list_item">
+                          {usertype === "creator" && userstatus === "approved" && (<Nav.Link href="./creator" className="list_item">
                           <i className="bi bi-person-workspace"></i>
                             Creator
                           </Nav.Link>)}

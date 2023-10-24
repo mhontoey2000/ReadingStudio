@@ -31,7 +31,7 @@ function Register() {
         
         console.log("addAccount function called");
         e.preventDefault();
-        if(usertype === "creater" && idcard === null){
+        if(usertype === "creator" && idcard === null){
             alert('กรุณาติดต่อผู้พัฒนา rds_contact@gmail.com เพื่อขอคีย์');
             setCode('กรุณาติดต่อผู้พัฒนา');
         }
@@ -143,13 +143,13 @@ function Register() {
                                         onChange={(event) => {setUsertype(event.target.value)}}
                                     >
                                         <option defaultValue></option>
-                                        <option value="creater">ผู้สร้างบทเรียน</option>
+                                        <option value="creator">ผู้สร้างบทเรียน</option>
                                         <option value="learner">ผู้เรียน</option>
                                     </select>
                                     <label htmlFor="floatingSelect">เลือกประเภทบัญชี</label>
                             </div>
                             
-                                {usertype === "creater" && (
+                                {usertype === "creator" && (
                                     <div className="mb-3">
                                     <label 
                                     className="form-label" 
