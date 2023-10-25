@@ -119,6 +119,7 @@ function Editarticle() {
       });
     setArticleID(article.article_id);
     setArticleName(article.article_name);
+    setBookid(article.book_id);
     setArticleDetail(article.article_detail);
     setImage(article.article_imagedata);
     if (
@@ -179,7 +180,10 @@ function Editarticle() {
   };
 
   const cancelEditArticle = () => {
-    history.push("/Page/articleedit");
+    // history.replace(`/Page/articleedit_${bookid}`)
+    history.replace(`/Page/articleedit_${bookid}`, { book_id: bookid});
+
+    
   };
 
   const editArticle = () => {
@@ -205,6 +209,7 @@ function Editarticle() {
       .post(`http://localhost:5004/api/updatearticle`, formData)
       .then((response) => {
         console.log("Article update successful", response.data);
+        cancelEditArticle();
       })
       .catch((error) => {
         console.error(error);
@@ -424,7 +429,7 @@ function Editarticle() {
                 </div>
                 <div className="btn-group me-2">
                   <Button
-                    type="submit"
+                    // type="submit"
                     className="btnE btn-primary"
                     onClick={editArticle}
                   >

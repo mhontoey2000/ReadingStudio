@@ -91,7 +91,7 @@ function Allbookcreator() {
                                         <td>
                                             <Link
                                                 className="btn btn-warning amt1"
-                                                to={{ pathname: '/Page/articleedit', state: { book_id: book.book_id } }}
+                                                to={{ pathname: `/Page/articleedit_${ book.book_id }`, state: { book_id: book.book_id } }}
                                             >
                                                 แก้ไขตอน
                                             </Link>
