@@ -18,7 +18,7 @@ const Allbookadmin = () => {
         console.log(user)
         axios.get('http://localhost:5004/api/userdata?user_email=' + user)
             .then(userresponse => {
-            console.log(userresponse)
+            console.log('User :'+userresponse.data[0].user_type)
 
             axios.get('http://localhost:5004/api/allbookarticleadmin')
                 .then((response) => {

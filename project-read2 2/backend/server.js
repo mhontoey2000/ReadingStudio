@@ -875,7 +875,7 @@ app.get('/api/forapprove', function (req, res) {
 app.get('/api/allbookarticleadmin', function (req, res) {
 
   connection.query(
-    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image,,book.book_imagedata, book.book_creator, book.status_book,
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image,book.book_imagedata, book.book_creator, book.status_book,
             GROUP_CONCAT(article.article_name) AS article_name
     FROM book
     LEFT JOIN article ON book.book_id = article.book_id
