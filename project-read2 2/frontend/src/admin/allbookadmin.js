@@ -13,8 +13,11 @@ const Allbookadmin = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [bookToDelete, setBookToDelete] = useState(null);
     const user = localStorage.getItem('email');
-
     useEffect(() => {
+        init();
+    }, []);
+    
+    function init () {
         console.log(user)
         axios.get('http://localhost:5004/api/userdata?user_email=' + user)
             .then(userresponse => {
@@ -34,7 +37,7 @@ const Allbookadmin = () => {
                 });
             })
             .catch(error => console.error(error));
-    }, []);
+    }
     function canEditChapter(usertype,bookcreator) {
         console.log(usertype)
         return usertype === "admin" || user.includes(bookcreator);
@@ -51,13 +54,7 @@ const Allbookadmin = () => {
             .then(() => {
                 console.log(`บทความที่มี ID ${bookId} ถูกลบแล้ว.`);
                 // Refresh the book list after deletion
-                axios.get('http://localhost:5004/api/book')
-                    .then((response) => {
-                        setItems(response.data);
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
+                init();
             })
             .catch((error) => {
                 console.error(`เกิดข้อผิดพลาดในการลบบทความที่มี ID ${bookId}: ${error}`);
@@ -127,7 +124,7 @@ const Allbookadmin = () => {
                         <tbody className="table-group-divider">
                             {items.map((book, index) => (
                                 <tr key={book.book_id}>
-                                    <td className='col-sm-1' key={`book${index + 1}`}>{index + 1}</td>
+                                    <td className='col-sm-1' key={`book${index}`}>{index}</td>
                                     <td className='col-sm-2'>{book.book_name}</td>
                                     {/* <td className='col-sm-4'>{book.book_detail}</td> */}
                                     <td className='col-sm-4'>
