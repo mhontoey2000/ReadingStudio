@@ -95,8 +95,8 @@ const Notification = () => {
             })
                 .then(res => res)
                 .then(res => {
-                    console.log(res);
-                    if (res.status === 200) {
+                      console.log(res);
+                      if (res.status === 200) {
                         alert("Delete user successfully");
                         window.location.reload();
                     } else {
@@ -104,7 +104,7 @@ const Notification = () => {
                     }
                 })
                 .catch(err => {
-                    console.log(err);
+                  console.log(err);
                     setError(err);
                 });
         }
@@ -168,7 +168,7 @@ const Notification = () => {
                 </div>
             </section>
 
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
+    <Modal show={showModal} onHide={() => setShowModal(false)}>
       <Modal.Header closeButton>
         <Modal.Title>ข้อมูลรายงาน</Modal.Title>
       </Modal.Header>
@@ -253,7 +253,9 @@ const Notification = () => {
         <Button variant="secondary" onClick={() => setShowModal(false)}>
           ปิด
         </Button>
-        <Button variant="danger" onClick={deleteUser}>Delete</Button>
+        {/* <Button variant="danger" onClick={deleteUser(selectedReport.report_id)}>Delete</Button> */}
+        <Button variant="danger" onClick={() => deleteUser(selectedReport.report_id)}>Delete</Button>
+
       </Modal.Footer>
     </Modal>
         </div>

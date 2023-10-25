@@ -1130,7 +1130,22 @@ app.delete('/api/vocabs/:id', function (req, res) {
     }
   );
 });
+app.delete('/api/report/:id', function (req, res) {
+  const reportId = req.params.id;
 
+  connection.query(
+    'DELETE FROM reports WHERE report_id = ?',
+    [reportId],
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to delete reports' });
+      } else {
+        res.json({ message: 'report deleted successfully' });
+      }
+    }
+  );
+});
 app.get('/api/report', function (req, res) {
   connection.query(`SELECT * FROM reports`, function (err, results) {
     if (err) {
