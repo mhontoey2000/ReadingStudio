@@ -30,7 +30,7 @@ const Notification = () => {
             });
     }, []);
 
-    const handleClick = (event, items) => {
+    const handleClick = (items) => {
         console.log(items.report_id);
         console.log(items.report_status);
         if (items.report_status === 'Checked') return;
