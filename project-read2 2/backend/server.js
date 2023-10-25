@@ -277,6 +277,60 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
   });
 });
 
+app.post('/api/updateLeveltext', (req, res) => {
+  const { articleId, newLevel } = req.body;
+
+  connection.beginTransaction(function (err) {
+    if (err) {
+      console.error('Error beginning transaction:', err);
+      res.status(500).json({ error: 'Failed to begin transaction' });
+      return;
+    }
+
+    connection.query(
+      `UPDATE article SET article_level = ? WHERE article_id = ?`,
+      [newLevel, articleId],
+      function (err, results) {
+        if (err) {
+          connection.rollback(function () {
+            console.error('Error updating article level:', err);
+            res.status(500).json({ error: 'Failed to update article level' });
+          });
+        } else {
+          console.log('Article level updated successfully');
+
+          // Now, update the status_book in the book table.
+          connection.query(
+            'UPDATE book SET status_book = ? WHERE book_id = (SELECT book_id FROM article WHERE article_id = ?)',
+            [ "pending", articleId],
+            function (err, results) {
+              if (err) {
+                connection.rollback(function () {
+                  console.error('Error updating status_book in book table:', err);
+                  res.status(500).json({ error: 'Failed to update status_book in book table' });
+                });
+              } else {
+                console.log('status_book updated successfully');
+
+                connection.commit(function (err) {
+                  if (err) {
+                    connection.rollback(function () {
+                      console.error('Error committing transaction:', err);
+                      res.status(500).json({ error: 'Failed to commit transaction' });
+                    });
+                  } else {
+                    res.json({ message: 'Article level and status_book updated successfully' });
+                  }
+                });
+              }
+            }
+          );
+        }
+      }
+    );
+  });
+});
+
 // แก้เพิ่ม
   app.post('/api/addbook',upload.single('book_image'),async (req, res) => {
     const { book_name, book_detail, book_creator } = req.body;

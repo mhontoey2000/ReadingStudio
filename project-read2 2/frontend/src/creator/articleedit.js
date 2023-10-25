@@ -22,47 +22,48 @@ function Articleedit() {
   const [showModal, setShowModal] = useState(false);
   const [analysisResult, setAnalysisResult] = useState("");
   const [wordLevels, setWordLevels] = useState({});
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [loadingVisible, setLoadingVisible] = useState(false); // Add a state for loading visibility
-  const [screenLoaded, setScreenLoaded] = useState(false); 
-  // console.log(bookid)
+  const [screenLoaded, setScreenLoaded] = useState(false);
+  const [leveltext, setLeveltext] = useState("");
+  const [ selectarticle, setSelectarticle ] = useState(null);
+  // console.log("bookid",bookid)
 
   useEffect(() => {
-    setLoading(true); 
+    setLoading(true);
 
-  setTimeout(() => {
-    axios
-      .get("http://localhost:5004/api/userdata?user_email=" + user)
-      .then((response) => {
-        setUsertype(response.data[0].user_type);
-        setLoading(false); 
-        setScreenLoaded(true);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false); 
-        setScreenLoaded(true);
-      });
-      
-      }, 0);
+    setTimeout(() => {
+      axios
+        .get("http://localhost:5004/api/userdata?user_email=" + user)
+        .then((response) => {
+          setUsertype(response.data[0].user_type);
+          setLoading(false);
+          setScreenLoaded(true);
+        })
+        .catch((error) => {
+          console.error(error);
+          setLoading(false);
+          setScreenLoaded(true);
+        });
+    }, 0);
   }, [user]);
 
   useEffect(() => {
-    setLoading(true); 
+    setLoading(true);
 
-  setTimeout(() => {
-    axios
-      .get(`http://localhost:5004/api/article/${bookid}`)
-      .then((response) => {
-        setItems(response.data);
-        setLoading(false); 
-        setScreenLoaded(true); 
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false); 
-        setScreenLoaded(true);
-      });
+    setTimeout(() => {
+      axios
+        .get(`http://localhost:5004/api/article/${bookid}`)
+        .then((response) => {
+          setItems(response.data);
+          setLoading(false);
+          setScreenLoaded(true);
+        })
+        .catch((error) => {
+          console.error(error);
+          setLoading(false);
+          setScreenLoaded(true);
+        });
     }, 0);
   }, [bookid]);
 
@@ -82,7 +83,6 @@ function Articleedit() {
     ];
 
     const fetchLevelData = async () => {
-      
       for (const file of levelFiles) {
         try {
           const response = await axios.get(`/analysis/${file}`);
@@ -90,7 +90,6 @@ function Articleedit() {
           // console.log("levelData",levelData)
 
           levelData.forEach((wordData) => {
-
             const word = wordData.word;
             if (wordData.p1 !== "0") {
               setWordLevels((prevLevels) => ({ ...prevLevels, [word]: 1 }));
@@ -110,7 +109,6 @@ function Articleedit() {
           console.error(`Error fetching ${file}:`, error);
         }
       }
-      
     };
 
     fetchLevelData();
@@ -120,14 +118,14 @@ function Articleedit() {
     if (articleDetail) {
       const words = articleDetail.split(" "); // Split articleDetail into words
       let maxLevel = 0;
-  
+
       for (const word of words) {
         if (wordLevels[word]) {
           // Check if the word is in wordLevels
           maxLevel = Math.max(maxLevel, wordLevels[word]); // Update max level
         }
       }
-  
+
       // Map the numerical level to the desired format (e.g., 1 to "p1", 2 to "p2", etc.)
       const levelMapping = {
         1: "ประถมศึกษาปีที่ 1",
@@ -137,20 +135,20 @@ function Articleedit() {
         5: "ประถมศึกษาปีที่ 5",
         6: "ประถมศึกษาปีที่ 6",
       };
-  
+
       return levelMapping[maxLevel];
     } else {
       // Handle the case when articleDetail is undefined
       return "N/A"; // or any default value you prefer
     }
   };
-  
-  const handleAnalyzeClick = (article) => {
 
-    setLoadingVisible(true); 
+  const handleAnalyzeClick = (article) => {
+    setLoadingVisible(true);
+    setSelectarticle(article);
 
     const result = analyzeArticleLevel(article.article_detail);
-    console.log(result)
+    console.log(result);
     if (result === undefined) {
       setAnalysisResult("ไม่สามารถวัดระดับได้");
     } else {
@@ -165,7 +163,25 @@ function Articleedit() {
     setShowModal(true);
   };
 
+  const sendLeveltext = (event, articleId) => {
+    event.preventDefault();
   
+    const data = {
+      articleId: articleId,
+      newLevel: leveltext,
+    };
+    console.log("data",data)
+    axios
+      .post("http://localhost:5004/api/updateLeveltext", data)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  
+    setShowModal(false);
+  };
 
   return (
     <div>
@@ -179,9 +195,6 @@ function Articleedit() {
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
           </div>
 
-          {loadingVisible ? ( 
-            <Loading />
-          ) : (
           <table className="table table-hover">
             <thead>
               <tr className="head" style={{ textAlign: "center" }}>
@@ -263,7 +276,6 @@ function Articleedit() {
               )}
             </tbody>
           </table>
-          )}
         </div>
       </section>
 
@@ -272,30 +284,73 @@ function Articleedit() {
           <Modal.Title>วิเคราะห์ระดับบทความ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        {loadingVisible ? ( // Conditionally render the loading component based on loadingVisible state
+          {loadingVisible ? (
             <Loading />
           ) : (
+            selectarticle && (
             <div>
-          {/* Display the analysis result in the modal content */}
-          <p>ระดับของบทความคือ: {analysisResult}</p>
+              <div style={{ margin: "10px" }}>
+                <p style={{ textAlign: "center", alignItems: "center" }}>
+                  ระดับที่แนะนำคือ:{" "}
+                  <span style={{ color: "blue" }}>{analysisResult}</span>
+                </p>
+              </div>
 
-              {/* Add an input field in the modal */}
-          <label htmlFor="inputField">ระดับของบทความ:</label>
-          <input
-            type="text"
-            id="inputField"
-            placeholder="กรุณากรอกระดับของบทความ"
-            
-          />
-          </div>
+              <div>
+                <form
+                  className="form-control form-control-lg"
+                  onSubmit={(e) => sendLeveltext(e, selectarticle.article_id)}
+                >
+                  <div className="mb-3">
+                    <label htmlFor="leveltext" className="form-label">
+                      ระดับของบทความ:
+                    </label>
+
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="leveltext"
+                      placeholder="กรุณากรอกระดับของบทความ"
+                      required
+                      onChange={(event) => {
+                        setLeveltext(event.target.value);
+                      }}
+                    />
+                  </div>
+
+                  <div className="d-flex justify-content-between">
+                    <Button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => setShowModal(false)}
+                    >
+                      ยกเลิก
+                    </Button>
+
+                    <Button
+                      type="submit"
+                      className="btn btn-success"
+                      // onClick={() => sendLeveltext(article, leveltext)}
+                    >
+                      ตกลง
+                    </Button>
+                  </div>
+                </form>
+              </div>
+
+              <p style={{ color: "red", margin: "10px" }}>
+                *ไม่สามารถวัดระดับได้ คือ
+                เนื้อหามีระดับที่มากกว่าประถมศึกษาปีที่ 6
+              </p>
+            </div>
+          )
           )}
-          
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             ปิด
           </Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal>
     </div>
   );

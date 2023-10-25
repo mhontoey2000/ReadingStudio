@@ -190,6 +190,22 @@ function Bookdetail(match) {
     }
   }, [isPlaying, audioRef]);
 
+  // const highlightWords = (articleDetail, vocabs) => {
+  //   const wordsToHighlight = vocabs.map((vocab) => vocab.vocabs_name);
+  //   const regex = new RegExp(`\\b(${wordsToHighlight.join('|')})\\b`, 'gi');
+  //   return articleDetail.replace(regex, '<span className="highlighted">$&</span>');
+  // };
+
+  const highlightWords = (articleDetail, vocabs) => {
+    const wordsToHighlight = vocabs.map((vocab) => vocab.vocabs_name);
+    const regex = new RegExp(`\\b(${wordsToHighlight.join('|')})\\b`, 'gi');
+    const highlightedText = articleDetail.replace(regex, (match) => `<span class="highlighted">${match}</span>`);
+    console.log("wordsToHighlight",wordsToHighlight)
+    console.log("regex",regex)
+    console.log("highlightedText",highlightedText)
+    return highlightedText;
+  };
+
   return (
     <div>
       <Header />
@@ -258,7 +274,9 @@ function Bookdetail(match) {
                     )}
                   </div>
 
-                  <p className='detailtext'>{article.article_detail}</p>
+                  {/* <p className='detailtext'>{article.article_detail}</p> */}
+                  {/* Render article_detail with highlighted words */}
+                  <p className='detailtext' dangerouslySetInnerHTML={{ __html: highlightWords(article.article_detail, Vitems) }} />
 
                   <div className="text-start">
                     <Link
