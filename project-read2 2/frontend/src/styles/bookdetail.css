@@ -131,5 +131,6 @@
 
 
 .highlighted {
-  background-color: green !important; /* or any other styling */
+  background-color: #b4dcfc;
+  /* You can customize the highlighting style as needed */
 }

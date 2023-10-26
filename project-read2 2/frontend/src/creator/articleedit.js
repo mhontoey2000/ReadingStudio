@@ -175,6 +175,7 @@ function Articleedit() {
       .post("http://localhost:5004/api/updateLeveltext", data)
       .then((response) => {
         console.log(response.data);
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
