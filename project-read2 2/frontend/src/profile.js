@@ -115,7 +115,6 @@ function Profile() {
                   fontWeight: 'bold'
                 }}
               />
-                <cite>*ถ้า active จะสามารถสร้างหนังสือ ถ้า inactive จะไม่สามารถสร้างหนังสือได้</cite>
             </div>
           )}
 

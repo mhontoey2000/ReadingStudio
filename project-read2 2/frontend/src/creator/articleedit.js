@@ -381,10 +381,10 @@ function Articleedit() {
                   </form>
                 </div>
 
-                <p style={{ color: "red", margin: "10px" }}>
+                <cite style={{ color: "red", margin: "10px" }}>
                   *ไม่สามารถวัดระดับได้ คือ
                   เนื้อหามีระดับที่มากกว่าประถมศึกษาปีที่ 6
-                </p>
+                </cite>
               </div>
             )
           )}

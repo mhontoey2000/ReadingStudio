@@ -309,7 +309,7 @@ function Bookdetail(match) {
                   </div>
 
                   {/* <p className='detailtext'>{article.article_detail}</p> */}
-                  <div className="detailtext">{highlightedArticleDetail}</div>
+                  <div className="detailtext parsed-article">{highlightedArticleDetail}</div>
 
                   <div className="text-start">
                     <Link
