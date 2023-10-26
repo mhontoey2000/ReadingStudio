@@ -875,7 +875,7 @@ app.get('/api/forapprove', function (req, res) {
 app.get('/api/allbookarticleadmin', function (req, res) {
 
   connection.query(
-    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image,,book.book_imagedata, book.book_creator, book.status_book,
+    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image,book.book_imagedata, book.book_creator, book.status_book,
             GROUP_CONCAT(article.article_name) AS article_name
     FROM book
     LEFT JOIN article ON book.book_id = article.book_id
@@ -1130,7 +1130,22 @@ app.delete('/api/vocabs/:id', function (req, res) {
     }
   );
 });
+app.delete('/api/report/:id', function (req, res) {
+  const reportId = req.params.id;
 
+  connection.query(
+    'DELETE FROM reports WHERE report_id = ?',
+    [reportId],
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to delete reports' });
+      } else {
+        res.json({ message: 'report deleted successfully' });
+      }
+    }
+  );
+});
 app.get('/api/report', function (req, res) {
   connection.query(`SELECT * FROM reports`, function (err, results) {
     if (err) {

@@ -23,56 +23,31 @@ function Articleedit() {
   const [analysisResult, setAnalysisResult] = useState("");
   const [wordLevels, setWordLevels] = useState({});
   const [loading, setLoading] = useState(true);
-  const [loadingVisible, setLoadingVisible] = useState(false); // Add a state for loading visibility
+  const [loadingVisible, setLoadingVisible] = useState(false);
   const [screenLoaded, setScreenLoaded] = useState(false);
   const [leveltext, setLeveltext] = useState("");
-  const [ selectarticle, setSelectarticle ] = useState(null);
-  // console.log("bookid",bookid)
+  const [selectarticle, setSelectarticle] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [articleToDelete, setArticleToDelete] = useState(null);
 
   useEffect(() => {
     setLoading(true);
 
-    setTimeout(() => {
-      axios
-        .get("http://localhost:5004/api/userdata?user_email=" + user)
-        .then((response) => {
-          setUsertype(response.data[0].user_type);
-          setLoading(false);
-          setScreenLoaded(true);
-        })
-        .catch((error) => {
-          console.error(error);
-          setLoading(false);
-          setScreenLoaded(true);
-        });
-    }, 0);
-  }, [user]);
+    // โหลดข้อมูลผู้ใช้เมื่อมีความจำเป็น
+    axios
+      .get("http://localhost:5004/api/userdata?user_email=" + user)
+      .then((response) => {
+        setUsertype(response.data[0].user_type);
+        setLoading(false);
+        setScreenLoaded(true);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+        setScreenLoaded(true);
+      });
 
-  useEffect(() => {
-    setLoading(true);
-
-    setTimeout(() => {
-      axios
-        .get(`http://localhost:5004/api/article/${bookid}`)
-        .then((response) => {
-          setItems(response.data);
-          setLoading(false);
-          setScreenLoaded(true);
-        })
-        .catch((error) => {
-          console.error(error);
-          setLoading(false);
-          setScreenLoaded(true);
-        });
-    }, 0);
-  }, [bookid]);
-
-  const filteredItems = items.filter((article) => {
-    return article.article_name.includes(searchTerm);
-  });
-
-  // Fetch the JSON files for word levels and map words to levels
-  useEffect(() => {
+    // โหลดระดับคำศัพท์ (level files) ในระหว่างโหลดข้อมูลของผู้ใช้และข้อมูลบทความ
     const levelFiles = [
       "level1.json",
       "level2.json",
@@ -87,7 +62,6 @@ function Articleedit() {
         try {
           const response = await axios.get(`/analysis/${file}`);
           const levelData = response.data;
-          // console.log("levelData",levelData)
 
           levelData.forEach((wordData) => {
             const word = wordData.word;
@@ -112,21 +86,43 @@ function Articleedit() {
     };
 
     fetchLevelData();
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    setLoading(true);
+
+    // โหลดข้อมูลบทความเมื่อมีความจำเป็นเท่าที่จำเป็น (ในตัวอย่างนี้เมื่อ bookid เปลี่ยน)
+    if (bookid) {
+      axios
+        .get(`http://localhost:5004/api/article/${bookid}`)
+        .then((response) => {
+          setItems(response.data);
+          setLoading(false);
+          setScreenLoaded(true);
+        })
+        .catch((error) => {
+          console.error(error);
+          setLoading(false);
+          setScreenLoaded(true);
+        });
+    }
+  }, [bookid]);
+
+  const filteredItems = items.filter((article) => {
+    return article.article_name.includes(searchTerm);
+  });
 
   const analyzeArticleLevel = (articleDetail) => {
     if (articleDetail) {
-      const words = articleDetail.split(" "); // Split articleDetail into words
+      const words = articleDetail.split(" ");
       let maxLevel = 0;
 
       for (const word of words) {
         if (wordLevels[word]) {
-          // Check if the word is in wordLevels
-          maxLevel = Math.max(maxLevel, wordLevels[word]); // Update max level
+          maxLevel = Math.max(maxLevel, wordLevels[word]);
         }
       }
 
-      // Map the numerical level to the desired format (e.g., 1 to "p1", 2 to "p2", etc.)
       const levelMapping = {
         1: "ประถมศึกษาปีที่ 1",
         2: "ประถมศึกษาปีที่ 2",
@@ -136,10 +132,9 @@ function Articleedit() {
         6: "ประถมศึกษาปีที่ 6",
       };
 
-      return levelMapping[maxLevel];
+      return levelMapping[maxLevel] || "N/A";
     } else {
-      // Handle the case when articleDetail is undefined
-      return "N/A"; // or any default value you prefer
+      return "N/A";
     }
   };
 
@@ -148,29 +143,28 @@ function Articleedit() {
     setSelectarticle(article);
 
     const result = analyzeArticleLevel(article.article_detail);
-    console.log(result);
-    if (result === undefined) {
+    if (result === "N/A") {
       setAnalysisResult("ไม่สามารถวัดระดับได้");
     } else {
       setAnalysisResult(result);
     }
 
     setTimeout(() => {
-      setLoadingVisible(false); // Hide the loading component
-      setScreenLoaded(true); // Mark the screen as loaded
-    }, 5000); // Change the timeout value as needed
+      setLoadingVisible(false);
+      setScreenLoaded(true);
+    }, 5000);
 
     setShowModal(true);
   };
 
   const sendLeveltext = (event, articleId) => {
     event.preventDefault();
-  
+
     const data = {
       articleId: articleId,
       newLevel: leveltext,
     };
-    console.log("data",data)
+
     axios
       .post("http://localhost:5004/api/updateLeveltext", data)
       .then((response) => {
@@ -180,8 +174,33 @@ function Articleedit() {
       .catch((error) => {
         console.error(error);
       });
-  
+
     setShowModal(false);
+  };
+
+  const deleteArticle = (articleId) => {
+    const articleToDelete = items.find((article) => article.article_id === articleId);
+    setArticleToDelete(articleToDelete);
+    setShowDeleteModal(true);
+  };
+
+  const deleteArticleConfirmed = (articleId) => {
+    axios
+      .delete(`http://localhost:5004/api/deletearticle/${articleId}`)
+      .then(() => {
+        console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
+        axios
+          .get(`http://localhost:5004/api/article/${bookid}`)
+          .then((response) => {
+            setItems(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      })
+      .catch((error) => {
+        console.error(`เกิดข้อผิดพลาดในการลบตอนที่มี ID ${articleId}: ${error}`);
+      });
   };
 
   return (
@@ -237,13 +256,10 @@ function Articleedit() {
                     <td>{article.article_name}</td>
                     <td>
                       <img
-                        src={
-                          article.article_imagedata ||
-                          article.article_images ||
-                          "url_to_default_image"
-                        }
+                        src={article.article_imagedata || "url_to_default_image"}
                         width="100"
                         height="100"
+                        alt={article.article_name}
                       />
                     </td>
                     <td>{article.article_level}</td>
@@ -267,9 +283,11 @@ function Articleedit() {
                       </Link>
                     </td>
                     <td>
-                      <Button className="btn btn-danger amt2">
-                        {/* onClick={() => deleteBook(book.book_id)} */}
-                        ลบตอน
+                      <Button
+                        className="btn btn-danger amt2"
+                        onClick={() => deleteArticle(article.article_id)}
+                      >
+                        Delete
                       </Button>
                     </td>
                   </tr>
@@ -280,6 +298,31 @@ function Articleedit() {
         </div>
       </section>
 
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยันการลบ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {articleToDelete && (
+            <p>คุณแน่ใจหรือไม่ที่ต้องการลบตอน: {articleToDelete.article_name}?</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            ยกเลิก
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              deleteArticleConfirmed(articleToDelete.article_id);
+              setShowDeleteModal(false);
+            }}
+          >
+            ลบ
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>วิเคราะห์ระดับบทความ</Modal.Title>
@@ -289,69 +332,63 @@ function Articleedit() {
             <Loading />
           ) : (
             selectarticle && (
-            <div>
-              <div style={{ margin: "10px" }}>
-                <p style={{ textAlign: "center", alignItems: "center" }}>
-                  ระดับที่แนะนำคือ:{" "}
-                  <span style={{ color: "blue" }}>{analysisResult}</span>
+              <div>
+                <div style={{ margin: "10px" }}>
+                  <p style={{ textAlign: "center", alignItems: "center" }}>
+                    ระดับที่แนะนำคือ:{" "}
+                    <span style={{ color: "blue" }}>{analysisResult}</span>
+                  </p>
+                </div>
+
+                <div>
+                  <form
+                    className="form-control form-control-lg"
+                    onSubmit={(e) => sendLeveltext(e, selectarticle.article_id)}
+                  >
+                    <div className="mb-3">
+                      <label htmlFor="leveltext" className="form-label">
+                        ระดับของบทความ:
+                      </label>
+
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="leveltext"
+                        placeholder="กรุณากรอกระดับของบทความ"
+                        required
+                        onChange={(event) => {
+                          setLeveltext(event.target.value);
+                        }}
+                      />
+                    </div>
+
+                    <div className="d-flex justify-content-between">
+                      <Button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={() => setShowModal(false)}
+                      >
+                        ยกเลิก
+                      </Button>
+
+                      <Button
+                        type="submit"
+                        className="btn btn-success"
+                      >
+                        ตกลง
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+
+                <p style={{ color: "red", margin: "10px" }}>
+                  *ไม่สามารถวัดระดับได้ คือ
+                  เนื้อหามีระดับที่มากกว่าประถมศึกษาปีที่ 6
                 </p>
               </div>
-
-              <div>
-                <form
-                  className="form-control form-control-lg"
-                  onSubmit={(e) => sendLeveltext(e, selectarticle.article_id)}
-                >
-                  <div className="mb-3">
-                    <label htmlFor="leveltext" className="form-label">
-                      ระดับของบทความ:
-                    </label>
-
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="leveltext"
-                      placeholder="กรุณากรอกระดับของบทความ"
-                      required
-                      onChange={(event) => {
-                        setLeveltext(event.target.value);
-                      }}
-                    />
-                  </div>
-
-                  <div className="d-flex justify-content-between">
-                    <Button
-                      type="button"
-                      className="btn btn-danger"
-                      onClick={() => setShowModal(false)}
-                    >
-                      ยกเลิก
-                    </Button>
-
-                    <Button
-                      type="submit"
-                      className="btn btn-success"
-                      // onClick={() => sendLeveltext(article, leveltext)}
-                    >
-                      ตกลง
-                    </Button>
-                  </div>
-                </form>
-              </div>
-
-              <p style={{ color: "red", margin: "10px" }}>
-                *ไม่สามารถวัดระดับได้ คือ
-                เนื้อหามีระดับที่มากกว่าประถมศึกษาปีที่ 6
-              </p>
-            </div>
-          )
+            )
           )}
         </Modal.Body>
-        {/* <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            ปิด
-          </Button>
-        </Modal.Footer> */}
       </Modal>
     </div>
   );

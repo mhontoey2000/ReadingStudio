@@ -7,13 +7,19 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import "../styles/allbookcreator.css"
 import Searchbar from "../searchbar";
+import Modal from 'react-bootstrap/Modal';
 
 function Allbookcreator() {
     const [items, setItems] = useState([]);
     const user = localStorage.getItem('email');
     const [searchTerm, setSearchTerm] = useState("");
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [bookToDelete, setBookToDelete] = useState(null);
 
     useEffect(() => {
+        init();
+      }, []);
+    function init() {
         axios.get('http://localhost:5004/api/allbookarticlecreator?user_email=' + user)
           .then((response) => {
             console.log(response.data)
@@ -22,8 +28,24 @@ function Allbookcreator() {
           .catch((error) => {
             console.error(error);
           });
-      }, []);
+      }
+    const deleteBook = (bookId) => {
+        const bookToDelete = items.find((book) => book.book_id === bookId);
+        setBookToDelete(bookToDelete);
+        setShowDeleteModal(true);
+    };
 
+    const deleteBookConfirmed = (bookId) => {
+        axios.delete(`http://localhost:5004/api/deletebook/${bookId}`)
+            .then(() => {
+                console.log(`บทความที่มี ID ${bookId} ถูกลบแล้ว.`);
+                // Refresh the book list after deletion
+                init();
+            })
+            .catch((error) => {
+                console.error(`เกิดข้อผิดพลาดในการลบบทความที่มี ID ${bookId}: ${error}`);
+            });
+    };
     const filteredItems = items.filter((book) => {
         return book.book_name.includes(searchTerm);
     });
@@ -96,10 +118,13 @@ function Allbookcreator() {
                                                 แก้ไขตอน
                                             </Link>
                                         </td>
-                                        <td>
-                                            <Button className="btn btn-danger amt2">{/* onClick={() => deleteBook(book.book_id)} */}
-                                                ลบบทความ
-                                            </Button>
+                                        <td className='col-sm-1'>
+                                        <Button
+                                            className="btn btn-danger amt2"
+                                            onClick={() => deleteBook(book.book_id)}
+                                        >
+                                            ลบบทความ
+                                        </Button>
                                         </td>
                                     </tr>
                                 ))
@@ -108,6 +133,31 @@ function Allbookcreator() {
                     </table>
                 </div>
             </section>
+            {/* Modal ยืนยันการลบ */}
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>ยืนยันการลบ</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {bookToDelete && (
+                        <p>คุณแน่ใจหรือไม่ที่ต้องการลบบทความ: {bookToDelete.book_name}?</p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        ยกเลิก
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={() => {
+                            deleteBookConfirmed(bookToDelete.book_id);
+                            setShowDeleteModal(false);
+                        }}
+                    >
+                        ลบ
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }
