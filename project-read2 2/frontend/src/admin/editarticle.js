@@ -398,7 +398,7 @@ function Editarticle() {
                             style={{marginLeft:"10px"}}
                             to={{
                             pathname: `/Page/editexam`,
-                            state: { book_id: bookid, article_id: articleid }
+                            state: { book_name: bookName, article_name : articleName, article_id: articleid }
                             //   to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
                             }}
                         >
