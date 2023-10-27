@@ -25,7 +25,8 @@ function Home() {
         // Use the search term to filter items
         axios.get('http://localhost:5004/api/book')
           .then((response) => {
-            setItems(response.data);
+            const publishedBooks = response.data.filter((book) => book.status_book === 'published');
+            setItems(publishedBooks);
           })
           .catch((error) => {
             console.error(error);
@@ -47,19 +48,6 @@ function Home() {
                 <div style={{padding:"10px"}}>
                   <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
                 </div>
-                {/* {["admin", "creator"].includes(usertype) && (
-                    <div>
-                        <div className="btnad d-grid d-md-flex justify-content-md-end">
-                            <Button
-                                type="button"
-                                className="btn btn-success btnt"
-                                href="./addbook"
-                            >
-                                เพิ่มบทความ
-                            </Button>
-                        </div>
-                    </div>
-                )} */}
 
                 <div className="grid-container">
                 {filteredItems.length === 0 ? (

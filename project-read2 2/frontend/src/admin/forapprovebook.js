@@ -47,7 +47,7 @@ function Forapprovebook() {
         bookId: selectitem.book_id,
         articleId: selectitem.article_id,
         newStatus: status,
-        unpublishReason: status === "deny" ? unpublishReason : "-",
+        unpublishReason: status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
 
       axios
