@@ -189,7 +189,7 @@ const Notification = () => {
                   display: 'inline-block',
                 }}
               >
-                <button
+                <Button
                   style={{
                     backgroundColor: buttonColor, // ใช้สีจาก state
                     top: '100%',
@@ -203,7 +203,7 @@ const Notification = () => {
                   }}
                 >
                   {selectedStatus} {dropdownOpen ? '▲' : '▼'}
-                </button>
+                </Button>
                 {dropdownOpen && (
                   <div
                     style={{

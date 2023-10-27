@@ -47,15 +47,6 @@ function Creator() {
               >
                 <i className="bi bi-file-earmark-plus-fill"></i> 2.สร้างตอนของบทความ
               </Button>
-
-              {/* <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./analysislevel"
-              >
-                <i class="bi bi-clipboard-data-fill"></i>{" "}
-                3.วิเคราะห์ระดับบทความ
-              </Button> */}
               
               </div>)}
 
@@ -66,15 +57,6 @@ function Creator() {
               >
                 <i className="bi bi-book-fill"></i> บทความของฉัน
               </Button>
-              
-
-              {/* <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./allarticleadmin"
-              >
-                <i className="bi bi-book-half"></i> ตอนบทความของฉัน
-              </Button> */}
 
               <Button
                 type="button"
@@ -85,13 +67,13 @@ function Creator() {
                 ข้อสอบของฉัน
               </Button>
 
-              {/* <Button
+              <Button
                 type="button"
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./alluseradmin"
+                href="./notificationcreator"
               >
                 <i className="bi bi-envelope-fill"></i> ข้อความ
-              </Button> */}
+              </Button>
             </div>
           </div>
 

@@ -38,7 +38,7 @@ import Edituser from "./admin/edituser";
 import { useEffect, useState } from "react";
 import Toaddarticle from "./creator/toaddarticle";
 import Toaddarticleadmin from "./admin/toaddarticleadmin";
-import Analysislevel from "./creator/analysislevel";
+import Notificationcreator from "./creator/notificationcreator";
 import Forapprovebook from "./admin/forapprovebook";
 
 const App = () => {
@@ -264,9 +264,9 @@ const App = () => {
           }
         />
         <Route
-          path="/Page/analysislevel"
+          path="/Page/notificationcreator"
           render={() =>
-            !isAuthenticated ? <Redirect to="/Page/one" /> : <Analysislevel />
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Notificationcreator />
           }
         />
         <Route

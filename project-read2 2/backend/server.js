@@ -821,54 +821,89 @@ app.get('/api/allbookarticlecreator', function (req, res) {
   
 });
 
-
 app.get('/api/forapprove', function (req, res) {
 
   connection.query(
-    `SELECT book.book_id, book.book_name, book.book_detail, book.book_image,book.book_imagedata, book.book_creator, book.status_book,
-            GROUP_CONCAT(article.article_name) AS article_name
-    FROM book
-    LEFT JOIN article ON book.book_id = article.book_id
-    GROUP BY book.book_id, book.book_name, book.book_detail, book.book_image,book.book_imagedata, book.book_creator, book.status_book`,
-    
-    function (err, results) {
-      if (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-        return;
-      }
-  
-      const uniqueBooks = {}; // Store unique books by book_id
-  
-      results.forEach((row) => {
-        const book_id = row.book_id;
-        // If the book is not in the uniqueBooks object, add it
-        const img = helper.convertBlobToBase64(row.book_imagedata);
-
-        if (!uniqueBooks[book_id]) {
-          uniqueBooks[book_id] = {
-            book_id: book_id,
-            book_name: row.book_name,
-            book_detail: row.book_detail,
-            book_image: row.book_image,
-            book_imagedata: img,
-            book_creator: row.book_creator,
-            status_book: row.status_book,
-            article_name: [],
-          };
-        }
-        // Add the article_name to the book's article_name array
-        if (row.article_name) {
-          uniqueBooks[book_id].article_name.push(row.article_name);
-        }
+    `SELECT b.book_id, b.book_name, a.article_id, a.article_imagedata, a.article_name, a.status_article
+    FROM book b
+    JOIN article a ON b.book_id = a.book_id
+    WHERE a.status_article = 'pending';`,
+    function(err, results) {
+      const articledata = results.map((article) => {
+        const img = helper.convertBlobToBase64(article.article_imagedata);
+        return {
+          ...article,
+          article_imagedata: img,
+        };
       });
-  
-      const bookdata = Object.values(uniqueBooks);
-      console.log(bookdata)
-      res.json(bookdata);
+      // console.log(articledata);
+      res.json(articledata);
+      // res.json(results);
     }
   );
   
+});
+
+app.get('/api/notification', function (req, res) {
+  const email = req.query.user_email;
+
+  connection.query(
+    `SELECT f.request_id, b.book_name, a.article_name, a.article_imagedata, b.status_book, f.request_comment, f.created_at
+    FROM book b
+    INNER JOIN article a ON b.book_id = a.book_id
+    INNER JOIN forrequest f ON b.book_id = f.book_id AND a.article_id = f.article_id
+    WHERE b.book_creator = ?`,[email],
+    function(err, results) {
+      const articledata = results.map((article) => {
+        const img = helper.convertBlobToBase64(article.article_imagedata);
+        return {
+          ...article,
+          article_imagedata: img,
+        };
+      });
+      // console.log(articledata);
+      res.json(articledata);
+      // res.json(results);
+    }
+  );
+  
+});
+
+app.post("/api/updateStatus", (req, res) => {
+  const { articleId, bookId, newStatus, unpublishReason } = req.body;
+
+  const articleQuery = "UPDATE article SET status_article = ? WHERE article_id = ?";
+  connection.query(articleQuery, [newStatus, articleId], (articleErr) => {
+    if (articleErr) {
+      console.error("Error updating article status: " + articleErr);
+      res.status(500).json({ error: "Failed to update article status" });
+      return;
+    }
+
+    const bookQuery = "UPDATE book SET status_book = ? WHERE book_id = ?";
+    connection.query(bookQuery, [newStatus, bookId], (bookErr) => {
+      if (bookErr) {
+        console.error("Error updating book status: " + bookErr);
+        res.status(500).json({ error: "Failed to update book status" });
+        return;
+      }
+
+      if ((newStatus === "published" || newStatus === "deny") && unpublishReason) {
+        const forRequestQuery = "INSERT INTO forrequest (book_id, article_id, request_comment) VALUES (?, ?, ?)";
+        connection.query(forRequestQuery, [bookId, articleId, unpublishReason], (forRequestErr) => {
+          if (forRequestErr) {
+            console.error("Error creating forrequest record: " + forRequestErr);
+            res.status(500).json({ error: "Failed to create forrequest record" });
+            return;
+          }
+
+          res.json({ message: "Status updated successfully" });
+        });
+      } else {
+        res.json({ message: "Status updated successfully" });
+      }
+    });
+  });
 });
 
 app.get('/api/allbookarticleadmin', function (req, res) {
