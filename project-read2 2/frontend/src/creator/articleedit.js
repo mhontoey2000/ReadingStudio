@@ -265,7 +265,7 @@ function Articleedit() {
                     <td>{article.article_level}</td>
                     <td>
                       <Button
-                        className="btn btn-warning amt2"
+                        className="btn btn-success amt2"
                         onClick={() => handleAnalyzeClick(article)}
                       >
                         วิเคราะห์

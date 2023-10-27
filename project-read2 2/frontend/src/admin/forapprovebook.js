@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
+import { Link } from 'react-router-dom';
 
 function Forapprovebook() {
   const [items, setItems] = useState([]);
@@ -23,7 +24,7 @@ function Forapprovebook() {
       .get("http://localhost:5004/api/forapprove")
       .then((response) => {
         setItems(response.data);
-        console.log("items",items);
+        console.log("items", items);
       })
       .catch((error) => {
         console.error(error);
@@ -37,15 +38,18 @@ function Forapprovebook() {
 
   const submitStatusChange = (event) => {
     event.preventDefault();
-  
-    if (status === "published" || (status === "deny" && unpublishReason !== "-")) {
+
+    if (
+      status === "published" ||
+      (status === "deny" && unpublishReason !== "-")
+    ) {
       const data = {
         bookId: selectitem.book_id,
         articleId: selectitem.article_id,
         newStatus: status,
-        unpublishReason: status === "deny" ? unpublishReason : "-", 
+        unpublishReason: status === "deny" ? unpublishReason : "-",
       };
-  
+
       axios
         .post("http://localhost:5004/api/updateStatus", data)
         .then((response) => {
@@ -62,8 +66,8 @@ function Forapprovebook() {
           setShowErrorModal(true);
         });
     } else if (status === "deny") {
-        setErrorMessage("กรุณากรอกเหตุผลที่ปฎิเสธ");
-        setShowErrorModal(true);
+      setErrorMessage("กรุณากรอกเหตุผลที่ปฎิเสธ");
+      setShowErrorModal(true);
     }
   };
 
@@ -125,14 +129,22 @@ function Forapprovebook() {
                     </td>
                     <td className="col-sm-2">
                       <Button
-                        className="btn btn-success"
+                        className="btn btn-primary"
                         onClick={() => openStatusModal(item)}
                       >
                         {item.status_article}
                       </Button>
                     </td>
                     <td className="col-sm-2">
-                      <Button className="btn btn-primary">ดู</Button>
+                      <Link
+                        to={{
+                          pathname: "/Page/bookdetail",
+                          state: { article_id: item.article_id },
+                        }}
+                        className="btn btn-success"
+                      >
+                        ดู
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -150,9 +162,9 @@ function Forapprovebook() {
           {selectitem && (
             <div className="table-approve">
               <form
-               className="form-control"
-               //onSubmit={(e) => submitStatusChange(e, selectitem.book_id,selectitem.article_id)}
-               onSubmit={submitStatusChange}
+                className="form-control"
+                //onSubmit={(e) => submitStatusChange(e, selectitem.book_id,selectitem.article_id)}
+                onSubmit={submitStatusChange}
               >
                 <p style={{ textAlign: "center", margin: "10px" }}>
                   คุณต้องการเปลี่ยนสถานะของ
@@ -201,7 +213,7 @@ function Forapprovebook() {
                       setStatus(event.target.value);
                     }}
                   >
-                    <option value="default"  hidden>
+                    <option value="default" hidden>
                       {selectitem.status_article}
                     </option>
                     <option value="published">อนุมัติ</option>
@@ -254,7 +266,7 @@ function Forapprovebook() {
           <Modal.Title>สำเร็จ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p style={{textAlign:"center"}}>{successMessage}</p>
+          <p style={{ textAlign: "center" }}>{successMessage}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="success" onClick={handleSuccessModalOK}>
@@ -268,7 +280,7 @@ function Forapprovebook() {
           <Modal.Title>ไม่สำเร็จ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p style={{textAlign:"center"}}>{errorMessage}</p>
+          <p style={{ textAlign: "center" }}>{errorMessage}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={handleErrorModalOK}>
@@ -276,7 +288,6 @@ function Forapprovebook() {
           </Button>
         </Modal.Footer>
       </Modal>
-
     </div>
   );
 }

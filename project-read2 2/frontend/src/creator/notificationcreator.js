@@ -38,16 +38,17 @@ function Notificationcreator() {
                         <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
                     </div>
 
+                    <div className="row">
                     <table className="table table-hover">
                         <thead>
                             <tr className="head" style={{ textAlign: "center"}}>
-                                <th scope="col" className='t-size'>ลำดับ</th>
-                                <th scope="col" className='t-size'>บทความ</th>
-                                <th scope="col" className='t-size'>ตอนของบทความ</th>
-                                <th scope="col" className='t-size'>รูปหน้าปกบทความ</th>
-                                <th scope="col" className='t-size'>สถานะ</th>
-                                <th scope="col" className='t-size'>คอมเมนต์</th>
-                                <th scope="col" className='t-size'>เวลา</th>
+                                <th scope="col" className='col-sm-1'>ลำดับ</th>
+                                <th scope="col" className='col-sm-2'>บทความ</th>
+                                <th scope="col" className='col-sm-2'>ตอนของบทความ</th>
+                                <th scope="col" className='col-sm-2'>รูปหน้าปกบทความ</th>
+                                <th scope="col" className='col-sm-1'>สถานะ</th>
+                                <th scope="col" className='col-sm-3'>คอมเมนต์</th>
+                                <th scope="col" className='col-sm-1'>เวลา</th>
                             </tr>
                         </thead>
                         <tbody className="table-group-divider">
@@ -59,24 +60,24 @@ function Notificationcreator() {
                               </tr>
                             ) : (
                                 filteredItems.map((items, index) => (
-                                    <tr key={items.book_id}>
-                                        <td key={`book${index + 1}`}>{index + 1}</td>
-                                        <td>{items.book_name}</td>
-                                        <td>{items.article_name}</td>
-                                        <td>
+                                    <tr key={items.request_id}>
+                                        <td className="col-sm-1" key={`book${index + 1}`}>{index + 1}</td>
+                                        <td className="col-sm-2">{items.book_name}</td>
+                                        <td className="col-sm-2">{items.article_name}</td>
+                                        <td className="col-sm-2">
                                             <img src={items.article_imagedata || items.article_image} width="100" height="100" alt={items.article_name} />
                                         </td>
-                                        
-                                        <td>
+                                        <td className="col-sm-1">
                                             <Button>{items.status_book}</Button>
                                         </td>
-                                        <td>{items.request_comment}</td>
-                                        <td>{items.created_at}</td>
+                                        <td className="col-sm-3">{items.request_comment}</td>
+                                        <td className="col-sm-1">{items.created_at}</td>
                                     </tr>
                                 ))
                             )}
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </section>
         </div>

@@ -105,7 +105,7 @@ function Allbookcreator() {
                                         
                                         <td>
                                             <Link
-                                                className="btn btn-warning amt1"
+                                                className="btn btn-warning amt2"
                                                 to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
                                             >
                                                 แก้ไขบทความ
@@ -113,7 +113,7 @@ function Allbookcreator() {
                                         </td>
                                         <td>
                                             <Link
-                                                className="btn btn-warning amt1"
+                                                className="btn btn-warning amt2"
                                                 to={{ pathname: `/Page/articleedit_${ book.book_id }`, state: { book_id: book.book_id } }}
                                             >
                                                 แก้ไขตอน
