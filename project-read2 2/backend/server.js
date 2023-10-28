@@ -1373,8 +1373,8 @@ app.post('/api/updatearticle', upload.fields([{ name: 'image', maxCount: 1 },  {
     console.log('find article id ' + articleId);
 
     if (results.length > 0) {
-        let updateValues = [chapter, level, description];
-        let updateQuery = `UPDATE article SET article_name=?,article_level=?,article_detail=?`;
+        let updateValues = [chapter, description];
+        let updateQuery = `UPDATE article SET article_name=?,article_detail=?`;
 
         if (imageFile) {
             imageByte = await helper.readFileAsync(imageFile.path);
