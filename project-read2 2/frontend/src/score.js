@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./styles/home.css";
+import "./styles/score.css";
 import Header from "./header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useLocation,useHistory } from "react-router-dom";
@@ -69,7 +69,7 @@ function Score() {
 
               {Array.isArray(qitems) && qitems.length > 0 ? (
                 qitems.map((question, index) => (
-                <div className="v-item" key={question.question_id}>
+                <div className="q-item" key={question.question_id}>
                   <div className="vno" key={`vocabs_${index}`}>
                     <h5 className="v-title">{`${index + 1}. ${question.question_text}`}</h5>
                     {question.question_image && (

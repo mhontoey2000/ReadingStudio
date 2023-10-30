@@ -129,48 +129,4 @@ section h1 {
   }
   
 
-  /* score */
-  .grid-containern{
-    display: grid;
-    border-radius: 25px;
-    gap: 50px 0px;
-    background-color: #95cfff;
-    padding: 30px ;
-    margin: 10px 20px;
-  }
-
-  .resultscore{
-    text-align: center;
-    font-weight: bold;
-    font-size: larger;
-    background-color: white;
-    padding: 25px;
-  }
-
-  /* Red background for incorrect answers */
-  .red-background {
-    border-left:solid 5px #e50e8a;
-    color: black;
-    background-color: #ffe5f4;
-    margin: 0px 25%;
-    /* text-shadow: -1px 0 red, 0 1px red, 1px 0 red, 0 -1px red; */
-  }
   
-  /* Green background for correct answers */
-  .green-background {
-    border-left:solid 5px #1cb890;
-    color: black;
-    background-color: #d5f8ef;
-    margin: 0px 25%;
-    /* text-shadow: -0.3px 0 green, 0 0.3px green, 0.3px 0 green, 0 -0.3px green; */
-  }
-
-  .q-options{
-    padding: 15px;
-    margin: 15px;
-
-  }
-
-  /* .option-container{
-    margin-left: 40% !important;
-  } */

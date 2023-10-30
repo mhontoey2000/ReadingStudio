@@ -309,7 +309,9 @@ function Bookdetail(match) {
                   </div>
 
                   {/* <p className='detailtext'>{article.article_detail}</p> */}
-                  <div className="detailtext parsed-article">{highlightedArticleDetail}</div>
+                  <div className="detailtext parsed-article">
+                    {highlightedArticleDetail}
+                  </div>
 
                   <div className="text-start">
                     <Link
@@ -328,7 +330,7 @@ function Bookdetail(match) {
           </div>
 
           <div
-            className="grid-container"
+            className="grid-containervocab"
             id="myDIV2"
             style={{ display: visibleDiv === "คำศัพท์" ? "block" : "none" }}
           >
@@ -352,14 +354,14 @@ function Bookdetail(match) {
           </div>
 
           <div
-            className="grid-container"
+            className="grid-containerq"
             id="myDIV3"
             style={{ display: visibleDiv === "ข้อสอบ" ? "block" : "none" }}
           >
             <div>
               {Array.isArray(qitems) && qitems.length > 0 ? (
                 qitems.map((question, index) => (
-                  <div className="v-item" key={question.question_id}>
+                  <div className="q-item" key={question.question_id} id={`question_${index}`}>
                     <div className="vno" key={`vocabs_${index}`}>
                       <h5 className="v-title">{`${index + 1}. ${
                         question.question_text
@@ -379,7 +381,7 @@ function Bookdetail(match) {
                           >
                             <input
                               type="radio"
-                              className="v-text"
+                              className="q-options"
                               value={option.option_id}
                               name={`radioOption_${index}`}
                               id={`option_${option.option_id}`}
@@ -393,21 +395,17 @@ function Bookdetail(match) {
                           </div>
                         ))}
                       </div>
-
-                      <div className="addV" style={{ textAlign: "center" }}>
-                        <button
-                          className="btn btn-warning tc"
-                          onClick={handleExamSubmit}
-                        >
-                          ส่งคำตอบ
-                        </button>
-                      </div>
                     </div>
                   </div>
                 ))
               ) : (
                 <div className="no-items">ไม่มีชุดข้อสอบในตอนของบทความนี้.</div>
               )}
+            </div>
+            <div className="addV" style={{ textAlign: "center" }}>
+              <Button className="btn btn-warning tc" onClick={handleExamSubmit}>
+                ส่งคำตอบ
+              </Button>
             </div>
           </div>
         </div>

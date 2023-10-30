@@ -32,12 +32,23 @@
   font-size: 25px;
 }
 
+.grid-containervocab{
+  display: grid;
+    border-radius: 25px;
+    gap: 20px 0px;
+    grid-template-columns: auto auto auto auto;
+    background-color: #95cfff;
+    padding: 30px ;
+    margin: 10px 20px;
+}
+
 .v-item {
+  /* width: 30%; */
   display: grid;
   background-color: rgba(255, 255, 255, 0.8);
   border: 1px solid rgb(255, 255, 255);
   border-radius: 25px;
-  margin: 10px 30px;
+  margin: 10px 0px;
   padding: 20px;
   font-size: 14px;
   text-align: center;
@@ -133,4 +144,51 @@
 .highlighted {
   background-color: #b4dcfc;
   /* You can customize the highlighting style as needed */
+}
+
+.grid-containerq {
+  display: grid;
+  border-radius: 25px;
+  gap: 50px 0px;
+  background-color: #95cfff;
+  padding: 30px;
+  margin: 10px 20px;
+}
+
+.q-options {
+  padding: 15px;
+  margin: 15px;
+  text-align: center;
+}
+
+.q-item {
+  width: 70%;
+  display: grid;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 25px;
+  margin: 10px auto;
+  padding: 20px;
+  text-align: center;
+  align-items: center;
+  /* Center vertically within the .q-item container */
+  justify-content: center;
+
+}
+
+.option-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5px 0;
+}
+
+.option-container input {
+  margin-right: 10px;
+  /* Add some spacing between the radio input and label */
+}
+
+.option-container label {
+  margin: 0;
+  /* Reset margin on the label for better alignment */
 }
