@@ -11,6 +11,7 @@ function Editexam() {
   const articleid = location.state.article_id;
   const articlename = location.state.article_name;
   const bookname = location.state.book_name;
+  const bookid = location.state.book_id;
   const [qitems, setqItems] = useState([]);
   const [questions, setQuestions] = useState([]);
 
@@ -27,8 +28,10 @@ function Editexam() {
 
         // แปลงข้อมูลจาก qitems เป็นรูปแบบของ questions
         const initialQuestions = tempArr.map((item) => ({
+          id: item.question_id,
           text: item.question_text,
           image: item.question_imagedata, // หรือ item.question_image ขึ้นอยู่กับข้อมูลจริง
+          imagetemp: item.question_imagedata, // หรือ item.question_image ขึ้นอยู่กับข้อมูลจริง
           options: item.question_options.map((option) => option.option_text),
           correctOption: item.question_options.findIndex((option) => option.is_correct === 1), // หรือตามวิธีที่คุณจัดการคำตอบที่ถูกต้อง
         }));
@@ -44,6 +47,7 @@ function Editexam() {
     setQuestions([
       ...questions,
       {
+        id: -1,
         text: '',
         image: null,
         options: ['', '', '', ''],
@@ -69,10 +73,12 @@ function Editexam() {
     // updatedQuestions[index].image = file;
 
     if (file) {
+      updatedQuestions[index].image = file;
       updatedQuestions[index].imageURL = URL.createObjectURL(file);
 
     } else {
-      updatedQuestions[index].imageURL = updatedQuestions[index].image;
+      updatedQuestions[index].image = null;
+      updatedQuestions[index].imageURL = updatedQuestions[index].imagetemp;
     }
 
     setQuestions(updatedQuestions);
@@ -90,15 +96,46 @@ function Editexam() {
     setQuestions(updatedQuestions);
   };
 
+   const submitQuestion = (question) => {
+    // if (!question.text || !question.options.every((option) => option !== '')) {
+    //   alert('โปรดกรอกข้อมูลคำถามและตัวเลือกให้ครบถ้วน');
+    //   return;
+    // }
+
+    const formData = new FormData();
+    formData.append('question_id', question.id);
+    formData.append('book_id', bookid);
+    formData.append('article_id', articleid);
+    formData.append('total_questions', questions.length);
+    formData.append('questionstext', question.text);
+    formData.append('questionsImage', question.image); // หรือตามวิธีที่คุณจัดการรูปภาพ
+    formData.append(`questionsoptions`, JSON.stringify(question.options));
+    formData.append(`questionscorrectOption`, question.correctOption);
+    // question.options.forEach((option, optionIndex) => {
+    //   formData.append(`question_options[${optionIndex}][option_text]`, option);
+    //   formData.append(`question_options[${optionIndex}][is_correct]`, question.correctOption === optionIndex ? '1' : '0');
+    // });
+
+    axios
+      .post(`http://localhost:5004/api/editexam/`, formData)
+      .then((response) => {
+        alert('บันทึกข้อมูลเรียบร้อย');
+      })
+      .catch((error) => {
+        console.error(error);
+        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+      });
+  };
+
   const submitExam = () => {
-    // ตรวจสอบว่าข้อมูลคำถามถูกกรอกครบถ้วน
-    if (questions.some((question) => !question.text || !question.options.every((option) => option !== '') || !question.image)) {
+    if (questions.some((question) => !question.text || !question.options.every((option) => option !== ''))) {
       alert('โปรดกรอกข้อมูลคำถามและตัวเลือกให้ครบถ้วน');
       return;
     }
-
-    // ส่งข้อมูลคำถามไปยัง API ด้วย Axios หรือวิธีการส่งข้อมูลของคุณ
-    // ตัวอย่าง: axios.post('URL ของ API', questions)
+    // ส่งข้อมูลแต่ละข้อไปยังเซิร์ฟเวอร์
+    questions.forEach((question, index) => {
+      submitQuestion(question);
+    });
   };
 
   return (

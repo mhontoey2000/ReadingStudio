@@ -1280,6 +1280,37 @@ app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
     }
   });
 });
+app.post('/api/editexam',upload.single('questionsImage'),async (req, res) => {
+
+  const question_id = req.body.question_id;
+  const book_id = req.body.book_id;
+  const article_id = req.body.article_id;
+  const total_questions = req.body.total_questions;
+  const questionstext = req.body.questionstext;
+  const options = JSON.parse(req.body.questionsoptions);questionstext
+  const correctOption = req.body.questionscorrectOption;
+  const imageFile = req.file ? req.file : null; // ไฟล์รูปภาพ
+  console.log("question_id : "+question_id);
+  console.log("book_id : "+book_id);
+  console.log("article_id : "+article_id);
+  console.log("total_questions : "+total_questions);
+  console.log("questionstext : "+questionstext);
+  console.log("options : "+options);
+  console.log("correctOption : "+correctOption);
+  console.log("questionsImage : "+ imageFile);
+  let imagepath = null;
+  let imageByte = null;
+  if(imageFile)
+  {
+    imageByte = await helper.readFileAsync(imageFile.path);
+    console.log(imageFile,imageFile.path ,imageByte);
+    let img = helper.generateUniqueFileName('picture');
+    imagepath = img.pathimage;
+    await helper.writeFileAsync(img.fileName ,imageByte);
+    console.log(imageByte);
+  }
+ 
+});
 
 // สร้างเส้นทางสำหรับรับไฟล์ภาพและเสียง
 app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {
