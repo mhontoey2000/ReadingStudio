@@ -179,7 +179,9 @@ function Articleedit() {
   };
 
   const deleteArticle = (articleId) => {
-    const articleToDelete = items.find((article) => article.article_id === articleId);
+    const articleToDelete = items.find(
+      (article) => article.article_id === articleId
+    );
     setArticleToDelete(articleToDelete);
     setShowDeleteModal(true);
   };
@@ -199,7 +201,9 @@ function Articleedit() {
           });
       })
       .catch((error) => {
-        console.error(`เกิดข้อผิดพลาดในการลบตอนที่มี ID ${articleId}: ${error}`);
+        console.error(
+          `เกิดข้อผิดพลาดในการลบตอนที่มี ID ${articleId}: ${error}`
+        );
       });
   };
 
@@ -255,12 +259,14 @@ function Articleedit() {
                     <td key={`article${index + 1}`}>{index + 1}</td>
                     <td>{article.article_name}</td>
                     <td>
-                      <img
-                        src={article.article_imagedata || "url_to_default_image"}
-                        width="100"
-                        height="100"
-                        alt={article.article_name}
-                      />
+                      {article.article_imagedata ? (
+                        <img
+                          src={article.article_imagedata}
+                          width="100"
+                          height="100"
+                          alt={article.article_name}
+                        />
+                      ) : null}
                     </td>
                     <td>{article.article_level}</td>
                     <td>
@@ -304,7 +310,9 @@ function Articleedit() {
         </Modal.Header>
         <Modal.Body>
           {articleToDelete && (
-            <p>คุณแน่ใจหรือไม่ที่ต้องการลบตอน: {articleToDelete.article_name}?</p>
+            <p>
+              คุณแน่ใจหรือไม่ที่ต้องการลบตอน: {articleToDelete.article_name}?
+            </p>
           )}
         </Modal.Body>
         <Modal.Footer>
@@ -371,10 +379,7 @@ function Articleedit() {
                         ยกเลิก
                       </Button>
 
-                      <Button
-                        type="submit"
-                        className="btn btn-success"
-                      >
+                      <Button type="submit" className="btn btn-success">
                         ตกลง
                       </Button>
                     </div>
