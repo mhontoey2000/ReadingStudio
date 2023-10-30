@@ -12,6 +12,7 @@ const Allbookadmin = () => {
     const [items, setItems] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [bookToDelete, setBookToDelete] = useState(null);
+    const [statusUser, setStatusUser] = useState("");
     const user = localStorage.getItem('email');
     useEffect(() => {
         init();
@@ -27,6 +28,7 @@ const Allbookadmin = () => {
                 .then((response) => {
                     console.log(response)
                     const filteredData = response.data.filter(item => {
+                        setStatusUser(userresponse.data[0].user_type);
                         return canEditChapter(userresponse.data[0].user_type ,item.book_creator);
                     });
                     setItems(filteredData);
@@ -41,6 +43,9 @@ const Allbookadmin = () => {
     function canEditChapter(usertype,bookcreator) {
         console.log(usertype)
         return usertype === "admin" || user.includes(bookcreator);
+    }
+    function canUserEditChapter(bookcreator) {
+        return user.includes(bookcreator);
     }
 
     const deleteBook = (bookId) => {
@@ -105,6 +110,7 @@ const Allbookadmin = () => {
                                     scope="col"
                                     className='col-sm-1'
                                 >
+
                                     แก้ไขบทความ
                                 </th>
                                 <th
@@ -145,33 +151,29 @@ const Allbookadmin = () => {
                                                 {book.status_book}
                                             </Button>
                                         </td>
-                                    <td className='col-sm-1'>
-                                        {(
-                                        <Link
+                                   <td className='col-sm-1'>
+                                        {canUserEditChapter(book.book_creator) && <Link
                                             className="btn btn-warning amt1"
                                             to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
                                         >
                                             แก้ไขบทความ
-                                        </Link>
-                                        )}
+                                        </Link>}
                                     </td>
-                                    <td className='col-sm-1'>
-                                    { (
-                                            <Link
-                                                className="btn btn-warning amt1"
-                                                to={{ pathname: `/Page/articleedit_${book.book_id}`, state: { book_id: book.book_id } }}
-                                            >
-                                                แก้ไขตอน
-                                            </Link>
-                                            )}
-                                        </td>
-                                    <td className='col-sm-1'>
-                                        <Button
+                                     <td className='col-sm-1'>
+                                        {canUserEditChapter(book.book_creator) && <Link
+                                            className="btn btn-warning amt1"
+                                            to={{ pathname: `/Page/articleedit_${book.book_id}`, state: { book_id: book.book_id } }}
+                                        >
+                                            แก้ไขตอน
+                                        </Link>}
+                                    </td>
+                                     <td className='col-sm-1'>
+                                        {canUserEditChapter(book.book_creator) &&<Button
                                             className="btn btn-danger amt2"
                                             onClick={() => deleteBook(book.book_id)}
                                         >
                                             ลบบทความ
-                                        </Button>
+                                        </Button>}
                                     </td>
                                 </tr>
                             ))}
