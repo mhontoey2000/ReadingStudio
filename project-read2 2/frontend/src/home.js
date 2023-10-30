@@ -55,7 +55,9 @@ function Home() {
                     ) : (
                         filteredItems.map((book) => (
                             <div className="grid-item card" key={book.book_id}>
-                                <img className="card-img-top img-fluid simg" src={book.book_imagedata || book.book_image}/>
+                                {book.book_imagedata || book.book_image ? (
+                                <img className="card-img-top img-fluid simg" src={book.book_imagedata || book.book_image} alt={book.book_name} />
+                            ) : null}
                                 <h4 className="card-title" style={{ fontWeight:"bold"}}>{book.book_name}</h4>
                                 <span className="card-text">{book.book_detail}</span>
                                 <span style={{ fontStyle:"italic"}}>ผู้อัปโหลด: {book.book_creator}</span>

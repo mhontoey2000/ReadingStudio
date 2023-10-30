@@ -821,6 +821,24 @@ app.get('/api/allbookarticlecreator', function (req, res) {
   
 });
 
+app.delete('/api/deleteallbookcreator/:bookId', function (req, res) {
+  const bookId = req.params.bookId;
+
+  connection.query(
+      'DELETE FROM book WHERE book_id = ?',
+      [bookId],
+      function (err, results) {
+          if (err) {
+              console.error(err);
+              res.status(500).json({ error: 'Internal Server Error' });
+              return;
+          }
+
+          res.json({ message: 'Book deleted successfully' });
+      }
+  );
+});
+
 app.get('/api/forapprove', function (req, res) {
 
   connection.query(

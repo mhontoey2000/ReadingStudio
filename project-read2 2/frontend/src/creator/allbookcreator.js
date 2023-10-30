@@ -37,11 +37,12 @@ function Allbookcreator() {
     };
 
     const deleteBookConfirmed = (bookId) => {
-        axios.delete(`http://localhost:5004/api/deletebook/${bookId}`)
+        axios.delete(`http://localhost:5004/api/deleteallbookcreator/${bookId}`)
             .then(() => {
-                console.log(`บทความที่มี ID ${bookId} ถูกลบแล้ว.`);
+                console.log(`บทความ ${bookId} ถูกลบแล้ว.`);
                 // Refresh the book list after deletion
                 init();
+                setShowDeleteModal(false);
             })
             .catch((error) => {
                 console.error(`เกิดข้อผิดพลาดในการลบบทความที่มี ID ${bookId}: ${error}`);
@@ -95,8 +96,9 @@ function Allbookcreator() {
                                                 </span>
                                             ))}
                                         </td>
-                                        <td>
+                                        <td>{book.book_imagedata ? (
                                             <img src={book.book_imagedata || book.book_image} width="100" height="100" alt={book.book_name} />
+                                            ) : null}
                                         </td>
                                         
                                         <td>
@@ -152,7 +154,7 @@ function Allbookcreator() {
                         variant="danger"
                         onClick={() => {
                             deleteBookConfirmed(bookToDelete.book_id);
-                            setShowDeleteModal(false);
+                            //setShowDeleteModal(false);
                         }}
                     >
                         ลบ
