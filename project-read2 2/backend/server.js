@@ -1327,7 +1327,39 @@ app.post('/api/editexam',upload.single('questionsImage'),async (req, res) => {
     await helper.writeFileAsync(img.fileName ,imageByte);
     console.log(imageByte);
   }
- 
+
+  const updateQuestionQuery = `UPDATE questions SET question_text = ?, question_image = ?, question_imagedata = ? WHERE question_id = ?`;
+  const dataupdateQuestionQuery = [questionstext, imagepath, imageByte, question_id];
+  const updateOtherDataQuery = `UPDATE questions SET question_text = ? WHERE question_id = ?`;
+  const dataupdateOtherDataQuery =  [questionstext,  question_id];
+  
+  const query =  imageFile ? updateQuestionQuery : updateOtherDataQuery;
+  const dataquery =  imageFile ? dataupdateQuestionQuery : dataupdateOtherDataQuery;
+
+  connection.query(query,dataquery, (err, questionResult) => {
+    if (err) {
+      console.error('Error updating question data: ' + err.message);
+      res.status(500).send('Error updating question data');
+    } else {
+      // ลบตัวเลือกที่มีข้อมูลเดิม
+      const deleteOptionsQuery = `DELETE FROM options WHERE question_id = ?`;
+      connection.query(deleteOptionsQuery, [question_id], (err, deleteResult) => {
+        if (err) {
+          console.error('Error deleting old options: ' + err.message);
+          res.status(500).send('Error updating options data');
+        } else {
+          const insertOptionQuery = `INSERT INTO options (question_id, option_text, is_correct) VALUES (?, ?, ?)`;
+          options.forEach((option, index) => {
+            let correct = 0;
+            if (correctOption.toString() === index.toString()) correct = 1;
+            connection.query(insertOptionQuery, [question_id, option, correct]);
+          });
+          // ทำอะไรกับข้อมูลอื่น ๆ ของคำถาม
+          res.status(200).send('Data updated successfully');
+        }
+      });
+    }
+  });
 });
 
 // สร้างเส้นทางสำหรับรับไฟล์ภาพและเสียง
