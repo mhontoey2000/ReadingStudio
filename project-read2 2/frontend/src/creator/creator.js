@@ -38,6 +38,7 @@ function Creator() {
                       <i className="bi bi-file-earmark-plus-fill"></i> 1.สร้างบทความ
                     </Button>
                   </div>
+
                   <div className="mx-2">
                     <Button
                       type="button"
@@ -45,6 +46,16 @@ function Creator() {
                       href="./articlecreator"
                     >
                       <i className="bi bi-file-earmark-plus-fill"></i> 2.สร้างตอนของบทความ
+                    </Button>
+                  </div>
+
+                  <div className="mx-2">
+                    <Button
+                      type="button"
+                      className="btn btn-primary btn-lg text-truncate custom-button"
+                      href="./sendrequest"
+                    >
+                      <i className="bi bi-file-earmark-plus-fill"></i> 3.เผยแพร่บทความ
                     </Button>
                   </div>
                 </div>
@@ -64,7 +75,8 @@ function Creator() {
                     <i className="bi bi-book-fill"></i> บทความของฉัน
                   </Button>
                 </div>
-                <div className="mx-2">
+
+                {/* <div className="mx-2">
                   <Button
                     type="button"
                     className="btn btn-primary btn-lg text-truncate custom-button"
@@ -73,7 +85,8 @@ function Creator() {
                     <i className="bi bi-file-earmark-spreadsheet-fill"></i>{" "}
                     ข้อสอบของฉัน
                   </Button>
-                </div>
+                </div> */}
+
                 <div className="mx-2">
                   <Button
                     type="button"

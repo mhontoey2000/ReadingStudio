@@ -23,7 +23,7 @@ function Addarticle() {
   const history = useHistory();
   const [bname, setBname] = useState("");
   const [chapter, setChapter] = useState("");
-  const [level, setLevel] = useState("ไม่มีระดับของบทความ");
+  const [level, setLevel] = useState("กรุณาวัดระดับของบทความ");
   const [description, setDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
@@ -265,15 +265,17 @@ function Addarticle() {
         </Modal.Header>
         <Modal.Body>คุณต้องการสร้างตอนของบทความใช่ไหม?</Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={confirmArticle}>
-            ตกลง
-          </Button>
+          
           <Button
             variant="warning"
             style={{ color: "white" }}
             onClick={() => setShowModal(false)}
           >
             ยกเลิก
+          </Button>
+          
+          <Button variant="primary" onClick={confirmArticle}>
+            ตกลง
           </Button>
         </Modal.Footer>
       </Modal>

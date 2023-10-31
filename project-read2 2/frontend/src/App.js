@@ -40,6 +40,7 @@ import Toaddarticle from "./creator/toaddarticle";
 import Toaddarticleadmin from "./admin/toaddarticleadmin";
 import Notificationcreator from "./creator/notificationcreator";
 import Forapprovebook from "./admin/forapprovebook";
+import Sendrequest from "./creator/sendrequest";
 
 const App = () => {
   const user_data = localStorage.getItem("access_token");
@@ -273,6 +274,12 @@ const App = () => {
           path="/Page/forapprovebook"
           render={() =>
             !isAuthenticated ? <Redirect to="/Page/one" /> : <Forapprovebook />
+          }
+        />
+        <Route
+          path="/Page/Sendrequest"
+          render={() =>
+            !isAuthenticated ? <Redirect to="/Page/one" /> : <Sendrequest />
           }
         />
 

@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../styles/home.css";
 import Header from "../header";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AudioOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { Input, Space } from "antd";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import Searchbar from "../searchbar";
@@ -29,6 +27,7 @@ function Articleedit() {
   const [selectarticle, setSelectarticle] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -190,11 +189,12 @@ function Articleedit() {
     axios
       .delete(`http://localhost:5004/api/deletearticle/${articleId}`)
       .then(() => {
-        console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
+        //console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
         axios
           .get(`http://localhost:5004/api/article/${bookid}`)
           .then((response) => {
             setItems(response.data);
+            setShowSuccessModal(true);
           })
           .catch((error) => {
             console.error(error);
@@ -395,6 +395,15 @@ function Articleedit() {
           )}
         </Modal.Body>
       </Modal>
+      
+      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}> {/* Step 2 */}
+          <Modal.Header closeButton>
+            <Modal.Title>ลบสำเร็จ</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>บทความถูกลบสำเร็จ</p> 
+          </Modal.Body>
+        </Modal>
     </div>
   );
 }
