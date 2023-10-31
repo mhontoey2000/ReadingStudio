@@ -14,7 +14,7 @@ function Editexam() {
   const bookid = location.state.book_id;
   const [qitems, setqItems] = useState([]);
   const [questions, setQuestions] = useState([]);
-
+  const [tempArrCount, setTempArrCount] = useState(0);
   useEffect(() => {
     console.log('articlename'+ articlename);
     console.log('bookname'+ bookname);
@@ -25,6 +25,9 @@ function Editexam() {
       .then((response) => {
         let tempArr = response.data.slice().reverse();
         setqItems(tempArr);
+        const tempArrCount = tempArr.length;
+        setTempArrCount(tempArrCount);
+        console.log('จำนวนรายการใน tempArr: ' + tempArrCount);
 
         // แปลงข้อมูลจาก qitems เป็นรูปแบบของ questions
         const initialQuestions = tempArr.map((item) => ({
@@ -96,11 +99,7 @@ function Editexam() {
     setQuestions(updatedQuestions);
   };
 
-   const submitQuestion = (question) => {
-    // if (!question.text || !question.options.every((option) => option !== '')) {
-    //   alert('โปรดกรอกข้อมูลคำถามและตัวเลือกให้ครบถ้วน');
-    //   return;
-    // }
+  const submitEditQuestion = (question) => {
 
     const formData = new FormData();
     formData.append('question_id', question.id);
@@ -108,25 +107,46 @@ function Editexam() {
     formData.append('article_id', articleid);
     formData.append('total_questions', questions.length);
     formData.append('questionstext', question.text);
-    formData.append('questionsImage', question.image); // หรือตามวิธีที่คุณจัดการรูปภาพ
+    if(question.image != null)
+      formData.append('questionsImage', question.image); // หรือตามวิธีที่คุณจัดการรูปภาพ
     formData.append(`questionsoptions`, JSON.stringify(question.options));
     formData.append(`questionscorrectOption`, question.correctOption);
-    // question.options.forEach((option, optionIndex) => {
-    //   formData.append(`question_options[${optionIndex}][option_text]`, option);
-    //   formData.append(`question_options[${optionIndex}][is_correct]`, question.correctOption === optionIndex ? '1' : '0');
-    // });
 
-    axios
-      .post(`http://localhost:5004/api/editexam/`, formData)
+    axios.post(`http://localhost:5004/api/editexam/`, formData)
       .then((response) => {
-        alert('บันทึกข้อมูลเรียบร้อย');
+        console.error('บันทึกข้อมูลเรียบร้อย');
+
       })
       .catch((error) => {
         console.error(error);
         alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
       });
   };
+  const submitAddQuestion = async (question) => {
+  
+    try {
+        const data = new FormData();
+        data.append('book_id', bookid);
+        data.append('article_id', articleid);
+        data.append('total_questions', questions.length);
+        data.append(`questionstext`, question.text);
+        data.append(`questionsImage`, question.image);
+        data.append(`questionsoptions`, JSON.stringify(question.options));
+        data.append(`questionscorrectOption`, question.correctOption);
 
+        const response = await axios.post("http://localhost:5004/api/add-data", data);
+        if (response.status === 200) {
+          console.log(response.data);
+        } else {
+          console.error("ไม่สามารถบันทึกข้อมูลได้");
+          alert("ไม่สามารถบันทึกข้อมูลได้");
+        }
+    } catch (error) {
+      // Handle errors here (e.g., show an error message)
+      console.error('Error adding book:', error);
+      alert(error);
+    }
+  };
   const submitExam = () => {
     if (questions.some((question) => !question.text || !question.options.every((option) => option !== ''))) {
       alert('โปรดกรอกข้อมูลคำถามและตัวเลือกให้ครบถ้วน');
@@ -134,8 +154,14 @@ function Editexam() {
     }
     // ส่งข้อมูลแต่ละข้อไปยังเซิร์ฟเวอร์
     questions.forEach((question, index) => {
-      submitQuestion(question);
+      console.log((tempArrCount -1 >= index ? "submitEditQuestion" : "submitAddQuestion") +' : Questopn : ' + index + ": asdas" + question.text);
+      if(tempArrCount-1 >= index)
+        submitEditQuestion(question);
+      else
+        submitAddQuestion(question);
     });
+    alert('Success');
+
   };
 
   return (
