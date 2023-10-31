@@ -318,7 +318,7 @@ function Toaddarticle() {
                           className="btn btn-danger"
                           onClick={() => deleteArticle(article.article_id)}
                         >
-                          Delete
+                          ลบ
                         </Button>
                       </td>
                     </tr>

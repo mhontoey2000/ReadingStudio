@@ -15,7 +15,7 @@ function Notificationcreator() {
     axios
       .get("http://localhost:5004/api/notification?user_email=" + user)
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
         setItems(response.data);
       })
       .catch((error) => {
@@ -32,7 +32,7 @@ function Notificationcreator() {
       <Header />
       <section>
         <div className="grid-containerr">
-          <h1>บทความทั้งหมดของฉัน</h1>
+          <h1>รายการสถานะบทความ</h1>
 
           <div style={{ padding: "10px" }}>
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
@@ -69,8 +69,7 @@ function Notificationcreator() {
                 {filteredItems.length === 0 ? (
                   <tr>
                     <td colSpan="6">
-                      ไม่มีรายการบทของหนังสือที่คุณค้นหา
-                      หรือคุณเขียนชื่อบทของหนังสือผิด.
+                      ไม่มีรายการสถานะของบทความ.
                     </td>
                   </tr>
                 ) : (
@@ -90,18 +89,18 @@ function Notificationcreator() {
                         />
                       </td>
                       <td className="col-sm-1">
-                        {items.status_book === "pending" && (
+                        {items.status === "pending" && (
                           <Button variant="info" style={{ color: "white" }}>
                             รออนุมัติ
                           </Button>
                         )}
-                        {items.status_book === "Creating" && (
+                        {items.status === "creating" && (
                           <Button variant="secondary">สร้างยังไม่เสร็จ</Button>
                         )}
-                        {items.status_book === "ban" && (
+                        {items.status === "deny" && (
                           <Button variant="danger">ถูกปฏิเสธ</Button>
                         )}
-                        {items.status_book === "published" && (
+                        {items.status === "published" && (
                           <Button variant="success">เผยแพร่แล้ว</Button>
                         )}
                       </td>

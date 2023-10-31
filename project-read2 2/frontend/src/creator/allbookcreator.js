@@ -135,10 +135,10 @@ function Allbookcreator() {
                           รออนุมัติ
                         </Button>
                       )}
-                      {book.status_book === "Creating" && (
+                      {book.status_book === "creating" && (
                         <Button variant="secondary">สร้างยังไม่เสร็จ</Button>
                       )}
-                      {book.status_book === "ban" && (
+                      {book.status_book === "deny" && (
                         <Button variant="danger">ถูกปฏิเสธ</Button>
                       )}
                       {book.status_book === "published" && (

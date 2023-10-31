@@ -108,23 +108,23 @@ function Header() {
                     <Nav >
                         <Nav.Link href="./home" className="list_item">
                           <i className="bi bi-house"></i>
-                            Home
+                            หน้าหลัก
                           </Nav.Link>
                         <Nav.Link href="./profile" className="list_item">
                           <i className="bi bi-person"></i>
-                            Profile
+                            โปรไฟล์
                           </Nav.Link>
                           {usertype === "admin" && (<Nav.Link href="./adminpage" className="list_item">
                           <i className="bi bi-person-workspace"></i>
-                            Admin
+                            เมนูแอดมิน
                           </Nav.Link>)}
                           {usertype === "creator" && userstatus === "approved" && (<Nav.Link href="./creator" className="list_item">
                           <i className="bi bi-person-workspace"></i>
-                            Creator
+                            เมนูผู้สร้าง
                           </Nav.Link>)}
                         <Nav.Link href="./logout" onClick={logout } className="list_item">
                           <i className="bi bi-box-arrow-right"></i>
-                            Logout
+                            ล็อกเอาท์
                           </Nav.Link>
                     </Nav>
                 </Offcanvas.Body>
@@ -135,17 +135,17 @@ function Header() {
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirm Logout</Modal.Title>
+          <Modal.Title>ทำการยืนยัน</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to log out?
+          คุณต้องการล็อกเอาท์ใช่หรือไม่?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="warning" style={{color:"white"}} onClick={handleLogoutConfirmed}>
-            Logout
+            ล็อกเอาท์
           </Button>
           <Button variant="primary" onClick={() => setShowModal(false)}>
-            Cancel
+            ยกเลิก
           </Button>
           
         </Modal.Footer>

@@ -86,12 +86,12 @@ function Bookarticle({ match }) {
                     ) : (
                         filteredItems.map((article) => (
                 <div className="grid-item card" key={article.article_id}>
+                  {article.article_imagedata || article.article_images ? (
                   <img
                     className="card-img-top img-fluid simg"
                     src={article.article_imagedata || article.article_images || 'url_to_default_image'}
                     style={{ maxWidth: '100%', maxHeight: '200px' }}
-
-                  />
+                  />) : null}
                   <h4 className="card-title" style={{ fontWeight:"bold"}}>{article.article_name}</h4>
                   <span>{article.book_detail}</span>
                   <Link

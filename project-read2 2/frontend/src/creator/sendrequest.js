@@ -12,9 +12,15 @@ import Modal from "react-bootstrap/Modal";
 function Sendrequest() {
   const [items, setItems] = useState([]);
   const user = localStorage.getItem("email");
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [selectedBookId, setSelectedBookId] = useState(null);
+
+  const sendPublishRequest = (bookId) => {
+    setSelectedBookId(bookId);
+    setShowConfirmationModal(true);
+  };
 
   useEffect(() => {
     init();
@@ -30,6 +36,20 @@ function Sendrequest() {
         console.error(error);
       });
   }
+
+  const confirmPublish = () => {
+    setShowConfirmationModal(false);
+    axios
+      .post(`http://localhost:5004/api/updateStatusBook/${selectedBookId}`, {
+        status_book: "pending",
+      })
+      .then((response) => {
+        setShowSuccessModal(true);
+      })
+      .catch((error) => {
+        console.error("Error updating status_book:", error);
+      });
+  };
 
   const filteredItems = items.filter((book) => {
     return book.book_name.includes(searchTerm);
@@ -65,7 +85,7 @@ function Sendrequest() {
                   สถานะ
                 </th>
                 <th scope="col" className="t-size">
-                  ส่งคำขอ
+                  ส่งคำขอเผยแพร่
                 </th>
               </tr>
             </thead>
@@ -104,12 +124,17 @@ function Sendrequest() {
                     </td>
                     <td>
                       {book.status_book === "pending" && (
-                        <Button variant="info" style={{color:"white"}}>รออนุมัติ</Button>
+                        <Button variant="info" style={{ color: "white" }}>
+                          รออนุมัติ
+                        </Button>
                       )}
-                      {book.status_book === "Creating" && (
+                      {book.status_book === "creating" && (
                         <Button variant="secondary">สร้างยังไม่เสร็จ</Button>
                       )}
-                      {book.status_book === "ban" && (
+                      {book.status_book === "finished" && (
+                        <Button variant="secondary">สร้างเสร็จแล้ว</Button>
+                      )}
+                      {book.status_book === "deny" && (
                         <Button variant="danger">ถูกปฏิเสธ</Button>
                       )}
                       {book.status_book === "published" && (
@@ -117,7 +142,16 @@ function Sendrequest() {
                       )}
                     </td>
                     <td>
-                      <Button className="btn btn-success">เผยแพร่</Button>
+                      {book.status_book === "finished" ? (
+                        <Button
+                          className="btn btn-success"
+                          onClick={() => sendPublishRequest(book.book_id)}
+                        >
+                          ส่งคำขอ
+                        </Button>
+                      ) : (
+                        "-"
+                      )}
                     </td>
                   </tr>
                 ))
@@ -126,6 +160,44 @@ function Sendrequest() {
           </table>
         </div>
       </section>
+
+      <Modal
+        show={showConfirmationModal}
+        onHide={() => setShowConfirmationModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยันการส่งคำขอ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>คุณแน่ใจหรือไม่ที่ต้องการส่งคำขอเผยแพร่บทความนี้?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="warning"
+            style={{ color: "white" }}
+            onClick={() => setShowConfirmationModal(false)}
+          >
+            ยกเลิก
+          </Button>
+          <Button variant="primary" onClick={confirmPublish}>
+            ยืนยัน
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ส่งคำขอสำเร็จ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>บทความนี้ได้ถูกส่งคำขอเพื่อเผยแพร่แล้ว!</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => setShowSuccessModal(false)}>
+            ปิด
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

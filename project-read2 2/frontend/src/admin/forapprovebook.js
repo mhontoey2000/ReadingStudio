@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function Forapprovebook() {
   const [items, setItems] = useState([]);
@@ -25,6 +25,14 @@ function Forapprovebook() {
       .then((response) => {
         setItems(response.data);
         console.log("items", items);
+        const articleNamesArray = response.data.map((item) => ({
+          ...item,
+          article_name: item.article_names
+            .split(",")
+            .map((articleName) => articleName.trim()),
+        }));
+
+        setItems(articleNamesArray);
       })
       .catch((error) => {
         console.error(error);
@@ -38,18 +46,15 @@ function Forapprovebook() {
 
   const submitStatusChange = (event) => {
     event.preventDefault();
-
-    if (
-      status === "published" ||
-      (status === "deny" && unpublishReason !== "-")
-    ) {
+  
+    if (status === "published" || (status === "deny" && unpublishReason !== "-")) {
       const data = {
         bookId: selectitem.book_id,
-        articleId: selectitem.article_id,
         newStatus: status,
-        unpublishReason: status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
+        unpublishReason:
+          status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
-
+  
       axios
         .post("http://localhost:5004/api/updateStatus", data)
         .then((response) => {
@@ -112,34 +117,64 @@ function Forapprovebook() {
                 </tr>
               </thead>
               <tbody className="table-group-divider">
-                {items.map((item, index) => (
-                  <tr key={`${item.book_id}-${item.article_id}`}>
+              {items.length === 0 ? (
+                <tr>
+                  <td colSpan="6">
+                    ไม่มีรายการบทความที่รอการอนุมัติ.
+                  </td>
+                </tr>
+              ) : (
+                items.map((item, index) => (
+                  <tr key={item.book_id}>
                     <td className="col-sm-1" key={`book${index + 1}`}>
                       {index + 1}
                     </td>
                     <td className="col-sm-2">{item.book_name}</td>
-                    <td className="col-sm-2">{item.article_name}</td>
+                    <td className="col-sm-2">
+                      {Array.isArray(item.article_name)
+                        ? item.article_name.map((article, index) => (
+                            <span key={index}>
+                              {article}
+                              {index < item.article_name.length - 1 && ", "}
+                            </span>
+                          ))
+                        : "ไม่มีตอนของบทความ"}
+                    </td>
                     <td className="col-sm-3">
                       <img
-                        src={item.article_imagedata || "url_to_default_image"}
+                        src={item.book_imagedata || "url_to_default_image"}
                         width="100"
                         height="100"
-                        alt={item.article_name}
+                        alt={item.book_name}
                       />
                     </td>
                     <td className="col-sm-2">
                       <Button
-                        className="btn btn-primary"
+                        className={`btn ${
+                          item.status_book === "pending"
+                            ? "btn-info"
+                            : item.status_book === "creating"
+                            ? "btn-secondary"
+                            : item.status_book === "deny"
+                            ? "btn-danger"
+                            : item.status_book === "published"
+                            ? "btn-success"
+                            : "btn-primary"
+                        }`}
+                        style={{ color: "white" }}
                         onClick={() => openStatusModal(item)}
                       >
-                        {item.status_article}
+                        {item.status_book === "pending" && "รออนุมัติ"}
+                        {item.status_book === "creating" && "สร้างยังไม่เสร็จ"}
+                        {item.status_book === "deny" && "คุณปฏิเสธ"}
+                        {item.status_book === "published" && "เผยแพร่แล้ว"}
                       </Button>
                     </td>
                     <td className="col-sm-2">
                       <Link
                         to={{
-                          pathname: "/Page/bookdetail",
-                          state: { article_id: item.article_id },
+                          pathname: "/Page/bookarticle",
+                          state: { book_id: item.book_id },
                         }}
                         className="btn btn-success"
                       >
@@ -147,7 +182,8 @@ function Forapprovebook() {
                       </Link>
                     </td>
                   </tr>
-                ))}
+                ))
+                )}
               </tbody>
             </table>
           </div>
@@ -214,7 +250,9 @@ function Forapprovebook() {
                     }}
                   >
                     <option value="default" hidden>
-                      {selectitem.status_article}
+                      {selectitem.status_book === "pending" && "รออนุมัติ"}
+                      {selectitem.status_book === "deny" && "คุณปฏิเสธ"}
+                      {selectitem.status_book === "published" && "เผยแพร่แล้ว"}
                     </option>
                     <option value="published">อนุมัติ</option>
                     <option value="deny">ปฎิเสธ</option>
