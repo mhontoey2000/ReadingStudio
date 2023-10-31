@@ -155,6 +155,8 @@ function Forapprovebook() {
                             ? "btn-info"
                             : item.status_book === "creating"
                             ? "btn-secondary"
+                            : item.status_book === "finished"
+                            ? "btn-secondary"
                             : item.status_book === "deny"
                             ? "btn-danger"
                             : item.status_book === "published"
@@ -166,6 +168,7 @@ function Forapprovebook() {
                       >
                         {item.status_book === "pending" && "รออนุมัติ"}
                         {item.status_book === "creating" && "สร้างยังไม่เสร็จ"}
+                        {item.status_book === "finished" && "สร้างเสร็จแล้ว"}
                         {item.status_book === "deny" && "คุณปฏิเสธ"}
                         {item.status_book === "published" && "เผยแพร่แล้ว"}
                       </Button>
