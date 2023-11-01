@@ -122,6 +122,7 @@ connection.query(query,[article_id], function(err, results) {
   // ลูปผ่านข้อมูลที่คุณได้รับ
   results.forEach((item) => {
     const {
+      exam_id,
       question_id,
       question_text,
       question_image,
@@ -137,6 +138,7 @@ connection.query(query,[article_id], function(err, results) {
     // ถ้ายังไม่มีข้อมูลสำหรับคำถามนี้ใน groupedData
     if (!groupedData[question_id]) {
       groupedData[question_id] = {
+        exam_id,
         question_id,
         question_text,
         question_image,
@@ -1427,19 +1429,51 @@ app.post('/api/editexam',upload.single('questionsImage'),async (req, res) => {
 app.delete('/api/deleteeditexam/:id', function (req, res) {
   const questionId = req.params.id;
 
-  connection.query(
-    'DELETE FROM questions WHERE vocabs_id = ?',
-    [questionId],
-    function (err, results) {
-      if (err) {
-        console.error(err);
-        res.status(500).json({ message: 'ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย' });
-      } else {
-        res.json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
-      }
+  // แบ่ง query ของ exam_id และ count ให้อยู่ในลำดับที่ถูกต้อง
+  connection.query(`SELECT * FROM questions WHERE question_id = ?`, [questionId], function(err, results) {
+    if (err) {
+      console.error('Error querying database:', err);
+      res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
+      return;
     }
-  );
+
+    const examid = results[0].exam_id;
+
+    connection.query(`SELECT * FROM questions WHERE exam_id = ?`, [examid], function(err, results) {
+      if (err) {
+        console.error('Error querying database:', err);
+        res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
+        return;
+      }
+
+      const count = results.length;
+
+      // ลบคำถาม
+      connection.query('DELETE FROM questions WHERE question_id = ?', [questionId], function (err, results) {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
+          return;
+        }
+
+        if (count === 1) {
+          // ถ้า count เท่ากับ 1, แสดงว่าไม่มีคำถามที่เหลือในการสอบ
+          connection.query(`DELETE FROM exams WHERE exam_id = ?`, [examid], function(err, results) {
+            if (err) {
+              console.error(err);
+              res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
+            } else {
+              res.status(200).json({ message: 'ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย' });
+            }
+          });
+        } else {
+          res.status(200).json({ message: 'ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย' });
+        }
+      });
+    });
+  });
 });
+
   
 // สร้างเส้นทางสำหรับรับไฟล์ภาพและเสียง
 app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {

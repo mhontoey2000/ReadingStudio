@@ -17,6 +17,7 @@ function Editexam() {
   const [qitems, setqItems] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [tempArrCount, setTempArrCount] = useState(0);
+  const [exam_id, setExamid] = useState(-1);
   useEffect(() => {
     console.log('articlename'+ articlename);
     console.log('bookname'+ bookname);
@@ -33,6 +34,7 @@ function Editexam() {
 
         // แปลงข้อมูลจาก qitems เป็นรูปแบบของ questions
         const initialQuestions = tempArr.map((item) => ({
+          exam_id: item.exam_id,
           id: item.question_id,
           text: item.question_text,
           image: item.question_imagedata, // หรือ item.question_image ขึ้นอยู่กับข้อมูลจริง
@@ -40,7 +42,10 @@ function Editexam() {
           options: item.question_options.map((option) => option.option_text),
           correctOption: item.question_options.findIndex((option) => option.is_correct === 1), // หรือตามวิธีที่คุณจัดการคำตอบที่ถูกต้อง
         }));
+        setExamid(tempArr[0].exam_id);
+        console.log('exam_id : ' + exam_id);
 
+        setExamid(initialQuestions[0].exam_id);
         setQuestions(initialQuestions);
       })
       .catch((error) => {
@@ -122,6 +127,7 @@ function Editexam() {
   const submitEditQuestion = (question) => {
 
     const formData = new FormData();
+    formData.append('exam_id', exam_id);
     formData.append('question_id', question.id);
     formData.append('book_id', bookid);
     formData.append('article_id', articleid);
@@ -145,6 +151,7 @@ function Editexam() {
   
     try {
         const data = new FormData();
+        data.append('exam_id', exam_id);
         data.append('book_id', bookid);
         data.append('article_id', articleid);
         data.append('total_questions', questions.length);
