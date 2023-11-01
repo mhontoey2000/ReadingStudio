@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import './styles/home.css';
+import './styles/bookarticle.css';
 import Header from './header';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AudioOutlined } from '@ant-design/icons';
-import { Link, redirect } from 'react-router-dom';
-import { Input, Space } from 'antd';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useLocation, useHistory } from 'react-router-dom';
 import Searchbar from './searchbar';
@@ -79,20 +77,19 @@ function Bookarticle({ match }) {
                     </div>
                     )} */}
           
-          <div>
+
             <div className="grid-container">
             {filteredItems.length === 0 ? (
                         <p>ไม่มีรายการหนังสือที่คุณค้นหา หรือคุณเขียนชื่อหนังสือผิด.</p>
                     ) : (
                         filteredItems.map((article) => (
-                <div className="grid-item card" key={article.article_id}>
-                  {article.article_imagedata || article.article_images ? (
+                <div className="grid-itema card" key={article.article_id}>
                   <img
-                    className="card-img-top img-fluid simg"
+                    className="card-img-topa img-fluid simg"
                     src={article.article_imagedata || article.article_images || 'url_to_default_image'}
-                    style={{ maxWidth: '100%', maxHeight: '200px' }}
-                  />) : null}
-                  <h4 className="card-title" style={{ fontWeight:"bold"}}>{article.article_name}</h4>
+
+                  />
+                  <h4 className="card-titlea" style={{ fontWeight:"bold"}}>{article.article_name}</h4>
                   <span>{article.book_detail}</span>
                   <Link
                     to={{ pathname: '/Page/bookdetail', state: { article_id: article.article_id } }}
@@ -104,7 +101,7 @@ function Bookarticle({ match }) {
               ))
             )}
             </div>
-          </div>
+          
         </section>
       </div>
     );

@@ -28,6 +28,7 @@ function Bookdetail(match) {
   const [remail, setRemail] = useState("");
   const [qitems, setqItems] = useState([]);
   const [visibleDiv, setVisibleDiv] = useState("เนื้อหา");
+  const [highlighted, setHighlighted] = useState(false);
 
   const [highlightedArticleDetail, setHighlightedArticleDetail] = useState([]);
 
@@ -244,7 +245,7 @@ function Bookdetail(match) {
               <div className="btn-group me-2 me-auto">
                 <Button
                   type="button"
-                  className={`btn primary-button ${
+                  className={`btn primary-button btn-lg ${
                     visibleDiv === "เนื้อหา" ? "active" : ""
                   }`}
                   onClick={() => handleButtonClick("เนื้อหา")}
@@ -253,7 +254,7 @@ function Bookdetail(match) {
                 </Button>
                 <Button
                   type="button"
-                  className={`btn primary-button ${
+                  className={`btn primary-button btn-lg ${
                     visibleDiv === "คำศัพท์" ? "active" : ""
                   }`}
                   onClick={() => handleButtonClick("คำศัพท์")}
@@ -262,7 +263,7 @@ function Bookdetail(match) {
                 </Button>
                 <Button
                   type="button"
-                  className={`btn primary-button ${
+                  className={`btn primary-button btn-lg ${
                     visibleDiv === "ข้อสอบ" ? "active" : ""
                   }`}
                   onClick={() => handleButtonClick("ข้อสอบ")}
@@ -280,15 +281,16 @@ function Bookdetail(match) {
           >
             {items.map((article) => (
               <div className="grid-item" key={article.article_id}>
-                <h2 style={{ fontWeight: "bold" }}>{article.article_name}</h2>
-                <div>
-                  <h5 className="leveltext">{article.article_level}</h5>
-                </div>
+                <h2 style={{ fontWeight: "bold", margin: "10px" }}>
+                  {article.article_name}
+                </h2>
+
                 <div>
                   <img
+                    className="bigimg"
                     src={article.article_imagedata || article.article_images}
                     alt="Article"
-                    style={{ maxWidth: "100%", maxHeight: "300px" }}
+                    //style={{ maxWidth: "100%", maxHeight: "1000px" }}
                   />
                 </div>
 
@@ -308,9 +310,30 @@ function Bookdetail(match) {
                     )}
                   </div>
 
-                  {/* <p className='detailtext'>{article.article_detail}</p> */}
-                  <div className="detailtext parsed-article">
-                    {highlightedArticleDetail}
+                  <div style={{ margin: "10px" }}>
+                    <h5 className="leveltext " style={{ textAlign: "center" }}>
+                      บทความฝึกอ่านสำหรับ:{" "}
+                      <span style={{ color: "green" }}>
+                        {article.article_level}
+                      </span>
+                    </h5>
+
+                    <Button
+                      className="btn btn-success"
+                      style={{ color: "white" }}
+                      onClick={() => setHighlighted(!highlighted)}
+                    >
+                      {highlighted ? "ซ่อน" : "แสดงคำศัพท์"}
+                    </Button>
+                  </div>
+
+                  <div
+                    className="detailtext parsed-article"
+                    style={{ fontSize: "25px", lineHeight: "2.5" }}
+                  >
+                    {highlighted
+                      ? highlightedArticleDetail
+                      : items.length > 0 && items[0].article_detail}
                   </div>
 
                   <div className="text-start">
@@ -361,7 +384,11 @@ function Bookdetail(match) {
             <div>
               {Array.isArray(qitems) && qitems.length > 0 ? (
                 qitems.map((question, index) => (
-                  <div className="q-item" key={question.question_id} id={`question_${index}`}>
+                  <div
+                    className="q-item"
+                    key={question.question_id}
+                    id={`question_${index}`}
+                  >
                     <div className="vno" key={`vocabs_${index}`}>
                       <h5 className="v-title">{`${index + 1}. ${
                         question.question_text
@@ -402,11 +429,16 @@ function Bookdetail(match) {
                 <div className="no-items">ไม่มีชุดข้อสอบในตอนของบทความนี้.</div>
               )}
             </div>
-            <div className="addV" style={{ textAlign: "center" }}>
-              <Button className="btn btn-warning tc" onClick={handleExamSubmit}>
-                ส่งคำตอบ
-              </Button>
-            </div>
+            {Array.isArray(qitems) && qitems.length > 0 && (
+              <div className="addV" style={{ textAlign: "center" }}>
+                <Button
+                  className="btn btn-success tc"
+                  onClick={handleExamSubmit}
+                >
+                  ส่งคำตอบ
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </section>

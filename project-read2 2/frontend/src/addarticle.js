@@ -23,7 +23,7 @@ function Addarticle() {
   const history = useHistory();
   const [bname, setBname] = useState("");
   const [chapter, setChapter] = useState("");
-  const [level, setLevel] = useState("กรุณาวัดระดับของบทความ");
+  const [level, setLevel] = useState("ยังไม่ได้วัดระดับของบทความ");
   const [description, setDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);

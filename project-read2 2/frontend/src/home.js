@@ -25,7 +25,7 @@ function Home() {
         // Use the search term to filter items
         axios.get('http://localhost:5004/api/book')
           .then((response) => {
-            const publishedBooks = response.data.filter((book) => book.status_book === 'published');
+            const publishedBooks = response.data.filter((book) => book.status_book === 'published' || book.status_book === 'finished');
             setItems(publishedBooks);
           })
           .catch((error) => {
@@ -56,7 +56,7 @@ function Home() {
                         filteredItems.map((book) => (
                             <div className="grid-item card" key={book.book_id}>
                                 {book.book_imagedata || book.book_image ? (
-                                <img className="card-img-top img-fluid simg" src={book.book_imagedata || book.book_image} alt={book.book_name} />
+                                <img className="card-img-top img-fluid" src={book.book_imagedata || book.book_image} alt={book.book_name} />
                             ) : null}
                                 <h4 className="card-title" style={{ fontWeight:"bold"}}>{book.book_name}</h4>
                                 <span className="card-text">{book.book_detail}</span>

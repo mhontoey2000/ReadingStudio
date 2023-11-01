@@ -289,7 +289,7 @@ app.post('/api/updateLeveltext', (req, res) => {
 
     connection.query(
       `UPDATE article SET article_level = ?, status_article = ? WHERE article_id = ?`,
-      [newLevel, "finished", articleId],
+      [newLevel, "published", articleId],
       function (err, results) {
         if (err) {
           connection.rollback(function () {
@@ -301,7 +301,7 @@ app.post('/api/updateLeveltext', (req, res) => {
 
           connection.query(
             'UPDATE book SET status_book = ? WHERE book_id = (SELECT book_id FROM article WHERE article_id = ?)',
-            [ "finished", articleId],
+            [ "published", articleId],
             function (err, results) {
               if (err) {
                 connection.rollback(function () {
@@ -847,7 +847,7 @@ app.get('/api/forapprove', function (req, res) {
       b.book_imagedata
       FROM book b
       JOIN article a ON b.book_id = a.book_id
-      WHERE b.status_book IN ('pending','finished')
+      WHERE b.status_book = 'published'
       GROUP BY b.book_id, b.book_name, b.status_book, b.book_imagedata;`,
     function(err, results) {
       const bookdata = results.map((book) => {
@@ -1408,7 +1408,7 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
   const imageFile = req.files['image'] ?  req.files['image'][0] : null; // ข้อมูลรูปภาพในรูปแบบ Buffer
   const soundFile = req.files['sound'] ?  req.files['sound'][0] : null; // ข้อมูลเสียงในรูปแบบ Buffer
 
-  console.log(book_id, chapter, level, description, imageFile, soundFile);
+  //console.log(book_id, chapter, level, description, imageFile, soundFile);
   // console.log(book_id, chapter, level, description, imageBuffer, soundBuffer);
 
   let imagepath = null;
@@ -1449,7 +1449,7 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
     }
     const newNumber = lastNumber + 1;
     const newarticleid = `XOL${String(newNumber).padStart(3, '0')}`;
-    console.log('articleid : ' + newarticleid);
+    //console.log('articleid : ' + newarticleid);
 
     const insertOptionQuery = `INSERT INTO article (article_id ,book_id, article_name ,article_level ,article_detail  ,article_images ,article_sounds,article_imagedata ,article_sounddata) VALUES (?,?,?,?,?,?,?,?,?)`;
     connection.query(insertOptionQuery, [newarticleid,book_id, chapter,level, description , imagepath , soundpath,imageByte,soundByte], (err, results) => {
@@ -1457,12 +1457,21 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
         console.error('Error inserting exam data: ' + err.message);
         res.status(500).send('Error creating exam Insert Id');
       }else{
-        res.status(200).send('creating exam Insert Id');
+        connection.query("UPDATE book SET status_book = ? WHERE book_id = ?", ["finished", book_id], (err, updateResult) => {
+          if (err) {
+            console.error('Error updating status_book:', err);
+            res.status(500).json({ error: 'Error updating status_book' });
+          } else {
+            // Send the response once, after updating status_book
+            res.status(200).send('Article added and status_book updated');
+          }
+        });
       }
     });
   });
   
 });
+
 app.post('/api/updatearticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {
   const articleId = req.body.articleId;
   const chapter = req.body.chapter;

@@ -383,16 +383,32 @@ function Toaddarticle() {
                         ระดับของบทความ:
                       </label>
 
-                      <input
-                        type="text"
-                        className="form-control"
+                      <select
                         id="leveltext"
-                        placeholder="กรุณากรอกระดับของบทความ"
-                        required
-                        onChange={(event) => {
-                          setLeveltext(event.target.value);
-                        }}
-                      />
+                        className="form-select"
+                        value={leveltext}
+                        onChange={(event) => setLeveltext(event.target.value)}
+                      >
+                        <option defaultValue>กรุณาเลือกระดับของบทความ</option>
+                        <option value="ประถมศึกษาปีที่ 1">
+                          ประถมศึกษาปีที่ 1
+                        </option>
+                        <option value="ประถมศึกษาปีที่ 2">
+                          ประถมศึกษาปีที่ 2
+                        </option>
+                        <option value="ประถมศึกษาปีที่ 3">
+                          ประถมศึกษาปีที่ 3
+                        </option>
+                        <option value="ประถมศึกษาปีที่ 4">
+                          ประถมศึกษาปีที่ 4
+                        </option>
+                        <option value="ประถมศึกษาปีที่ 5">
+                          ประถมศึกษาปีที่ 5
+                        </option>
+                        <option value="ประถมศึกษาปีที่ 6">
+                          ประถมศึกษาปีที่ 6
+                        </option>
+                      </select>
                     </div>
 
                     <div className="d-flex justify-content-between">

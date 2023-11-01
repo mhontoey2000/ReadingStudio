@@ -124,21 +124,29 @@ function Sendrequest() {
                     </td>
                     <td>
                       {book.status_book === "pending" && (
-                        <Button variant="info" style={{ color: "white" }}>
+                        <span style={{ color: "#FFC436", fontWeight: "bold" }}>
                           รออนุมัติ
-                        </Button>
+                        </span>
                       )}
                       {book.status_book === "creating" && (
-                        <Button variant="secondary">สร้างยังไม่เสร็จ</Button>
+                        <span style={{ color: "#192655", fontWeight: "bold" }}>
+                          สร้างยังไม่เสร็จ
+                        </span>
                       )}
                       {book.status_book === "finished" && (
-                        <Button variant="secondary">สร้างเสร็จแล้ว</Button>
+                        <span style={{ color: "#3876BF", fontWeight: "bold" }}>
+                          สร้างเสร็จแล้ว
+                        </span>
                       )}
                       {book.status_book === "deny" && (
-                        <Button variant="danger">ถูกปฏิเสธ</Button>
+                        <span style={{ color: "red", fontWeight: "bold" }}>
+                          ถูกปฏิเสธ
+                        </span>
                       )}
                       {book.status_book === "published" && (
-                        <Button variant="success">เผยแพร่แล้ว</Button>
+                        <span style={{ color: "green", fontWeight: "bold" }}>
+                          เผยแพร่แล้ว
+                        </span>
                       )}
                     </td>
                     <td>

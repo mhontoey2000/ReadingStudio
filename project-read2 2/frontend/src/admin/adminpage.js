@@ -37,7 +37,7 @@ function Adminpage() {
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./notification"
               >
-                <i className="bi bi-bell-fill"></i> แจ้งเตือน
+                <i className="bi bi-bell-fill"></i> ตรวจสอบแจ้งเตือน
               </Button>
 
               <Button
@@ -78,7 +78,7 @@ function Adminpage() {
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./forapprovebook"
               >
-                <i className="bi bi-file-person-fill"></i> คำขออนุมัติบทความ
+                <i className="bi bi-file-person-fill"></i> กลั่นกรองบทความ
               </Button>
             </div>
           </div>

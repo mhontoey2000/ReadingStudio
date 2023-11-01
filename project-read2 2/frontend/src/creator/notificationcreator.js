@@ -68,9 +68,7 @@ function Notificationcreator() {
               <tbody className="table-group-divider">
                 {filteredItems.length === 0 ? (
                   <tr>
-                    <td colSpan="6">
-                      ไม่มีรายการสถานะของบทความ.
-                    </td>
+                    <td colSpan="6">ไม่มีรายการสถานะของบทความ.</td>
                   </tr>
                 ) : (
                   filteredItems.map((items, index) => (
@@ -90,18 +88,35 @@ function Notificationcreator() {
                       </td>
                       <td className="col-sm-1">
                         {items.status === "pending" && (
-                          <Button variant="info" style={{ color: "white" }}>
+                          <span
+                            style={{ color: "#FFC436", fontWeight: "bold" }}
+                          >
                             รออนุมัติ
-                          </Button>
+                          </span>
                         )}
                         {items.status === "creating" && (
-                          <Button variant="secondary">สร้างยังไม่เสร็จ</Button>
+                          <span
+                            style={{ color: "#192655", fontWeight: "bold" }}
+                          >
+                            สร้างยังไม่เสร็จ
+                          </span>
+                        )}
+                        {items.status === "finished" && (
+                          <span
+                            style={{ color: "#3876BF", fontWeight: "bold" }}
+                          >
+                            สร้างเสร็จแล้ว
+                          </span>
                         )}
                         {items.status === "deny" && (
-                          <Button variant="danger">ถูกปฏิเสธ</Button>
+                          <span style={{ color: "red", fontWeight: "bold" }}>
+                            ถูกปฏิเสธ
+                          </span>
                         )}
                         {items.status === "published" && (
-                          <Button variant="success">เผยแพร่แล้ว</Button>
+                          <span style={{ color: "green", fontWeight: "bold" }}>
+                            เผยแพร่แล้ว
+                          </span>
                         )}
                       </td>
                       <td className="col-sm-3">{items.request_comment}</td>

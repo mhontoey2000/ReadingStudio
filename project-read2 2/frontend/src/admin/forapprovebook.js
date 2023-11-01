@@ -254,6 +254,7 @@ function Forapprovebook() {
                   >
                     <option value="default" hidden>
                       {selectitem.status_book === "pending" && "รออนุมัติ"}
+                      {selectitem.status_book === "finished" && "สร้างเสร็จแล้ว"}
                       {selectitem.status_book === "deny" && "คุณปฏิเสธ"}
                       {selectitem.status_book === "published" && "เผยแพร่แล้ว"}
                     </option>
