@@ -1394,7 +1394,23 @@ app.post('/api/editexam',upload.single('questionsImage'),async (req, res) => {
     }
   });
 });
+app.delete('/api/deleteeditexam/:id', function (req, res) {
+  const questionId = req.params.id;
 
+  connection.query(
+    'DELETE FROM questions WHERE vocabs_id = ?',
+    [questionId],
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: 'ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย' });
+      } else {
+        res.json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
+      }
+    }
+  );
+});
+  
 // สร้างเส้นทางสำหรับรับไฟล์ภาพและเสียง
 app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {
   // ในที่นี้คุณสามารถเข้าถึงไฟล์ภาพและเสียงที่ถูกอัปโหลดผ่าน `req.files`
@@ -1537,6 +1553,5 @@ app.post('/api/updatearticle', upload.fields([{ name: 'image', maxCount: 1 },  {
     }
 });
 
-  
   
 });

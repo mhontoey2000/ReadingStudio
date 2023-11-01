@@ -4,10 +4,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import "../styles/addexam.css";
 
 function Editexam() {
   const location = useLocation();
+  const history = useHistory();
   const articleid = location.state.article_id;
   const articlename = location.state.article_name;
   const bookname = location.state.book_name;
@@ -23,7 +25,7 @@ function Editexam() {
     axios
       .get(`http://localhost:5004/api/exam/${articleid}`)
       .then((response) => {
-        let tempArr = response.data.slice().reverse();
+        let tempArr = response.data.slice();
         setqItems(tempArr);
         const tempArrCount = tempArr.length;
         setTempArrCount(tempArrCount);
@@ -59,12 +61,30 @@ function Editexam() {
     ]);
   };
 
-  const removeQuestion = (index) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions.splice(index, 1);
-    setQuestions(updatedQuestions);
-  };
+  const removeQuestion = (index,questionid) => {
+    console.log('คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้ : '+ questionid);
 
+    const confirmDelete = window.confirm("คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้?");
+    if (confirmDelete) {
+      const updatedQuestions = [...questions];
+      updatedQuestions.splice(index, 1);
+      removeQuestionFromServer(questionid)
+      setQuestions(updatedQuestions);
+    }
+  };
+  const removeQuestionFromServer = (questionId) => {
+    // สร้างคำขอ HTTP DELETE โดยระบุ URL ของ API และ ID ของคำถามที่ต้องการลบ
+    if(questionId !== -1){
+      axios.delete(`http://localhost:5004/api/deleteeditexam/${questionId}`)
+        .then((response) => {
+          console.log('ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย');
+          // ทำอย่างอื่น ๆ ที่คุณต้องการหลังจากการลบ
+        })
+        .catch((error) => {
+          console.error('เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์', error);
+        });
+    }
+  };
   const handleQuestionChange = (index, text) => {
     const updatedQuestions = [...questions];
     updatedQuestions[index].text = text;
@@ -115,7 +135,6 @@ function Editexam() {
     axios.post(`http://localhost:5004/api/editexam/`, formData)
       .then((response) => {
         console.error('บันทึกข้อมูลเรียบร้อย');
-
       })
       .catch((error) => {
         console.error(error);
@@ -161,7 +180,7 @@ function Editexam() {
         submitAddQuestion(question);
     });
     alert('Success');
-
+    history.goBack();
   };
 
   return (
@@ -265,7 +284,7 @@ function Editexam() {
                   </div>
 
                   <div>
-                    <Button className="btn btn-warning" onClick={() => removeQuestion(index)}>
+                    <Button className="btn btn-warning" onClick={() => removeQuestion(index,question.id)}>
                       ลบคำถาม
                     </Button>
                   </div>
