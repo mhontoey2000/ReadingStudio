@@ -1457,7 +1457,7 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
         console.error('Error inserting exam data: ' + err.message);
         res.status(500).send('Error creating exam Insert Id');
       }else{
-        connection.query("UPDATE book SET status_book = ? WHERE book_id = ?", ["finished", book_id], (err, updateResult) => {
+        connection.query("UPDATE book SET status_book = ? WHERE book_id = ?", ["published", book_id], (err, updateResult) => {
           if (err) {
             console.error('Error updating status_book:', err);
             res.status(500).json({ error: 'Error updating status_book' });

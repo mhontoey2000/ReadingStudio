@@ -262,7 +262,7 @@ const Notification = () => {
     )
 }
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <button
+    <Button
       type="button"
       ref={ref}
       onClick={(e) => {
@@ -280,6 +280,6 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
       }}
     >
       {children}
-    </button>
+    </Button>
   ));
 export default Notification;

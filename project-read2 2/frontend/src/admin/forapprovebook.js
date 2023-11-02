@@ -92,7 +92,7 @@ function Forapprovebook() {
       <section>
         <div className="grid-containerr">
           <div className="row">
-            <h1>บทความที่รอการอนุมัติ</h1>
+            <h1>กลั่นกรองบทความที่ถูกเผยแพร่</h1>
             <table className="table table-hover">
               <thead>
                 <tr className="head" style={{ textAlign: "center" }}>
@@ -258,7 +258,7 @@ function Forapprovebook() {
                       {selectitem.status_book === "deny" && "คุณปฏิเสธ"}
                       {selectitem.status_book === "published" && "เผยแพร่แล้ว"}
                     </option>
-                    <option value="published">อนุมัติ</option>
+                    {/* <option value="published">อนุมัติ</option> */}
                     <option value="deny">ปฎิเสธ</option>
                   </select>
                   <label htmlFor="status">เลือกสถานะ:</label>
