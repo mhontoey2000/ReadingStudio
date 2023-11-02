@@ -48,7 +48,7 @@ function Creator() {
                       <i className="bi bi-file-earmark-plus-fill"></i> 2.สร้างตอนของบทความ
                     </Button>
                   </div>
-
+{/* 
                   <div className="mx-2">
                     <Button
                       type="button"
@@ -57,7 +57,7 @@ function Creator() {
                     >
                       <i className="bi bi-file-earmark-plus-fill"></i> 3.เผยแพร่บทความ
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </div>
