@@ -192,3 +192,9 @@
   margin: 0;
   /* Reset margin on the label for better alignment */
 }
+
+
+.bigimg {
+  max-width: 100%;
+  height: 500px;
+}
