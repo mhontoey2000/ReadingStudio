@@ -4,10 +4,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import "../styles/addexam.css";
 
 function Editexam() {
   const location = useLocation();
+  const history = useHistory();
   const articleid = location.state.article_id;
   const articlename = location.state.article_name;
   const bookname = location.state.book_name;
@@ -15,6 +17,7 @@ function Editexam() {
   const [qitems, setqItems] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [tempArrCount, setTempArrCount] = useState(0);
+  const [exam_id, setExamid] = useState(-1);
   useEffect(() => {
     console.log('articlename'+ articlename);
     console.log('bookname'+ bookname);
@@ -23,7 +26,7 @@ function Editexam() {
     axios
       .get(`http://localhost:5004/api/exam/${articleid}`)
       .then((response) => {
-        let tempArr = response.data.slice().reverse();
+        let tempArr = response.data.slice();
         setqItems(tempArr);
         const tempArrCount = tempArr.length;
         setTempArrCount(tempArrCount);
@@ -31,6 +34,7 @@ function Editexam() {
 
         // แปลงข้อมูลจาก qitems เป็นรูปแบบของ questions
         const initialQuestions = tempArr.map((item) => ({
+          exam_id: item.exam_id,
           id: item.question_id,
           text: item.question_text,
           image: item.question_imagedata, // หรือ item.question_image ขึ้นอยู่กับข้อมูลจริง
@@ -38,7 +42,10 @@ function Editexam() {
           options: item.question_options.map((option) => option.option_text),
           correctOption: item.question_options.findIndex((option) => option.is_correct === 1), // หรือตามวิธีที่คุณจัดการคำตอบที่ถูกต้อง
         }));
+        setExamid(tempArr[0].exam_id);
+        console.log('exam_id : ' + exam_id);
 
+        setExamid(initialQuestions[0].exam_id);
         setQuestions(initialQuestions);
       })
       .catch((error) => {
@@ -59,12 +66,30 @@ function Editexam() {
     ]);
   };
 
-  const removeQuestion = (index) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions.splice(index, 1);
-    setQuestions(updatedQuestions);
-  };
+  const removeQuestion = (index,questionid) => {
+    console.log('คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้ : '+ questionid);
 
+    const confirmDelete = window.confirm("คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้?");
+    if (confirmDelete) {
+      const updatedQuestions = [...questions];
+      updatedQuestions.splice(index, 1);
+      removeQuestionFromServer(questionid)
+      setQuestions(updatedQuestions);
+    }
+  };
+  const removeQuestionFromServer = (questionId) => {
+    // สร้างคำขอ HTTP DELETE โดยระบุ URL ของ API และ ID ของคำถามที่ต้องการลบ
+    if(questionId !== -1){
+      axios.delete(`http://localhost:5004/api/deleteeditexam/${questionId}`)
+        .then((response) => {
+          console.log('ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย');
+          // ทำอย่างอื่น ๆ ที่คุณต้องการหลังจากการลบ
+        })
+        .catch((error) => {
+          console.error('เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์', error);
+        });
+    }
+  };
   const handleQuestionChange = (index, text) => {
     const updatedQuestions = [...questions];
     updatedQuestions[index].text = text;
@@ -102,6 +127,7 @@ function Editexam() {
   const submitEditQuestion = (question) => {
 
     const formData = new FormData();
+    formData.append('exam_id', exam_id);
     formData.append('question_id', question.id);
     formData.append('book_id', bookid);
     formData.append('article_id', articleid);
@@ -115,7 +141,6 @@ function Editexam() {
     axios.post(`http://localhost:5004/api/editexam/`, formData)
       .then((response) => {
         console.error('บันทึกข้อมูลเรียบร้อย');
-
       })
       .catch((error) => {
         console.error(error);
@@ -126,6 +151,7 @@ function Editexam() {
   
     try {
         const data = new FormData();
+        data.append('exam_id', exam_id);
         data.append('book_id', bookid);
         data.append('article_id', articleid);
         data.append('total_questions', questions.length);
@@ -161,7 +187,7 @@ function Editexam() {
         submitAddQuestion(question);
     });
     alert('Success');
-
+    history.goBack();
   };
 
   return (
@@ -265,7 +291,7 @@ function Editexam() {
                   </div>
 
                   <div>
-                    <Button className="btn btn-warning" onClick={() => removeQuestion(index)}>
+                    <Button className="btn btn-warning" onClick={() => removeQuestion(index,question.id)}>
                       ลบคำถาม
                     </Button>
                   </div>

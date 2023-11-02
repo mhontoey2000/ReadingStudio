@@ -114,10 +114,12 @@ const submitExam = async () => {
   }
 
   try {
+    let exam_id = '-1';
     for (let index = 0; index < questions.length; index++) {
       const question = questions[index];
 
       const data = new FormData();
+      data.append('exam_id', exam_id);
       data.append('book_id', bookid);
       data.append('article_id', articleid);
       data.append('total_questions', questions.length);
@@ -128,22 +130,23 @@ const submitExam = async () => {
 
       // Send POST request
       const response = await apiClient.post("api/add-data", data);
-
-      console.log(index);
-      console.log(response.data);
-
-      if (index === questions.length - 1) {
-        setQuestions([
-          {
-            text: "",
-            image: null,
-            options: ["", "", "", ""],
-            correctOption: 0,
-          },
-        ]);
-        alert("Success");
-      }
+        console.log(index);
+        console.log(response.data);
+        exam_id = response.data.toString();
+        console.log('exam_id :' + exam_id);
+        if (index === questions.length - 1) {
+          setQuestions([
+            {
+              text: "",
+              image: null,
+              options: ["", "", "", ""],
+              correctOption: 0,
+            },
+          ]);
+          alert("Success");
+        }
     }
+    cancelExam();
   } catch (error) {
     // Handle errors here (e.g., show an error message)
     console.error('Error adding book:', error);

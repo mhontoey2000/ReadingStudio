@@ -122,6 +122,7 @@ connection.query(query,[article_id], function(err, results) {
   // ลูปผ่านข้อมูลที่คุณได้รับ
   results.forEach((item) => {
     const {
+      exam_id,
       question_id,
       question_text,
       question_image,
@@ -137,6 +138,7 @@ connection.query(query,[article_id], function(err, results) {
     // ถ้ายังไม่มีข้อมูลสำหรับคำถามนี้ใน groupedData
     if (!groupedData[question_id]) {
       groupedData[question_id] = {
+        exam_id,
         question_id,
         question_text,
         question_image,
@@ -1273,6 +1275,7 @@ const path = require('path');
 app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
 
   // ตรวจสอบข้อมูลอื่น ๆ ที่ถูกส่งมาจาก FormData
+  const exam_id = req.body.exam_id;
   const book_id = req.body.book_id;
   const article_id = req.body.article_id;
   const total_questions = req.body.total_questions;
@@ -1280,6 +1283,7 @@ app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
   const options = JSON.parse(req.body.questionsoptions);questionstext
   const correctOption = req.body.questionscorrectOption;
   const imageFile = req.file ? req.file : null; // ไฟล์รูปภาพ
+  console.log('exam_id : '+exam_id);
   console.log(book_id);
   console.log(article_id);
   console.log(total_questions);
@@ -1298,38 +1302,66 @@ app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
     await helper.writeFileAsync(img.fileName ,imageByte);
     console.log(imageByte);
   }
-  const insertExamQuery = `INSERT INTO exams (book_id, article_id, total_questions) VALUES (?, ?, ?)`;
-  connection.query(insertExamQuery, [book_id, article_id, total_questions], (err, result) => {
-    if (err) {
-      console.error('Error inserting exam data: ' + err.message);
-      res.status(500).send('Error creating exam Insert Id');
-    }
-    else {
-      console.log('total_question '+ total_questions);
-      const examId = result.insertId;
-      const insertQuestionQuery = `INSERT INTO questions (exam_id, question_text,question_image,question_imagedata) VALUES (?, ?, ?, ?)`;
-        connection.query( insertQuestionQuery, [examId, questionstext,imagepath,imageByte], (err, questionResult) => {
-          if (err) {
-            console.error('Error inserting question data: ' + err.message);
-            res.status(500).send('Error creating exam INSERT Question');
-          } 
-          else {
-            const questionId = questionResult.insertId;
-            const insertOptionQuery = `INSERT INTO options (question_id, option_text,is_correct) VALUES (?, ? , ?)`;
-            options.forEach((option, index) => {
-              console.log('total_question '+option);
-              let correct = 0;
-              if( correctOption.toString() === index.toString())
-                correct = 1;
-              connection.query(insertOptionQuery, [questionId, option,correct]);
+  if(exam_id !== '-1')
+  {
+    console.log('InsertQusetionQuery');
+    const insertQuestionQuery = `INSERT INTO questions (exam_id, question_text,question_image,question_imagedata) VALUES (?, ?, ?, ?)`;
+    connection.query( insertQuestionQuery, [exam_id, questionstext,imagepath,imageByte], (err, questionResult) => {
+      if (err) {
+        console.error('Error inserting question data: ' + err.message);
+        res.status(500).send('Error creating exam INSERT Question');
+      } 
+      else {
+        const questionId = questionResult.insertId;
+        const insertOptionQuery = `INSERT INTO options (question_id, option_text,is_correct) VALUES (?, ? , ?)`;
+        options.forEach((option, index) => {
+          console.log('total_question '+option);
+          let correct = 0;
+          if( correctOption.toString() === index.toString())
+            correct = 1;
+          connection.query(insertOptionQuery, [questionId, option,correct]);
             });
           }
         }
       );
-      // ทำอะไรกับข้อมูลอื่น ๆ ของคำถาม
-      res.status(200).send('Exam created successfully');
+      res.status(200).send(`${exam_id}`);
+      
     }
-  });
+  else{
+    console.log('InsertExamAndQuestionQuery');
+    const insertExamQuery = `INSERT INTO exams (book_id, article_id, total_questions) VALUES (?, ?, ?)`;
+    console.log(insertExamQuery);
+    connection.query(insertExamQuery, [book_id, article_id, total_questions], (err, result) => {
+      if (err) {
+        console.error('Error inserting exam data: ' + err.message);
+        res.status(500).send('Error creating exam Insert Id');
+      }
+      else {
+        console.log('total_question '+ total_questions);
+        const examId = result.insertId;
+        const insertQuestionQuery = `INSERT INTO questions (exam_id, question_text,question_image,question_imagedata) VALUES (?, ?, ?, ?)`;
+          connection.query( insertQuestionQuery, [examId, questionstext,imagepath,imageByte], (err, questionResult) => {
+            if (err) {
+              console.error('Error inserting question data: ' + err.message);
+              res.status(500).send('Error creating exam INSERT Question');
+            } 
+            else {
+              const questionId = questionResult.insertId;
+              const insertOptionQuery = `INSERT INTO options (question_id, option_text,is_correct) VALUES (?, ? , ?)`;
+              options.forEach((option, index) => {
+                console.log('total_question '+option);
+                let correct = 0;
+                if( correctOption.toString() === index.toString())
+                  correct = 1;
+                connection.query(insertOptionQuery, [questionId, option,correct]);
+              });
+            }
+          }
+        );
+        res.status(200).send(`${examId}`);
+    }
+    });
+  }
 });
 app.post('/api/editexam',upload.single('questionsImage'),async (req, res) => {
 
@@ -1394,7 +1426,55 @@ app.post('/api/editexam',upload.single('questionsImage'),async (req, res) => {
     }
   });
 });
+app.delete('/api/deleteeditexam/:id', function (req, res) {
+  const questionId = req.params.id;
 
+  // แบ่ง query ของ exam_id และ count ให้อยู่ในลำดับที่ถูกต้อง
+  connection.query(`SELECT * FROM questions WHERE question_id = ?`, [questionId], function(err, results) {
+    if (err) {
+      console.error('Error querying database:', err);
+      res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
+      return;
+    }
+
+    const examid = results[0].exam_id;
+
+    connection.query(`SELECT * FROM questions WHERE exam_id = ?`, [examid], function(err, results) {
+      if (err) {
+        console.error('Error querying database:', err);
+        res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
+        return;
+      }
+
+      const count = results.length;
+
+      // ลบคำถาม
+      connection.query('DELETE FROM questions WHERE question_id = ?', [questionId], function (err, results) {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
+          return;
+        }
+
+        if (count === 1) {
+          // ถ้า count เท่ากับ 1, แสดงว่าไม่มีคำถามที่เหลือในการสอบ
+          connection.query(`DELETE FROM exams WHERE exam_id = ?`, [examid], function(err, results) {
+            if (err) {
+              console.error(err);
+              res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบข้อมูลในเซิร์ฟเวอร์' });
+            } else {
+              res.status(200).json({ message: 'ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย' });
+            }
+          });
+        } else {
+          res.status(200).json({ message: 'ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย' });
+        }
+      });
+    });
+  });
+});
+
+  
 // สร้างเส้นทางสำหรับรับไฟล์ภาพและเสียง
 app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {
   // ในที่นี้คุณสามารถเข้าถึงไฟล์ภาพและเสียงที่ถูกอัปโหลดผ่าน `req.files`
@@ -1537,6 +1617,5 @@ app.post('/api/updatearticle', upload.fields([{ name: 'image', maxCount: 1 },  {
     }
 });
 
-  
   
 });
