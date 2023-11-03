@@ -368,12 +368,14 @@ function Editarticle() {
                         <div
                           className="v-item col-4 col-md-4"
                           key={vocabs.vocabs_id}
+                          style={{backgroundColor:'white',borderRadius:'25px'}}
                         >
                           <div className="vno">
                             <h5 className="v-title">
                               {`${index + 1}. ${vocabs.vocabs_name}`}
                             </h5>
-                            <h5 className="v-text">{vocabs.vocabs_detail}</h5>
+                            <hr></hr>
+                            <h5 className="v-text">ความหมาย: <h5 >{vocabs.vocabs_detail}</h5></h5>
 
                             <Button
                               className="btn btn-danger"

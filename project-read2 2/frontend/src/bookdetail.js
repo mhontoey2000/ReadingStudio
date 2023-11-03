@@ -47,9 +47,6 @@ function Bookdetail(match) {
   };
 
   const handleExamSubmit = () => {
-    // CalculathandleExamSubmite the score by comparing submitted answers to correct answers
-    //const score = calculateScore(submittedAnswers, qitems);
-    // Redirect to the Score page and pass the score and exam details
     history.push({
       pathname: "/Page/score",
       state: {
@@ -275,26 +272,25 @@ function Bookdetail(match) {
           </div>
 
           <div
-            className="grid-container"
+            className="grid-containerdetail"
             id="myDIV1"
             style={{ display: visibleDiv === "เนื้อหา" ? "block" : "none" }}
           >
             {items.map((article) => (
-              <div className="grid-item" key={article.article_id}>
-                <h2 style={{ fontWeight: "bold", margin: "10px" }}>
+              <div className="grid-item badt" key={article.article_id}>
+                <h2 className="articlename text-center">
                   {article.article_name}
                 </h2>
 
-                <div>
+                <div className="text-center">
                   <img
                     className="bigimg"
                     src={article.article_imagedata || article.article_images}
                     alt="Article"
-                    //style={{ maxWidth: "100%", maxHeight: "1000px" }}
                   />
                 </div>
 
-                <div style={{ padding: "20px" }}>
+                <div style={{ padding: "20px",textAlign:"center" }}>
                   <div>
                     {audioUrl && (
                       <div>
@@ -319,7 +315,7 @@ function Bookdetail(match) {
                     </h5>
 
                     <Button
-                      className="btn btn-success"
+                      className="btn btn-success btn-lg"
                       style={{ color: "white" }}
                       onClick={() => setHighlighted(!highlighted)}
                     >
@@ -329,7 +325,6 @@ function Bookdetail(match) {
 
                   <div
                     className="detailtext parsed-article"
-                    style={{ fontSize: "25px", lineHeight: "2.5" }}
                   >
                     {highlighted
                       ? highlightedArticleDetail
@@ -338,7 +333,8 @@ function Bookdetail(match) {
 
                   <div className="text-start">
                     <Link
-                      className="reporttext"
+                      className="reporttext btn btn-warning"
+                      style={{color:"white"}}
                       to={{
                         pathname: "/Page/reportbook",
                         state: { book_id: bookid, article_id: articleid },
@@ -357,20 +353,21 @@ function Bookdetail(match) {
             id="myDIV2"
             style={{ display: visibleDiv === "คำศัพท์" ? "block" : "none" }}
           >
-            <div>
+            <div className="d-flex flex-wrap justify-content-center" >
               {Array.isArray(Vitems) && Vitems.length > 0 ? (
                 Vitems.map((vocabs, index) => (
-                  <div className="v-item" key={vocabs.vocabs_id}>
+                  <div className="v-item col-4 col-md-4 bvcd" key={vocabs.vocabs_id} style={{backgroundColor:'white',borderRadius:'25px'}}>
                     <div className="vno" key={`vocabs_${index}`}>
                       <h5 className="v-title">{`${index + 1}. ${
                         vocabs.vocabs_name
                       }`}</h5>
-                      <h5 className="v-text">{vocabs.vocabs_detail}</h5>
+                      <hr></hr>
+                      <h5 className="v-text">ความหมาย: <h5 >{vocabs.vocabs_detail}</h5></h5>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="no-items">ไม่มีคำศัพท์ในตอนของบทความนี้.</div>
+                <div className="no-items text-center">ไม่มีคำศัพท์ในตอนของบทความนี้.</div>
               )}
             </div>
             <div></div>

@@ -63,7 +63,7 @@ function Bookarticle({ match }) {
         <div className="container ac">
           <div className="row">
             {filteredItems.length === 0 ? (
-              <div className="col-12">
+              <div className="col-12 text-center">
                 <p>ไม่มีรายการหนังสือที่คุณค้นหา หรือคุณเขียนชื่อหนังสือผิด.</p>
               </div>
             ) : (
@@ -86,7 +86,7 @@ function Bookarticle({ match }) {
                       ) : null}
                       <div className="card-body">
                         <h4
-                          className="card-title"
+                          className="card-title text-center"
                           style={{ fontWeight: "bold" }}
                         >
                           {article.article_name}
