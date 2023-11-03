@@ -22,6 +22,7 @@ function Addvocab() {
     const [Vdetail, setVdetail] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
+    const [Vitems, setVitems] = useState([]);
 
     useEffect(() => {
         axios.get(`http://localhost:5004/api/articledetail/${articleid}`)
@@ -63,22 +64,28 @@ function Addvocab() {
     };
 
     const handleConfirmed = () => {
-        setShowModal(false); // Close the confirmation modal
-
-        // Proceed with sending the vocabulary
-        axios.post('http://localhost:5004/api/vocabs', {
-            articleid,
-            Vname,
-            Vdetail,
+      setShowModal(false); 
+      axios
+        .post("http://localhost:5004/api/vocabs", {
+          articleid,
+          Vname,
+          Vdetail,
         })
         .then((response) => {
-            console.log(response);
-
-            // Set successModal to true to show the success modal
-            setSuccessModal(true);
+          console.log(response);
+  
+          const newVocabItem = {
+            vocabs_id: response.data.vocabs_id,
+            vocabs_name: Vname,
+            vocabs_detail: Vdetail,
+          };
+    
+          setVitems([newVocabItem, ...Vitems]);
+  
+          setSuccessModal(true);
         })
         .catch((error) => {
-            console.error(error);
+          console.error(error);
         });
     };
 

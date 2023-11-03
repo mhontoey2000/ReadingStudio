@@ -66,3 +66,20 @@
 .tfe{
   margin-right: 10px;
 }
+
+.v-item {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.vno {
+  display: flex;
+  flex-direction: column;
+}
+
+.no-items {
+  text-align: center;
+}

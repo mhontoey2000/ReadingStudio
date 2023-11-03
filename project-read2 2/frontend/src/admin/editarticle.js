@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Header from "../header";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import { useParams, useHistory, Link } from "react-router-dom";
@@ -29,9 +30,21 @@ function Editarticle() {
   const [audioFile, setAudioFile] = useState(null); // เพิ่ม state สำหรับไฟล์เสียงใหม่
 
   const [Vitems, setVitems] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [vocabToDelete, setVocabToDelete] = useState(null);
+
+  const openDeleteModal = (vocabs) => {
+    setVocabToDelete(vocabs);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
 
   useEffect(() => {
-    axios.get(`http://localhost:5004/api/exam/${articleid}`)
+    axios
+      .get(`http://localhost:5004/api/exam/${articleid}`)
       .then((response) => {
         let tempArr = response.data.slice().reverse();
         setqItems(tempArr);
@@ -181,9 +194,7 @@ function Editarticle() {
 
   const cancelEditArticle = () => {
     // history.replace(`/Page/articleedit_${bookid}`)
-    history.replace(`/Page/articleedit_${bookid}`, { book_id: bookid});
-
-    
+    history.replace(`/Page/articleedit_${bookid}`, { book_id: bookid });
   };
 
   const editArticle = () => {
@@ -216,14 +227,10 @@ function Editarticle() {
       });
   };
 
-  const deleteVocab = (vocabId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this vocabulary item?"
-    );
-
-    if (confirmed) {
+  const deleteVocab = () => {
+    if (vocabToDelete) {
       axios
-        .delete(`http://localhost:5004/api/vocabs/${vocabId}`)
+        .delete(`http://localhost:5004/api/vocabs/${vocabToDelete.vocabs_id}`)
         .then((response) => {
           axios
             .get(`http://localhost:5004/api/vocabs/${articleid}`)
@@ -237,6 +244,9 @@ function Editarticle() {
         .catch((error) => {
           console.error(error);
         });
+  
+      // Close the delete modal
+      setShowDeleteModal(false);
     }
   };
 
@@ -339,40 +349,50 @@ function Editarticle() {
                                     <p>ลากและวางไฟล์เสียงที่นี่หรือคลิกเพื่อเลือก</p>
                                 </div>
                             </div> */}
-              <hr className="line1"/>
+              <hr className="line1" />
               <div className="VocabBox">
                 <div>
-                  <div  style={{ textAlign: "center" }}>
-                    <h3 style={{ display: "inline-block", borderBottom: "3px solid #000" }}>คำศัพท์</h3>
+                  <div style={{ textAlign: "center" }}>
+                    <h3
+                      style={{
+                        display: "inline-block",
+                        borderBottom: "3px solid #000",
+                      }}
+                    >
+                      คำศัพท์
+                    </h3>
                   </div>
-                  <div className="d-flex flex-row mb-3">
+                  <div className="d-flex flex-wrap justify-content-center">
                     {Array.isArray(Vitems) && Vitems.length > 0 ? (
                       Vitems.map((vocabs, index) => (
-                        
-                          <div className="v-item" key={vocabs.vocabs_id}>
-                            <div className="vno" key={`vocabs_${index}`}>
-                              <h5 className="v-title">
-                                {`${index + 1}. ${vocabs.vocabs_name }`}</h5>
-                              <h5 className="v-text">{vocabs.vocabs_detail}</h5>
+                        <div
+                          className="v-item col-4 col-md-4"
+                          key={vocabs.vocabs_id}
+                        >
+                          <div className="vno">
+                            <h5 className="v-title">
+                              {`${index + 1}. ${vocabs.vocabs_name}`}
+                            </h5>
+                            <h5 className="v-text">{vocabs.vocabs_detail}</h5>
 
-                              <Button
-                                className="btn btn-danger"
-                                onClick={() => deleteVocab(vocabs.vocabs_id)}
-                              >
-                                ลบ
-                              </Button>
-                            </div>
+                            <Button
+                              className="btn btn-danger"
+                              onClick={() => openDeleteModal(vocabs)}
+                            >
+                              ลบ
+                            </Button>
                           </div>
+                        </div>
                       ))
                     ) : (
-                      <div className="no-items">
+                      <div className="no-items text-center">
                         ไม่มีคำศัพท์ในตอนของบทความนี้.
                       </div>
                     )}
                   </div>
                 </div>
                 <div>
-                  <div className="addV">
+                  <div className="addV text-center">
                     <Link
                       className="btn btn-warning tc"
                       to={{
@@ -386,37 +406,44 @@ function Editarticle() {
                 </div>
               </div>
 
-              <hr className="line1"/>
+              <hr className="line1" />
               <div className="ExamBox d-flex">
                 <div className="tfe">
-                    <h3>ข้อสอบ:</h3>
+                  <h3>ข้อสอบ:</h3>
                 </div>
                 {Array.isArray(qitems) && qitems.length > 0 ? (
-                        
-                        <Link
-                            className="btn btn-warning amt1"
-                            style={{marginLeft:"10px"}}
-                            to={{
-                            pathname: `/Page/editexam`,
-                            state: {  book_id: bookid,  book_name: bookName, article_name : articleName, article_id: articleid }
-                            //   to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
-                            }}
-                        >
-                            แก้ไขข้อสอบ
-                        </Link>
-                    ) : (
-                        <div>
-                            <Link
-                                className="btn btn-warning tc"
-                                to={{ pathname: "/Page/addexam", state: { book_id: bookid, article_id: articleid } }}
-                            >
-                                เพิ่มข้อสอบ
-                            </Link>
-                        </div>
-                      )}
+                  <Link
+                    className="btn btn-warning amt1"
+                    style={{ marginLeft: "10px" }}
+                    to={{
+                      pathname: `/Page/editexam`,
+                      state: {
+                        book_id: bookid,
+                        book_name: bookName,
+                        article_name: articleName,
+                        article_id: articleid,
+                      },
+                      //   to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
+                    }}
+                  >
+                    แก้ไขข้อสอบ
+                  </Link>
+                ) : (
+                  <div>
+                    <Link
+                      className="btn btn-warning tc"
+                      to={{
+                        pathname: "/Page/addexam",
+                        state: { book_id: bookid, article_id: articleid },
+                      }}
+                    >
+                      เพิ่มข้อสอบ
+                    </Link>
+                  </div>
+                )}
               </div>
-            
-              <hr className="line1"/>
+
+              <hr className="line1" />
               <div className="btn-containerr">
                 <div className="btn-group me-2">
                   <Button
@@ -441,6 +468,29 @@ function Editarticle() {
           </div>
         </div>
       </section>
+
+      <Modal
+  show={showDeleteModal}
+  onHide={closeDeleteModal}
+  backdrop="static"
+  keyboard={false}
+>
+  <Modal.Header closeButton>
+    <Modal.Title>ยืนยันการลบ</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    คุณต้องการลบคำศัพท์{" "}
+    {vocabToDelete ? `"${vocabToDelete.vocabs_name}"` : "this vocabulary"}ใช่ไหม?
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={closeDeleteModal}>
+      ยกเลิก
+    </Button>
+    <Button variant="danger" onClick={deleteVocab}>
+      ลบ
+    </Button>
+  </Modal.Footer>
+</Modal>
     </div>
   );
 }
