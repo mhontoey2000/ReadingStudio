@@ -279,7 +279,7 @@ function Editexam() {
                         className="form-label"
                         htmlFor={`imageUpload${index}`}
                       >
-                        อัปโหลดรูปภาพ (ถ้ามี)
+                        อัปโหลดรูปภาพ (ถ้ามี)<cite style={{color:"red"}}>*ขนาดรูปที่แนะนำคือ 300x300</cite>
                       </label>
                       <input
                         type="file"

@@ -108,7 +108,7 @@ function Editbook() {
                   </div>
                   <div className="mb-3">
                     <label className="form-label" htmlFor="bookimage">
-                      รูปหน้าปกบทความ
+                      รูปหน้าปกบทความ<cite style={{color:"red"}}>*ขนาดรูปที่แนะนำคือ 500x500</cite>
                     </label>
                     <input
                       type="file"

@@ -221,7 +221,7 @@ const submitExam = async () => {
                 <div className="mb-3">
                   {/* <div className="input-group"> */}
                   <label className="form-label" htmlFor={`uploadpic${index}`}>
-                    รูปสำหรับโจทย์(ถ้าหากมี)
+                    รูปสำหรับโจทย์(ถ้าหากมี)<cite style={{color:"red"}}>*ขนาดรูปที่แนะนำคือ 300x300</cite>
                   </label>
                   <input
                     type="file"

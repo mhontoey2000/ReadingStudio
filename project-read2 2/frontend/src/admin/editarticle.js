@@ -305,7 +305,7 @@ function Editarticle() {
               </div>
               <div className="mb-3">
                 <label className="form-label" htmlFor="bookimage">
-                  รูปในเนื้อหา
+                  รูปในเนื้อหา<cite style={{color:"red"}}>*ขนาดรูปที่แนะนำคือ 500x500</cite>
                 </label>
                 <input
                   type="file"

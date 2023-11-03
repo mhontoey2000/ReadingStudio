@@ -193,7 +193,7 @@ function Addarticle() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="uploadpic">รูปภาพของเนื้อหา</label>
+                <label htmlFor="uploadpic">รูปภาพของเนื้อหา<cite style={{color:"red"}}>*ขนาดรูปที่แนะนำคือ 500x500</cite></label>
                 <input
                   type="file"
                   className="form-control"
