@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { Modal } from "react-bootstrap";
 import Searchbar from "./searchbar";
 import formatTime from "./formattime";
 
@@ -29,7 +30,8 @@ function Bookdetail(match) {
   const [qitems, setqItems] = useState([]);
   const [visibleDiv, setVisibleDiv] = useState("เนื้อหา");
   const [highlighted, setHighlighted] = useState(false);
-
+  const [showModal, setShowModal] = useState(false);
+  const [unansweredQuestions, setUnansweredQuestions] = useState([]);
   const [highlightedArticleDetail, setHighlightedArticleDetail] = useState([]);
 
   const history = useHistory();
@@ -46,7 +48,28 @@ function Bookdetail(match) {
     setSubmittedAnswers(newSubmittedAnswers);
   };
 
+  const getUnansweredQuestions = () => {
+    const unansweredQuestions = qitems.filter((question, index) => !submittedAnswers[index]);
+    return unansweredQuestions;
+  };
+
+  const handleShowModal = () => {
+    const unanswered = getUnansweredQuestions();
+  setUnansweredQuestions(unanswered);
+  setShowModal(true);
+  };
+  
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   const handleExamSubmit = () => {
+  const unansweredQuestions = qitems.filter((question, index) => !submittedAnswers[index]);
+  
+  if (unansweredQuestions.length > 0) {
+    handleShowModal(); // Show the modal
+  } else {
+    // All questions have been answered, navigate to the score page
     history.push({
       pathname: "/Page/score",
       state: {
@@ -55,8 +78,8 @@ function Bookdetail(match) {
         articleid: articleid,
       },
     });
-  };
-
+  }
+};
   const handleButtonClick = (divToShow) => {
     setVisibleDiv(divToShow);
   };
@@ -374,7 +397,7 @@ function Bookdetail(match) {
           </div>
 
           <div
-            className="grid-containerq"
+            className="container mt-4"
             id="myDIV3"
             style={{ display: visibleDiv === "ข้อสอบ" ? "block" : "none" }}
           >
@@ -382,30 +405,34 @@ function Bookdetail(match) {
               {Array.isArray(qitems) && qitems.length > 0 ? (
                 qitems.map((question, index) => (
                   <div
-                    className="q-item"
+                    className="card mb-3"
+                    style={{backgroundColor:"white"}}
                     key={question.question_id}
                     id={`question_${index}`}
                   >
+                    <div className="card-body">
                     <div className="vno" key={`vocabs_${index}`}>
-                      <h5 className="v-title">{`${index + 1}. ${
+                      <h5 className="card-title">{`${index + 1}. ${
                         question.question_text
                       }`}</h5>
                       {question.question_image && (
                         <img
                           src={question.question_imagedata}
                           alt={`Image for question ${index + 1}`}
-                          style={{ maxWidth: "100%", maxHeight: "200px" }}
+                          className="img-fluid mx-auto d-block"
+                          style={{ maxWidth: "100%", maxHeight: "300px",objectFit:"contain" }}
                         />
                       )}
                       <div>
                         {question.question_options.map((option) => (
                           <div
                             key={`option_${option.option_id}`}
-                            className="option-container"
+                            className="form-check"
+                            style={{margin:"10px"}}
                           >
                             <input
                               type="radio"
-                              className="q-options"
+                              className="form-check-input"
                               value={option.option_id}
                               name={`radioOption_${index}`}
                               id={`option_${option.option_id}`}
@@ -413,12 +440,13 @@ function Bookdetail(match) {
                                 handleAnswerChange(index, option.option_id)
                               }
                             />
-                            <label htmlFor={`option_${option.option_id}`}>
+                            <label htmlFor={`option_${option.option_id}`} className="form-check-label">
                               {option.option_text}
                             </label>
                           </div>
                         ))}
                       </div>
+                    </div>
                     </div>
                   </div>
                 ))
@@ -427,7 +455,7 @@ function Bookdetail(match) {
               )}
             </div>
             {Array.isArray(qitems) && qitems.length > 0 && (
-              <div className="addV" style={{ textAlign: "center" }}>
+              <div className="addV text-center">
                 <Button
                   className="btn btn-success tc"
                   onClick={handleExamSubmit}
@@ -437,8 +465,29 @@ function Bookdetail(match) {
               </div>
             )}
           </div>
+          
         </div>
       </section>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>คำถามที่ยังไม่ได้ตอบ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>กรุณาตอบคำถามเหล่านี้ก่อนที่คุณจะส่งคำตอบ:</p>
+          <ul>
+            {unansweredQuestions.map((question, index) => (
+              <li key={index}>ข้อ {`${index + 1}. ${question.question_text}`}</li>
+            ))}
+          </ul>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleCloseModal}>
+            ปิด
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   );
 }

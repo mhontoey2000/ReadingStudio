@@ -161,7 +161,7 @@ function Forapprovebook() {
                             ? "btn-danger"
                             : item.status_book === "published"
                             ? "btn-success"
-                            : "btn-primary"
+                            : "btn-secondary"
                         }`}
                         style={{ color: "white" }}
                         onClick={() => openStatusModal(item)}
@@ -179,7 +179,7 @@ function Forapprovebook() {
                           pathname: "/Page/bookarticle",
                           state: { book_id: item.book_id },
                         }}
-                        className="btn btn-success"
+                        className="btn btn-primary"
                       >
                         ดู
                       </Link>

@@ -182,6 +182,11 @@
   margin: 10px 20px;
 }
 
+.unanswered {
+  border: 2px solid red;
+  background-color: #ffeeee;
+}
+
 .q-options {
   padding: 15px;
   margin: 15px;

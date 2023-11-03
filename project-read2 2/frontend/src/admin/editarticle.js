@@ -433,7 +433,8 @@ function Editarticle() {
                 ) : (
                   <div>
                     <Link
-                      className="btn btn-warning tc"
+                      className="btn btn-warning"
+                      style={{color:"white"}}
                       to={{
                         pathname: "/Page/addexam",
                         state: { book_id: bookid, article_id: articleid },
