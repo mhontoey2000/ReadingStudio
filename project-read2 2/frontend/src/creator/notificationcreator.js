@@ -32,7 +32,7 @@ function Notificationcreator() {
       <Header />
       <section>
         <div className="grid-containerr">
-          <h1>รายการสถานะบทความ</h1>
+          <h1>รายการแจ้งเตือน</h1>
 
           <div style={{ padding: "10px" }}>
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />

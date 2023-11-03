@@ -88,7 +88,15 @@ section h1 {
     background-color: #0b5ed7;
 }
 
-  .grid-container {
+.bc{
+    background-color: #95cfff;
+    padding: 30px ;
+    border-radius: 25px;
+    margin: 10px 20px;
+
+}
+/* 
+  .grid-containerh {
     display: grid;
     border-radius: 25px;
     gap: 50px 0px;
@@ -98,17 +106,18 @@ section h1 {
     margin: 10px 20px;
 }
 
+
   .grid-item {
+    height: 500px;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 25px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     padding: 30px;
     margin: 10px 30px;
-    text-align: center;
   }
-  
+   */
 
-  .card-title {
+  /* .card-title {
     font-size: 26px;
     flex-grow: 0; 
     padding-top: 10px;
@@ -127,6 +136,6 @@ section h1 {
     align-items: center;
     margin-right: 5px;
   }
-  
+   */
 
   

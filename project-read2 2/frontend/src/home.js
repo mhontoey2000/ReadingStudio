@@ -49,31 +49,41 @@ function Home() {
                   <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
                 </div>
 
-                <div className="grid-container">
-                {filteredItems.length === 0 ? (
-                        <p>ไม่มีรายการหนังสือที่คุณค้นหา หรือคุณเขียนชื่อหนังสือผิด.</p>
-                    ) : (
-                        filteredItems.map((book) => (
-                            <div className="grid-item card" key={book.book_id}>
-                                {book.book_imagedata || book.book_image ? (
-                                <img className="card-img-top img-fluid" src={book.book_imagedata || book.book_image} alt={book.book_name} />
-                            ) : null}
-                                <h4 className="card-title" style={{ fontWeight:"bold"}}>{book.book_name}</h4>
-                                <span className="card-text">{book.book_detail}</span>
-                                <span style={{ fontStyle:"italic"}}>ผู้อัปโหลด: {book.book_creator}</span>
-                                <div>
-                                    <div>
-                                        <Link
-                                            to={{ pathname: "/Page/bookarticle", state: { book_id: book.book_id } }}
-                                            className="buttonh btn-primary"
-                                        >
-                                            อ่าน
-                                        </Link>
+                <div className="container bc">
+                    <div className="row">
+                        {filteredItems.length === 0 ? (
+                            <div className="col-12 text-center">
+                                <p>ไม่มีรายการหนังสือที่คุณค้นหา หรือคุณเขียนชื่อหนังสือผิด.</p>
+                            </div>
+                        ) : (
+                            filteredItems.map((book) => (
+                                <div className="col-6 col-md-3" key={book.book_id}>
+                                    <div className="grid-item-wrapper" style={{ padding: "10px" }}>
+                                        <div className="card">
+                                            {book.book_imagedata || book.book_image ? (
+                                                <img className="card-img-top img-fluid simg" src={book.book_imagedata || book.book_image} alt={book.book_name} />
+                                            ) : null}
+                                            <div className="card-body">
+                                                <h4 className="card-title" style={{ fontWeight: "bold" }}>{book.book_name}</h4>
+                                                <span className="card-text">{book.book_detail}</span>
+                                                <div className="text-center" style={{ margin: "10px" }}>
+                                                    <Link
+                                                        to={{ pathname: "/Page/bookarticle", state: { book_id: book.book_id } }}
+                                                        className="btn btn-primary btn-lg"
+                                                    >
+                                                        อ่าน
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                                <div className="card-footer">
+                                                    <span style={{ fontStyle: "italic" }}>ผู้อัปโหลด: {book.book_creator}</span>
+                                                </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))
-                    )}
+                            ))
+                        )}
+                    </div>
                 </div>
             </section>
         </div>

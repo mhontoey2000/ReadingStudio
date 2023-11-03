@@ -93,7 +93,7 @@ function Creator() {
                     className="btn btn-primary btn-lg text-truncate custom-button"
                     href="./notificationcreator"
                   >
-                    <i className="bi bi-envelope-fill"></i> ข้อความ
+                    <i className="bi bi-envelope-fill"></i> แจ้งเตือน
                   </Button>
                 </div>
               </div>
