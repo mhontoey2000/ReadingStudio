@@ -290,6 +290,7 @@ function Editexam() {
                         }
                       />
                       {
+                        <div className="d-flex justify-content-center align-items-center">
                         <img
                           src={
                             question.imageURL != null
@@ -299,6 +300,7 @@ function Editexam() {
                           alt="Uploaded Image"
                           style={{ maxWidth: "100%", maxHeight: "200px" }}
                         />
+                        </div>
                       }
                     </div>
 

@@ -144,6 +144,7 @@ function Addbook() {
                   required
                   onChange={handleImageChange}
                 />
+                <div className="d-flex justify-content-center align-items-center">
                 {bookImage && (
                   <img
                     src={URL.createObjectURL(bookImage)}
@@ -151,6 +152,7 @@ function Addbook() {
                     style={{ maxWidth: "100%", maxHeight: "200px" }}
                   />
                 )}
+                </div>
               </div>
 
               <div className="mb-3">

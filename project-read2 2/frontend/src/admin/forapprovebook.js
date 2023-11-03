@@ -119,7 +119,7 @@ function Forapprovebook() {
               <tbody className="table-group-divider">
               {items.length === 0 ? (
                 <tr>
-                  <td colSpan="6">
+                  <td colSpan="6" className="text-center">
                     ไม่มีรายการบทความที่รอการอนุมัติ.
                   </td>
                 </tr>

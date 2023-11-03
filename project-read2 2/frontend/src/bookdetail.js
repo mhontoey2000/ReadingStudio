@@ -49,37 +49,41 @@ function Bookdetail(match) {
   };
 
   const getUnansweredQuestions = () => {
-    const unansweredQuestions = qitems.filter((question, index) => !submittedAnswers[index]);
+    const unansweredQuestions = qitems.filter(
+      (question, index) => !submittedAnswers[index]
+    );
     return unansweredQuestions;
   };
 
   const handleShowModal = () => {
     const unanswered = getUnansweredQuestions();
-  setUnansweredQuestions(unanswered);
-  setShowModal(true);
+    setUnansweredQuestions(unanswered);
+    setShowModal(true);
   };
-  
+
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
   const handleExamSubmit = () => {
-  const unansweredQuestions = qitems.filter((question, index) => !submittedAnswers[index]);
-  
-  if (unansweredQuestions.length > 0) {
-    handleShowModal(); // Show the modal
-  } else {
-    // All questions have been answered, navigate to the score page
-    history.push({
-      pathname: "/Page/score",
-      state: {
-        submittedAnswers: submittedAnswers,
-        examDetails: qitems,
-        articleid: articleid,
-      },
-    });
-  }
-};
+    const unansweredQuestions = qitems.filter(
+      (question, index) => !submittedAnswers[index]
+    );
+
+    if (unansweredQuestions.length > 0) {
+      handleShowModal(); // Show the modal
+    } else {
+      // All questions have been answered, navigate to the score page
+      history.push({
+        pathname: "/Page/score",
+        state: {
+          submittedAnswers: submittedAnswers,
+          examDetails: qitems,
+          articleid: articleid,
+        },
+      });
+    }
+  };
   const handleButtonClick = (divToShow) => {
     setVisibleDiv(divToShow);
   };
@@ -313,7 +317,7 @@ function Bookdetail(match) {
                   />
                 </div>
 
-                <div style={{ padding: "20px",textAlign:"center" }}>
+                <div style={{ padding: "20px", textAlign: "center" }}>
                   <div>
                     {audioUrl && (
                       <div>
@@ -346,9 +350,7 @@ function Bookdetail(match) {
                     </Button>
                   </div>
 
-                  <div
-                    className="detailtext parsed-article"
-                  >
+                  <div className="detailtext parsed-article">
                     {highlighted
                       ? highlightedArticleDetail
                       : items.length > 0 && items[0].article_detail}
@@ -357,7 +359,7 @@ function Bookdetail(match) {
                   <div className="text-start">
                     <Link
                       className="reporttext btn btn-warning"
-                      style={{color:"white"}}
+                      style={{ color: "white" }}
                       to={{
                         pathname: "/Page/reportbook",
                         state: { book_id: bookid, article_id: articleid },
@@ -376,21 +378,30 @@ function Bookdetail(match) {
             id="myDIV2"
             style={{ display: visibleDiv === "คำศัพท์" ? "block" : "none" }}
           >
-            <div className="d-flex flex-wrap justify-content-center" >
+            <div className="d-flex flex-wrap justify-content-center">
               {Array.isArray(Vitems) && Vitems.length > 0 ? (
                 Vitems.map((vocabs, index) => (
-                  <div className="v-item col-4 col-md-4 bvcd" key={vocabs.vocabs_id} style={{backgroundColor:'white',borderRadius:'25px'}}>
+                  <div
+                    className="v-item col-4 col-md-4 bvcd"
+                    key={vocabs.vocabs_id}
+                    style={{ backgroundColor: "white", borderRadius: "25px" }}
+                  >
                     <div className="vno" key={`vocabs_${index}`}>
                       <h5 className="v-title">{`${index + 1}. ${
                         vocabs.vocabs_name
                       }`}</h5>
                       <hr></hr>
-                      <h5 className="v-text">ความหมาย: <h5 >{vocabs.vocabs_detail}</h5></h5>
+                      <div>
+                        <h5 className="v-text">ความหมาย: </h5>
+                        <h5>{vocabs.vocabs_detail}</h5>
+                      </div>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="no-items text-center">ไม่มีคำศัพท์ในตอนของบทความนี้.</div>
+                <div className="no-items text-center">
+                  ไม่มีคำศัพท์ในตอนของบทความนี้.
+                </div>
               )}
             </div>
             <div></div>
@@ -406,47 +417,54 @@ function Bookdetail(match) {
                 qitems.map((question, index) => (
                   <div
                     className="card mb-3"
-                    style={{backgroundColor:"white"}}
+                    style={{ backgroundColor: "white" }}
                     key={question.question_id}
                     id={`question_${index}`}
                   >
                     <div className="card-body">
-                    <div className="vno" key={`vocabs_${index}`}>
-                      <h5 className="card-title">{`${index + 1}. ${
-                        question.question_text
-                      }`}</h5>
-                      {question.question_image && (
-                        <img
-                          src={question.question_imagedata}
-                          alt={`Image for question ${index + 1}`}
-                          className="img-fluid mx-auto d-block"
-                          style={{ maxWidth: "100%", maxHeight: "300px",objectFit:"contain" }}
-                        />
-                      )}
-                      <div>
-                        {question.question_options.map((option) => (
-                          <div
-                            key={`option_${option.option_id}`}
-                            className="form-check"
-                            style={{margin:"10px"}}
-                          >
-                            <input
-                              type="radio"
-                              className="form-check-input"
-                              value={option.option_id}
-                              name={`radioOption_${index}`}
-                              id={`option_${option.option_id}`}
-                              onChange={() =>
-                                handleAnswerChange(index, option.option_id)
-                              }
-                            />
-                            <label htmlFor={`option_${option.option_id}`} className="form-check-label">
-                              {option.option_text}
-                            </label>
-                          </div>
-                        ))}
+                      <div className="vno" key={`vocabs_${index}`}>
+                        <h5 className="card-title">{`${index + 1}. ${
+                          question.question_text
+                        }`}</h5>
+                        {question.question_image && (
+                          <img
+                            src={question.question_imagedata}
+                            alt={`Image for question ${index + 1}`}
+                            className="img-fluid mx-auto d-block"
+                            style={{
+                              maxWidth: "100%",
+                              maxHeight: "300px",
+                              objectFit: "contain",
+                            }}
+                          />
+                        )}
+                        <div>
+                          {question.question_options.map((option) => (
+                            <div
+                              key={`option_${option.option_id}`}
+                              className="form-check"
+                              style={{ margin: "10px" }}
+                            >
+                              <input
+                                type="radio"
+                                className="form-check-input"
+                                value={option.option_id}
+                                name={`radioOption_${index}`}
+                                id={`option_${option.option_id}`}
+                                onChange={() =>
+                                  handleAnswerChange(index, option.option_id)
+                                }
+                              />
+                              <label
+                                htmlFor={`option_${option.option_id}`}
+                                className="form-check-label"
+                              >
+                                {option.option_text}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
                     </div>
                   </div>
                 ))
@@ -465,7 +483,6 @@ function Bookdetail(match) {
               </div>
             )}
           </div>
-          
         </div>
       </section>
 
@@ -477,7 +494,9 @@ function Bookdetail(match) {
           <p>กรุณาตอบคำถามเหล่านี้ก่อนที่คุณจะส่งคำตอบ:</p>
           <ul>
             {unansweredQuestions.map((question, index) => (
-              <li key={index}>ข้อ {`${index + 1}. ${question.question_text}`}</li>
+              <li key={index}>
+                ข้อ {`${index + 1}. ${question.question_text}`}
+              </li>
             ))}
           </ul>
         </Modal.Body>
@@ -487,7 +506,6 @@ function Bookdetail(match) {
           </Button>
         </Modal.Footer>
       </Modal>
-
     </div>
   );
 }

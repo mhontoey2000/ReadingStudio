@@ -6,10 +6,12 @@ import Header from "../header";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
+import Searchbar from "../searchbar";
 import "../styles/alladmin.css";
 
 const Allbookadmin = () => {
   const [items, setItems] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
   const [statusUser, setStatusUser] = useState("");
@@ -19,16 +21,16 @@ const Allbookadmin = () => {
   }, []);
 
   function init() {
-    console.log(user);
+    //console.log(user);
     axios
       .get("http://localhost:5004/api/userdata?user_email=" + user)
       .then((userresponse) => {
-        console.log("User :" + userresponse.data[0].user_type);
+        //console.log("User :" + userresponse.data[0].user_type);
 
         axios
           .get("http://localhost:5004/api/allbookarticleadmin")
           .then((response) => {
-            console.log(response);
+            //console.log(response);
             const filteredData = response.data.filter((item) => {
               setStatusUser(userresponse.data[0].user_type);
               return canEditChapter(
@@ -37,7 +39,7 @@ const Allbookadmin = () => {
               );
             });
             setItems(filteredData);
-            console.log(items);
+            //console.log(items);
           })
           .catch((error) => {
             console.error(error);
@@ -46,7 +48,7 @@ const Allbookadmin = () => {
       .catch((error) => console.error(error));
   }
   function canEditChapter(usertype, bookcreator) {
-    console.log(usertype);
+    //console.log(usertype);
     return usertype === "admin" || user.includes(bookcreator);
   }
   function canUserEditChapter(bookcreator) {
@@ -63,7 +65,7 @@ const Allbookadmin = () => {
     axios
       .delete(`http://localhost:5004/api/deletebook/${bookId}`)
       .then(() => {
-        console.log(`บทความที่มี ID ${bookId} ถูกลบแล้ว.`);
+        //console.log(`บทความที่มี ID ${bookId} ถูกลบแล้ว.`);
         // Refresh the book list after deletion
         init();
       })
@@ -74,6 +76,10 @@ const Allbookadmin = () => {
       });
   };
 
+  const filteredItems = items.filter((book) => {
+    return book.book_name.includes(searchTerm);
+  });
+
   return (
     <div>
       <Header />
@@ -81,6 +87,11 @@ const Allbookadmin = () => {
         <div className="grid-containerr">
           <div className="row">
             <h1>บทความทั้งหมด</h1>
+
+            <div style={{ padding: "10px" }}>
+            <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+          </div>
+            
             <table className="table table-hover">
               <thead>
                 <tr className="head" style={{ textAlign: "center" }}>
@@ -111,7 +122,15 @@ const Allbookadmin = () => {
                 </tr>
               </thead>
               <tbody className="table-group-divider">
-                {items.map((book, index) => (
+              {filteredItems.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    ไม่มีรายการของบทความที่คุณค้นหา
+                    หรือคุณเขียนชื่อของบทความผิด.
+                  </td>
+                </tr>
+              ) : (
+                filteredItems.map((book, index) => (
                   <tr key={book.book_id}>
                     <td className="col-sm-1" key={`book${index}`}>
                       {index}
@@ -198,7 +217,8 @@ const Allbookadmin = () => {
                       )}
                     </td>
                   </tr>
-                ))}
+                ))
+              )}
               </tbody>
             </table>
           </div>

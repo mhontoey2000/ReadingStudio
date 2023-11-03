@@ -244,7 +244,7 @@ function Editarticle() {
         .catch((error) => {
           console.error(error);
         });
-  
+
       // Close the delete modal
       setShowDeleteModal(false);
     }
@@ -305,7 +305,10 @@ function Editarticle() {
               </div>
               <div className="mb-3">
                 <label className="form-label" htmlFor="bookimage">
-                  รูปในเนื้อหา<cite style={{color:"red"}}>*ขนาดรูปที่แนะนำคือ 500x500</cite>
+                  รูปในเนื้อหา
+                  <cite style={{ color: "red" }}>
+                    *ขนาดรูปที่แนะนำคือ 500x500
+                  </cite>
                 </label>
                 <input
                   type="file"
@@ -368,15 +371,20 @@ function Editarticle() {
                         <div
                           className="v-item col-4 col-md-4"
                           key={vocabs.vocabs_id}
-                          style={{backgroundColor:'white',borderRadius:'25px'}}
+                          style={{
+                            backgroundColor: "white",
+                            borderRadius: "25px",
+                          }}
                         >
                           <div className="vno">
                             <h5 className="v-title">
                               {`${index + 1}. ${vocabs.vocabs_name}`}
                             </h5>
                             <hr></hr>
-                            <h5 className="v-text">ความหมาย: <h5 >{vocabs.vocabs_detail}</h5></h5>
-
+                            <div>
+                              <h5 className="v-text">ความหมาย: </h5>
+                              <h5>{vocabs.vocabs_detail}</h5>
+                            </div>
                             <Button
                               className="btn btn-danger"
                               onClick={() => openDeleteModal(vocabs)}
@@ -434,7 +442,7 @@ function Editarticle() {
                   <div>
                     <Link
                       className="btn btn-warning"
-                      style={{color:"white"}}
+                      style={{ color: "white" }}
                       to={{
                         pathname: "/Page/addexam",
                         state: { book_id: bookid, article_id: articleid },
@@ -451,7 +459,8 @@ function Editarticle() {
                 <div className="btn-group me-2">
                   <Button
                     type="submit"
-                    className="btnE btn-warning"
+                    style={{ color: "white" }}
+                    className="btn btn-warning"
                     onClick={cancelEditArticle}
                   >
                     ยกเลิก
@@ -460,7 +469,7 @@ function Editarticle() {
                 <div className="btn-group me-2">
                   <Button
                     // type="submit"
-                    className="btnE btn-primary"
+                    className="btn btn-primary"
                     onClick={editArticle}
                   >
                     ยืนยัน
@@ -473,27 +482,28 @@ function Editarticle() {
       </section>
 
       <Modal
-  show={showDeleteModal}
-  onHide={closeDeleteModal}
-  backdrop="static"
-  keyboard={false}
->
-  <Modal.Header closeButton>
-    <Modal.Title>ยืนยันการลบ</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    คุณต้องการลบคำศัพท์{" "}
-    {vocabToDelete ? `"${vocabToDelete.vocabs_name}"` : "this vocabulary"}ใช่ไหม?
-  </Modal.Body>
-  <Modal.Footer>
-    <Button variant="secondary" onClick={closeDeleteModal}>
-      ยกเลิก
-    </Button>
-    <Button variant="danger" onClick={deleteVocab}>
-      ลบ
-    </Button>
-  </Modal.Footer>
-</Modal>
+        show={showDeleteModal}
+        onHide={closeDeleteModal}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยันการลบ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          คุณต้องการลบคำศัพท์{" "}
+          {vocabToDelete ? `"${vocabToDelete.vocabs_name}"` : "this vocabulary"}
+          ใช่ไหม?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeDeleteModal}>
+            ยกเลิก
+          </Button>
+          <Button variant="danger" onClick={deleteVocab}>
+            ลบ
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

@@ -59,10 +59,10 @@ const App = () => {
         })
         .then((response) => {
           if (response.status === 200) {
-            console.log("Token is valid");
+            //console.log("Token is valid");
             setIsAuthenticated(true); // Set to true if the token is valid
           } else {
-            console.log("Token is invalid");
+            //console.log("Token is invalid");
             setIsAuthenticated(false); // Set to false if the token is invalid
           }
         })
@@ -74,7 +74,7 @@ const App = () => {
       setIsAuthenticated(false); // Set to false if there's no token
     }
   }, [user_data]);
-  console.log(isAuthenticated);
+  //console.log(isAuthenticated);
   if (isAuthenticated === null) {
     // Show loading indicator or splash screen
     return <LoadingIndicator />;

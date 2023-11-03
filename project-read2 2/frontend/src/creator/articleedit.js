@@ -248,9 +248,9 @@ function Articleedit() {
             <tbody className="table-group-divider">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan="6">
-                    ไม่มีรายการบทของหนังสือที่คุณค้นหา
-                    หรือคุณเขียนชื่อบทของหนังสือผิด.
+                  <td colSpan="6" className="text-center">
+                    ไม่มีรายการตอนของบทความที่คุณค้นหา
+                    หรือคุณเขียนชื่อตอนของบทความผิด.
                   </td>
                 </tr>
               ) : (

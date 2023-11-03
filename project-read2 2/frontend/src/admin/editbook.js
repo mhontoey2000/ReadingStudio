@@ -117,6 +117,7 @@ function Editbook() {
                       accept="image/*"
                       onChange={handleImageChange}
                     />
+                    <div className="d-flex justify-content-center align-items-center">
                     {bookImage && (
                       <img
                         src={bookImage}
@@ -124,6 +125,7 @@ function Editbook() {
                         style={{ maxWidth: '100%', maxHeight: '200px' }}
                       />
                     )}
+                    </div>
                   </div>
                   <hr className="line1"/>
                   <div className="btn-containerr">
