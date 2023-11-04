@@ -37,7 +37,7 @@ function Editbook() {
     }, [bookid]);
 
     const cancelEditBook = () => {
-      history.replace('/Page/allbookadmin')
+      history.replace('/Page/allbookadmin');
   }
 
     const updateBdetail = (event) => {
@@ -68,7 +68,7 @@ function Editbook() {
     
       axios.post('http://localhost:5004/api/updatebook', formData)
         .then((response) => {
-          history.replace('/Page/allbookadmin');
+          cancelEditBook();
         })
         .catch((error) => {
           console.error(error);
@@ -140,7 +140,6 @@ function Editbook() {
                     </div>
                     <div className="btn-group me-2">
                       <Button
-                        type="submit"
                         className="btnE btn-primary"
                         onClick={editBook}
                       >
