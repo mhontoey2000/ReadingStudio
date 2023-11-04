@@ -102,6 +102,7 @@ function Editexam() {
         .delete(`http://localhost:5004/api/deleteeditexam/${questionId}`)
         .then((response) => {
           console.log("ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย");
+          setTempArrCount(tempArrCount-1);
           // ทำอย่างอื่น ๆ ที่คุณต้องการหลังจากการลบ
         })
         .catch((error) => {
@@ -205,15 +206,7 @@ function Editexam() {
     }
     // ส่งข้อมูลแต่ละข้อไปยังเซิร์ฟเวอร์
     questions.forEach((question, index) => {
-      console.log(
-        (tempArrCount - 1 >= index
-          ? "submitEditQuestion"
-          : "submitAddQuestion") +
-          " : Questopn : " +
-          index +
-          ": asdas" +
-          question.text
-      );
+      console.log( "QuestionText : "+question.text  + "QuestionId : "+question.id);
       if (tempArrCount - 1 >= index) submitEditQuestion(question);
       else submitAddQuestion(question);
     });
