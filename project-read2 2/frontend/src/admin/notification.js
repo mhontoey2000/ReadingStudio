@@ -252,7 +252,7 @@ const Notification = () => {
                     </div>
                     <div
                       className="dropdown-item"
-                      style={{ background: 'orange', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
+                      style={{ background: 'red', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
                       onClick={() => handleDropdownSelect('ระงับการเผยแพร่', 'orange',selectedReport.report_id)}
                     >
                       ระงับการเผยแพร่
@@ -270,7 +270,7 @@ const Notification = () => {
           ปิด
         </Button>
         {/* <Button variant="danger" onClick={deleteUser(selectedReport.report_id)}>Delete</Button> */}
-        <Button variant="danger" onClick={() => deleteUser(selectedReport.report_id)}>Delete</Button>
+        <Button variant="danger" onClick={() => deleteUser(selectedReport.report_id)}>ลบ</Button>
 
       </Modal.Footer>
     </Modal>
