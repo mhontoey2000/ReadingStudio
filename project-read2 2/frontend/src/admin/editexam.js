@@ -20,7 +20,17 @@ function Editexam() {
   const [tempArrCount, setTempArrCount] = useState(0);
   const [exam_id, setExamid] = useState(-1);
   const [showModal, setShowModal] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
 
+  // Function to show the alert modal
+  const showAlert = () => {
+    setShowAlertModal(true);
+  };
+
+  // Function to hide the alert modal
+  const hideAlert = () => {
+    setShowAlertModal(false);
+  };
   // Function to show the success modal
   const showSuccessModal = () => {
     setShowModal(true);
@@ -102,6 +112,7 @@ function Editexam() {
         .delete(`http://localhost:5004/api/deleteeditexam/${questionId}`)
         .then((response) => {
           console.log("ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย");
+          setTempArrCount(tempArrCount-1);
           // ทำอย่างอื่น ๆ ที่คุณต้องการหลังจากการลบ
         })
         .catch((error) => {
@@ -200,20 +211,12 @@ function Editexam() {
           !question.text || !question.options.every((option) => option !== "")
       )
     ) {
-      alert("โปรดกรอกข้อมูลคำถามและตัวเลือกให้ครบถ้วน");
+      showAlert();
       return;
     }
     // ส่งข้อมูลแต่ละข้อไปยังเซิร์ฟเวอร์
     questions.forEach((question, index) => {
-      console.log(
-        (tempArrCount - 1 >= index
-          ? "submitEditQuestion"
-          : "submitAddQuestion") +
-          " : Questopn : " +
-          index +
-          ": asdas" +
-          question.text
-      );
+      console.log( "QuestionText : "+question.text  + "QuestionId : "+question.id);
       if (tempArrCount - 1 >= index) submitEditQuestion(question);
       else submitAddQuestion(question);
     });
@@ -399,6 +402,17 @@ function Editexam() {
         <Modal.Body>ได้ทำการบันทึกการแก้ไขข้อสอบแล้ว</Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={hideSuccessModal}>
+            ตกลง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showAlertModal} onHide={hideAlert} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>แจ้งเตือน</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>โปรดกรอกข้อมูลคำถามและตัวเลือกให้ครบถ้วน</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={hideAlert}>
             ตกลง
           </Button>
         </Modal.Footer>

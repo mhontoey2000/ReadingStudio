@@ -38,8 +38,7 @@ const Notification = () => {
             report_id: items.report_id,
             report_status: 'InProgress',
         };
-        axios
-            .post('http://localhost:5004/api/updatereport', data, {
+        axios.post('http://localhost:5004/api/updatereport', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -56,29 +55,46 @@ const Notification = () => {
         setDropdownOpen(!dropdownOpen);
     };
 
-    const handleDropdownSelect = (status, color) => {
+    const handleDropdownSelect = (status, color,selectedid) => {
         setSelectedStatus(status);
         console.log(status);
         toggleDropdown();
-        // Add logic to update the status in the database if needed
         setButtonColor(color);
+        if(selectedid === undefined)
+        return;
+        const data = {
+          report_id: selectedid,
+          report_status: status ==='ตรวจสอบแล้ว'? 'Checked' :'Banned'
+      };
+      console.log(data);
+      axios.post('http://localhost:5004/api/updatereport', data, {
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          })
+          .then((response) => {
+              console.log(response);
+          })
+          .catch((error) => {
+              console.error(error);
+          });
     };
     const Getcolor = (value) =>{
-        if(value === 'InProgress')
-            return 'orange';
-        else if(value === 'Checked')
+        // if(value === 'InProgress')
+        //     return '007BFF';
+       if(value === 'Checked')
             return 'green';
         else
-            return '#007BFF';
+            return 'orange';
         
     }
     const Getth = (value) =>{
-        if(value === 'InProgress')
-            return 'กำลังดำเนินการ';
-        else if(value === 'Checked')
+        // if(value === 'InProgress')
+        //     return 'กำลังดำเนินการ';
+       if(value === 'Checked')
             return 'ตรวจสอบแล้ว';
         else
-            return 'รอตรวจสอบ';
+            return 'ระงับการเผยแพร่';
         
     }
     const openModal = (report) => {
@@ -220,26 +236,26 @@ const Notification = () => {
                       zIndex: '1',
                     }}
                   >
-                    <div
+                    {/* <div
                       className="dropdown-item"
                       style={{ background: '#007BFF', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
                       onClick={() => handleDropdownSelect('รอตรวจสอบ', '#007BFF')}
                     >
                       รอตรวจสอบ
-                    </div>
+                    </div> */}
                     <div
                       className="dropdown-item"
                       style={{ background: 'green', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
-                      onClick={() => handleDropdownSelect('ตรวจสอบแล้ว', 'green')}
+                      onClick={() => handleDropdownSelect('ตรวจสอบแล้ว', 'green',selectedReport.report_id)}
                     >
                       ตรวจสอบแล้ว
                     </div>
                     <div
                       className="dropdown-item"
                       style={{ background: 'orange', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
-                      onClick={() => handleDropdownSelect('กำลังดำเนินการ', 'orange')}
+                      onClick={() => handleDropdownSelect('ระงับการเผยแพร่', 'orange',selectedReport.report_id)}
                     >
-                      กำลังดำเนินการ
+                      ระงับการเผยแพร่
                     </div>
                   </div>
                 )}
