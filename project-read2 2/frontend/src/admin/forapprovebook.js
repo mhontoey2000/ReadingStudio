@@ -259,7 +259,7 @@ function Forapprovebook() {
                       {selectitem.status_book === "published" && "เผยแพร่แล้ว"}
                     </option>
                     {/* <option value="published">อนุมัติ</option> */}
-                    <option value="deny">ปฎิเสธ</option>
+                    <option value="deny">ระงับบทความ</option>
                   </select>
                   <label htmlFor="status">เลือกสถานะ:</label>
                 </div>
@@ -267,7 +267,7 @@ function Forapprovebook() {
                 {status === "deny" && (
                   <div className="mb-3" style={{ marginTop: "5px" }}>
                     <label htmlFor="reasonforunpublish" className="form-label">
-                      เหตุผลที่ปฎิเสธ
+                      เหตุผลที่ระงับการเผยแพร่
                     </label>
                     <textarea
                       className="form-control"

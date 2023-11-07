@@ -118,6 +118,7 @@ const Alluseradmin = () => {
                               : item.approval_status === "pending"
                               ? "#ffb74d"
                               : "#f36c60",
+                              fontWeight: "bold",
                         }}
                       >
                         {item.approval_status === "pending"
@@ -167,7 +168,27 @@ const Alluseradmin = () => {
               </p>
               <p>
                 <strong>สถานะ:</strong>{" "}
-                {selectedUser && selectedUser.approval_status}
+                <span
+                  style={{
+                    color:
+                      selectedUser.approval_status === "approved"
+                        ? "green" 
+                        : selectedUser.approval_status === "pending"
+                        ? "orange" 
+                        : selectedUser.approval_status === "rejected"
+                        ? "red" 
+                        : "inherit",
+                      fontWeight: "bold", 
+                  }}
+                >
+                  {selectedUser.approval_status === "pending"
+                    ? "รออนุมัติ"
+                    : selectedUser.approval_status === "rejected"
+                    ? "ถูกปฏิเสธ"
+                    : selectedUser.approval_status === "approved"
+                    ? "อนุมัติ"
+                    : selectedUser.approval_status}
+                </span>
               </p>
               {selectedUser.user_idcard ? (
                 <img

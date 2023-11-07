@@ -220,11 +220,19 @@ function Editarticle() {
       .post(`http://localhost:5004/api/updatearticle`, formData)
       .then((response) => {
         console.log("Article update successful", response.data);
-        cancelEditArticle();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        axios
+        .post(`http://localhost:5004/api/updatebookstatus`, { bookId: bookid })
+        .then((bookResponse) => {
+          console.log("Book status updated to 'published'", bookResponse.data);
+          cancelEditArticle();
+        })
+        .catch((bookError) => {
+          console.error("Error updating book status:", bookError);
+        });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   };
 
   const deleteVocab = () => {

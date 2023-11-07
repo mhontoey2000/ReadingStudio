@@ -332,18 +332,14 @@ app.post('/api/updateLeveltext', (req, res) => {
   });
 });
 
-// แก้เพิ่ม
+
   app.post('/api/addbook',upload.single('book_image'),async (req, res) => {
     const { book_name, book_detail, book_creator } = req.body;
-    console.log(book_name);
-    console.log(book_detail);
     const fs = require('fs');
-
     const imageFile = req.file ? req.file : null;
-
     let imagepath = null;
-    let imageByte = null;
-    
+    let imageByte = null;   
+
     if(imageFile)
     {
       imageByte = await helper.readFileAsync(imageFile.path);
@@ -368,7 +364,6 @@ app.post('/api/updateLeveltext', (req, res) => {
   
       const newNumber = lastNumber + 1;
       const book_id = `book${String(newNumber).padStart(3, '0')}`;
-      console.log(book_id);
 
       connection.query("INSERT INTO book (book_id, book_name, book_detail, book_image, book_imagedata, book_creator, status_book) VALUES (?, ?, ?, ?, ?, ?, ?)", 
       [book_id, book_name, book_detail,imagepath,imageByte,book_creator,"creating"], 
@@ -592,7 +587,6 @@ app.post('/api/login', (req, res) => {
           const passwordMatch = await bcrypt.compare(password, user.user_password);
 
           if (passwordMatch) {
-            // if(user.approval_status === 'approved')
             if(true)
             {
               const accessToken = generateAccessToken({ user_id: user.user_id });
@@ -619,11 +613,6 @@ app.post('/api/register',upload.single('idcard'),async (req, res) => {
   let approval = 'pending'; 
   if(usertype === 'learner')
     approval = 'approved'
-  console.log(name);
-  console.log(surname);
-  console.log(email);
-  console.log(password);
-  console.log(req.file);
   if(imageFile)
   {
     imageByte = await helper.readFileAsync(imageFile.path);
@@ -633,15 +622,12 @@ app.post('/api/register',upload.single('idcard'),async (req, res) => {
     await helper.writeFileAsync(img.fileName ,imageByte);
     fs.unlinkSync(imageFile.path);
   }
-  //แก้หน้าสมัครใส่ดักอีเมลซ้ำ
   bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
     if (err) {
       console.log(err);
       res.status(500).send('Error hashing password');
-      return; // Make sure to return here
+      return; 
     }
-
-    // Step 1: Check if email already exists
     connection.query(
         "SELECT COUNT(*) AS count FROM user WHERE user_email = ?",
         [email],
@@ -649,15 +635,13 @@ app.post('/api/register',upload.single('idcard'),async (req, res) => {
             if (err) {
                 console.log(err);
                 res.status(500).send('Error checking email');
-                return; // Make sure to return here
+                return; 
             }
 
             if (result[0].count > 0) {
-                // Step 2: If email exists, send an error message
+                
                 res.status(400).send('This email is already in use');
             } else {
-                // Step 3: If email doesn't exist, proceed to insert user data
-               
                 connection.query(
                     "INSERT INTO user (user_name, user_surname, user_email, user_password, user_type, user_idcard , approval_status) VALUES (?, ?, ?, ?, ?, ?, ?)",
                     [name, surname, email, hashedPassword, usertype,imageByte,approval],
@@ -1271,26 +1255,12 @@ app.get('/api/report', function (req, res) {
 
 const fs = require('fs');
 const path = require('path');
-// app.use(bodyParser.json({ limit: '100mb' })); // ตั้งค่า limit สูงขึ้นถ้าข้อมูลที่คุณรับมีขนาดใหญ่
-app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
 
-  // ตรวจสอบข้อมูลอื่น ๆ ที่ถูกส่งมาจาก FormData
-  const exam_id = req.body.exam_id;
-  const book_id = req.body.book_id;
-  const article_id = req.body.article_id;
-  const total_questions = req.body.total_questions;
-  const questionstext = req.body.questionstext;
+app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
+  const { exam_id, book_id, article_id, total_questions, questionstext } = req.body;
   const options = JSON.parse(req.body.questionsoptions);questionstext
   const correctOption = req.body.questionscorrectOption;
-  const imageFile = req.file ? req.file : null; // ไฟล์รูปภาพ
-  console.log('exam_id : '+exam_id);
-  console.log(book_id);
-  console.log(article_id);
-  console.log(total_questions);
-  console.log(questionstext);
-  console.log(options);
-  console.log(correctOption);
-  console.log(req.file);
+  const imageFile = req.file ? req.file : null; 
   let imagepath = null;
   let imageByte = null;
   if(imageFile)
@@ -1300,11 +1270,9 @@ app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
     let img = helper.generateUniqueFileName('picture');
     imagepath = img.pathimage;
     await helper.writeFileAsync(img.fileName ,imageByte);
-    console.log(imageByte);
   }
   if(exam_id !== '-1')
   {
-    console.log('InsertQusetionQuery');
     const insertQuestionQuery = `INSERT INTO questions (exam_id, question_text,question_image,question_imagedata) VALUES (?, ?, ?, ?)`;
     connection.query( insertQuestionQuery, [exam_id, questionstext,imagepath,imageByte], (err, questionResult) => {
       if (err) {
@@ -1315,7 +1283,6 @@ app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
         const questionId = questionResult.insertId;
         const insertOptionQuery = `INSERT INTO options (question_id, option_text,is_correct) VALUES (?, ? , ?)`;
         options.forEach((option, index) => {
-          console.log('total_question '+option);
           let correct = 0;
           if( correctOption.toString() === index.toString())
             correct = 1;
@@ -1328,16 +1295,13 @@ app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
       
     }
   else{
-    console.log('InsertExamAndQuestionQuery');
     const insertExamQuery = `INSERT INTO exams (book_id, article_id, total_questions) VALUES (?, ?, ?)`;
-    console.log(insertExamQuery);
     connection.query(insertExamQuery, [book_id, article_id, total_questions], (err, result) => {
       if (err) {
         console.error('Error inserting exam data: ' + err.message);
         res.status(500).send('Error creating exam Insert Id');
       }
       else {
-        console.log('total_question '+ total_questions);
         const examId = result.insertId;
         const insertQuestionQuery = `INSERT INTO questions (exam_id, question_text,question_image,question_imagedata) VALUES (?, ?, ?, ?)`;
           connection.query( insertQuestionQuery, [examId, questionstext,imagepath,imageByte], (err, questionResult) => {
@@ -1349,7 +1313,6 @@ app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
               const questionId = questionResult.insertId;
               const insertOptionQuery = `INSERT INTO options (question_id, option_text,is_correct) VALUES (?, ? , ?)`;
               options.forEach((option, index) => {
-                console.log('total_question '+option);
                 let correct = 0;
                 if( correctOption.toString() === index.toString())
                   correct = 1;
@@ -1363,6 +1326,7 @@ app.post('/api/add-data',upload.single('questionsImage'),async (req, res) => {
     });
   }
 });
+
 app.post('/api/editexam',upload.single('questionsImage'),async (req, res) => {
 
   const question_id = req.body.question_id;
@@ -1474,26 +1438,16 @@ app.delete('/api/deleteeditexam/:id', function (req, res) {
   });
 });
 
-  
-// สร้างเส้นทางสำหรับรับไฟล์ภาพและเสียง
-app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {
-  // ในที่นี้คุณสามารถเข้าถึงไฟล์ภาพและเสียงที่ถูกอัปโหลดผ่าน `req.files`
 
+app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { name: 'sound', maxCount: 1 }]),async (req, res) => {
   const book_id = req.body.book_id;
   const chapter = req.body.chapter;
   const level = req.body.level;
   const description = req.body.description;
-  // const imageFile = req.files.image ? req.files.image[0] : null; // ไฟล์รูปภาพ
-  // const soundFile = req.files.sound ? req.files.sound[0] : null; // ไฟล์เสียง
-  const imageFile = req.files['image'] ?  req.files['image'][0] : null; // ข้อมูลรูปภาพในรูปแบบ Buffer
-  const soundFile = req.files['sound'] ?  req.files['sound'][0] : null; // ข้อมูลเสียงในรูปแบบ Buffer
-
-  //console.log(book_id, chapter, level, description, imageFile, soundFile);
-  // console.log(book_id, chapter, level, description, imageBuffer, soundBuffer);
-
+  const imageFile = req.files['image'] ?  req.files['image'][0] : null; 
+  const soundFile = req.files['sound'] ?  req.files['sound'][0] : null; 
   let imagepath = null;
   let soundpath = null;
-
   let imageByte = null;
   let soundByte = null;
   
@@ -1529,9 +1483,9 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
     }
     const newNumber = lastNumber + 1;
     const newarticleid = `XOL${String(newNumber).padStart(3, '0')}`;
-    //console.log('articleid : ' + newarticleid);
 
-    const insertOptionQuery = `INSERT INTO article (article_id ,book_id, article_name ,article_level ,article_detail  ,article_images ,article_sounds,article_imagedata ,article_sounddata) VALUES (?,?,?,?,?,?,?,?,?)`;
+    const insertOptionQuery = `INSERT INTO article 
+    (article_id ,book_id, article_name ,article_level ,article_detail  ,article_images ,article_sounds,article_imagedata ,article_sounddata) VALUES (?,?,?,?,?,?,?,?,?)`;
     connection.query(insertOptionQuery, [newarticleid,book_id, chapter,level, description , imagepath , soundpath,imageByte,soundByte], (err, results) => {
       if (err) {
         console.error('Error inserting exam data: ' + err.message);
@@ -1542,7 +1496,6 @@ app.post('/api/addarticle', upload.fields([{ name: 'image', maxCount: 1 },  { na
             console.error('Error updating status_book:', err);
             res.status(500).json({ error: 'Error updating status_book' });
           } else {
-            // Send the response once, after updating status_book
             res.status(200).send('Article added and status_book updated');
           }
         });
@@ -1618,4 +1571,25 @@ app.post('/api/updatearticle', upload.fields([{ name: 'image', maxCount: 1 },  {
 });
 
   
+});
+
+app.post('/api/updatebookstatus', (req, res) => {
+  const bookId = req.body.bookId;
+  console.log(bookId)
+
+  const updateBookQuery = `
+    UPDATE book
+    SET status_book = 'published'
+    WHERE book_id = ?
+  `;
+
+  connection.query(updateBookQuery, [bookId], (err, result) => {
+    if (err) {
+      console.error('Error updating book status:', err);
+      res.status(500).json({ error: 'Error updating book status' });
+    } else {
+      console.log("ถููกอัพไป",bookId)
+      res.status(200).send('Book status updated to "published" successfully');
+    }
+  });
 });

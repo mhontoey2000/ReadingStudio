@@ -67,31 +67,35 @@ function Allbookcreator() {
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
           </div>
 
+          <div className="text-center" style={{margin:"10px"}}>
+            <cite style={{color:"#192655",fontWeight:"bold"}}>สร้างยังไม่เสร็จ</cite>
+            <cite style={{color:"red",marginLeft:"10px"}}>หมายถึงบทความของคุณยังไม่สร้างตอนของบทความนั้น</cite>
+          </div>
           <table className="table table-hover">
             <thead>
               <tr className="head" style={{ textAlign: "center" }}>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-1">
                   ลำดับ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   บทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   รายการตอนของบทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-1">
                   รูปหน้าปกบทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   สถานะ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   แก้ไขบทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   แก้ไขตอน
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   ลบ
                 </th>
               </tr>
@@ -100,16 +104,16 @@ function Allbookcreator() {
               {filteredItems.length === 0 ? (
                 <tr>
                   <td colSpan="6">
-                    ไม่มีรายการบทของหนังสือที่คุณค้นหา
-                    หรือคุณเขียนชื่อบทของหนังสือผิด.
+                    ไม่มีรายการบทความที่คุณค้นหา
+                    หรือคุณเขียนชื่อบทความผิด.
                   </td>
                 </tr>
               ) : (
                 filteredItems.map((book, index) => (
                   <tr key={book.book_id}>
-                    <td key={`book${index + 1}`}>{index + 1}</td>
-                    <td>{book.book_name}</td>
-                    <td>
+                    <td className="col-sm-1" key={`book${index + 1}`}>{index + 1}</td>
+                    <td className="col-sm-2">{book.book_name}</td>
+                    <td className="col-sm-2">
                       {book.article_name.map((article, index) => (
                         <span key={index}>
                           {article}
@@ -118,7 +122,7 @@ function Allbookcreator() {
                         </span>
                       ))}
                     </td>
-                    <td>
+                    <td className="col-sm-1">
                       {book.book_imagedata ? (
                         <img
                           src={book.book_imagedata || book.book_image}
@@ -129,7 +133,7 @@ function Allbookcreator() {
                       ) : null}
                     </td>
 
-                    <td>
+                    <td className="col-sm-2">
                       {book.status_book === "pending" && (
                         <span style={{ color: "#FFC436",fontWeight:"bold" }}>รออนุมัติ</span>
                       )}
@@ -147,7 +151,7 @@ function Allbookcreator() {
                       )}
                     </td>
 
-                    <td>
+                    <td className="col-sm-2">
                       <Link
                         className="btn btn-warning amt2"
                         to={{
@@ -158,7 +162,7 @@ function Allbookcreator() {
                         แก้ไขบทความ
                       </Link>
                     </td>
-                    <td>
+                    <td className="col-sm-2">
                       <Link
                         className="btn btn-warning amt2"
                         to={{
@@ -169,7 +173,7 @@ function Allbookcreator() {
                         แก้ไขตอน
                       </Link>
                     </td>
-                    <td className="col-sm-1">
+                    <td className="col-sm-2">
                       <Button
                         className="btn btn-danger amt2"
                         onClick={() => deleteBook(book.book_id)}

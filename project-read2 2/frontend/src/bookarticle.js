@@ -64,7 +64,7 @@ function Bookarticle({ match }) {
           <div className="row">
             {filteredItems.length === 0 ? (
               <div className="col-12 text-center">
-                <p>ไม่มีรายการหนังสือที่คุณค้นหา หรือคุณเขียนชื่อหนังสือผิด.</p>
+                <p>ไม่มีรายการตอนที่คุณค้นหา หรือคุณเขียนชื่อตอนผิด.</p>
               </div>
             ) : (
               filteredItems.map((article) => (
