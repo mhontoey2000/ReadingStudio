@@ -72,25 +72,25 @@ function Articlecreator() {
           <table className="table table-hover">
             <thead>
               <tr className="head" style={{ textAlign: "center" }}>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-1">
                   ลำดับ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   ชื่อบทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   คำอธิบายบทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   รายการตอน
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   รูปหน้าปกบทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   เพิ่มตอน
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-1">
                   ลบ
                 </th>
               </tr>
@@ -99,17 +99,17 @@ function Articlecreator() {
               {filteredItems.length === 0 ? (
                 <tr>
                   <td colSpan="6">
-                    ไม่มีรายการบทของหนังสือที่คุณค้นหา
-                    หรือคุณเขียนชื่อบทของหนังสือผิด.
+                    ไม่มีรายการบทของบทความที่คุณค้นหา
+                    หรือคุณเขียนชื่อบทความผิด.
                   </td>
                 </tr>
               ) : (
                 filteredItems.map((book, index) => (
                   <tr key={book.book_id}>
-                    <td key={`book${index + 1}`}>{index + 1}</td>
-                    <td>{book.book_name}</td>
-                    <td>{book.book_detail}</td>
-                    <td>
+                    <td className="col-sm-1" key={`book${index + 1}`}>{index + 1}</td>
+                    <td className="col-sm-2">{book.book_name}</td>
+                    <td className="col-sm-2">{book.book_detail}</td>
+                    <td className="col-sm-2">
                       {book.article_name.map((article, index) => (
                         <span key={index}>
                           {article}
@@ -118,7 +118,7 @@ function Articlecreator() {
                         </span>
                       ))}
                     </td>
-                    <td>
+                    <td className="col-sm-2">
                       <img
                         src={book.book_imagedata || book.book_image}
                         width="100"
@@ -126,7 +126,7 @@ function Articlecreator() {
                         alt={book.book_name}
                       />
                     </td>
-                    <td>
+                    <td className="col-sm-2">
                       <Link
                         className="btn btn-success"
                         to={{
@@ -137,7 +137,7 @@ function Articlecreator() {
                         เพิ่มตอน
                       </Link>
                     </td>
-                    <td>
+                    <td className="col-sm-1">
                       <Button
                         className="btn btn-danger"
                         onClick={() => deleteBook(book.book_id)}

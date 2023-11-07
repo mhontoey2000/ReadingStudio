@@ -247,25 +247,25 @@ function Toaddarticle() {
             <table className="table table-hover">
               <thead>
                 <tr className="head" style={{ textAlign: "center" }}>
-                  <th scope="col" className="t-size">
+                  <th scope="col" className="col-sm-2">
                     ลำดับ
                   </th>
-                  <th scope="col" className="t-size">
+                  <th scope="col" className="col-sm-2">
                     ชื่อตอน
                   </th>
-                  <th scope="col" className="t-size">
+                  <th scope="col" className="col-sm-2">
                     รูปหน้าปกของตอน
                   </th>
-                  <th scope="col" className="t-size">
+                  <th scope="col" className="col-sm-2">
                     ระดับบทความ
                   </th>
-                  <th scope="col" className="t-size">
+                  <th scope="col" className="col-sm-2">
                     วิเคราะห์ระดับบทความ
                   </th>
                   {/* <th scope="col" className="t-size">
                   แก้ไข
                 </th> */}
-                  <th scope="col" className="t-size">
+                  <th scope="col" className="col-sm-2">
                     ลบ
                   </th>
                 </tr>
@@ -274,16 +274,16 @@ function Toaddarticle() {
                 {filteredItems.length === 0 ? (
                   <tr>
                     <td colSpan="6">
-                      ไม่มีรายการบทของหนังสือที่คุณค้นหา
-                      หรือคุณเขียนชื่อบทของหนังสือผิด.
+                      ไม่มีรายการบทความที่คุณค้นหา
+                      หรือคุณเขียนชื่อบทความผิด.
                     </td>
                   </tr>
                 ) : (
                   filteredItems.map((article, index) => (
                     <tr key={article.article_id}>
-                      <td key={`article${index + 1}`}>{index + 1}</td>
-                      <td>{article.article_name}</td>
-                      <td>
+                      <td className="col-sm-2" key={`article${index + 1}`}>{index + 1}</td>
+                      <td className="col-sm-2">{article.article_name}</td>
+                      <td className="col-sm-2">
                         {article.article_imagedata ? (
                           <img
                             src={article.article_imagedata}
@@ -293,8 +293,8 @@ function Toaddarticle() {
                           />
                         ) : null}
                       </td>
-                      <td>{article.article_level}</td>
-                      <td>
+                      <td className="col-sm-2">{article.article_level}</td>
+                      <td className="col-sm-2">
                         <Button
                           className="btn btn-success"
                           onClick={() => handleAnalyzeClick(article)}
@@ -313,7 +313,7 @@ function Toaddarticle() {
                         แก้ไข
                       </Link>
                     </td> */}
-                      <td>
+                      <td className="col-sm-2">
                         <Button
                           className="btn btn-danger"
                           onClick={() => deleteArticle(article.article_id)}

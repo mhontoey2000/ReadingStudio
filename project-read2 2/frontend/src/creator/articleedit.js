@@ -222,25 +222,25 @@ function Articleedit() {
           <table className="table table-hover">
             <thead>
               <tr className="head" style={{ textAlign: "center" }}>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-1">
                   ลำดับ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-3">
                   ชื่อตอน
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   รูปหน้าปกของตอน
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   ระดับบทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   วิเคราะห์ระดับบทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-1">
                   แก้ไข
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-1">
                   ลบ
                 </th>
               </tr>
@@ -256,9 +256,9 @@ function Articleedit() {
               ) : (
                 filteredItems.map((article, index) => (
                   <tr key={article.article_id}>
-                    <td key={`article${index + 1}`}>{index + 1}</td>
-                    <td>{article.article_name}</td>
-                    <td>
+                    <td className="col-sm-1" key={`article${index + 1}`}>{index + 1}</td>
+                    <td className="col-sm-3">{article.article_name}</td>
+                    <td className="col-sm-2">
                       {article.article_imagedata ? (
                         <img
                           src={article.article_imagedata}
@@ -268,8 +268,8 @@ function Articleedit() {
                         />
                       ) : null}
                     </td>
-                    <td>{article.article_level}</td>
-                    <td>
+                    <td className="col-sm-2">{article.article_level}</td>
+                    <td className="col-sm-2">
                       <Button
                         className="btn btn-success amt2"
                         onClick={() => handleAnalyzeClick(article)}
@@ -277,7 +277,7 @@ function Articleedit() {
                         วิเคราะห์
                       </Button>
                     </td>
-                    <td>
+                    <td className="col-sm-1">
                       <Link
                         className="btn btn-warning amt2"
                         to={{
@@ -288,7 +288,7 @@ function Articleedit() {
                         แก้ไข
                       </Link>
                     </td>
-                    <td>
+                    <td className="col-sm-1">
                       <Button
                         className="btn btn-danger amt2"
                         onClick={() => deleteArticle(article.article_id)}

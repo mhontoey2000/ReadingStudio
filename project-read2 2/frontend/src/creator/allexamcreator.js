@@ -43,22 +43,22 @@ function Allexamcreator() {
           <table className="table table-hover">
             <thead>
               <tr className="head" style={{ textAlign: "center" }}>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   ลำดับ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   บทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   รายการตอนของบทความ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   รูปหน้าปกหนังสือ
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   แก้ไข
                 </th>
-                <th scope="col" className="t-size">
+                <th scope="col" className="col-sm-2">
                   ลบ
                 </th>
               </tr>
@@ -74,17 +74,17 @@ function Allexamcreator() {
               ) : (
                 filteredItems.map((book, index) => (
                   <tr key={book.book_id}>
-                        <td key={`book${index + 1}`}>{index + 1}</td>
-                        <td>{book.book_name}</td>
-                        <td>{book.article_name}</td>
-                        <td>
+                        <td className="col-sm-2" key={`book${index + 1}`}>{index + 1}</td>
+                        <td className="col-sm-2">{book.book_name}</td>
+                        <td className="col-sm-2">{book.article_name}</td>
+                        <td className="col-sm-2">
                         <img
                             src={book.article_imagedata || book.article_image}
                             width="100"
                             height="100"
                         />
                         </td>
-                    <td>
+                    <td className="col-sm-2">
                       {/* <a href={'/admin/book/edit/' + book.book_id} className="btn btn-primary">Edit</a> */}
                       <Link
                         className="btn btn-warning amt1"
@@ -96,7 +96,7 @@ function Allexamcreator() {
                         แก้ไขข้อสอบ
                       </Link>
                     </td>
-                    <td>
+                    <td className="col-sm-2">
                       <Button
                         className="btn btn-danger amt2"
                         //onClick={() => deleteBook(book.book_id)}
