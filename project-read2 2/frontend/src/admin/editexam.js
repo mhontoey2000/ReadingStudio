@@ -379,7 +379,7 @@ function Editexam() {
                 className="d-flex justify-content-between"
                 style={{ margin: "20px" }}
               >
-                <Button type="button" className="btn btn-danger btn-lg">
+                <Button type="button" className="btn btn-danger btn-lg" onClick={hideSuccessModal}>
                   ยกเลิก
                 </Button>
 

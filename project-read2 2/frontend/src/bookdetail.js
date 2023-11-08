@@ -144,7 +144,7 @@ function Bookdetail(match) {
     axios
       .get(`http://localhost:5004/api/exam/${articleid}`)
       .then((response) => {
-        let tempArr = response.data.slice().reverse();
+        let tempArr = response.data;
         setqItems(tempArr);
       })
       .catch((error) => {
