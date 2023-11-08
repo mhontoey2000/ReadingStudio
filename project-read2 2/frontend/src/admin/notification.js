@@ -84,17 +84,19 @@ const Notification = () => {
         //     return '007BFF';
        if(value === 'Checked')
             return 'green';
-        else
+        else if(value === 'InProgress') 
             return 'orange';
+        else
+            return 'red';
         
     }
     const Getth = (value) =>{
-        // if(value === 'InProgress')
-        //     return 'กำลังดำเนินการ';
-       if(value === 'Checked')
-            return 'ตรวจสอบแล้ว';
-        else
-            return 'ระงับการเผยแพร่';
+      if(value === 'Checked')
+         return 'ตรวจสอบแล้ว';
+      else if(value === 'InProgress')
+         return 'กำลังดำเนินการ';
+      else
+         return 'ระงับการเผยแพร่';
         
     }
     const openModal = (report) => {
@@ -253,7 +255,7 @@ const Notification = () => {
                     <div
                       className="dropdown-item"
                       style={{ background: 'red', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
-                      onClick={() => handleDropdownSelect('ระงับการเผยแพร่', 'orange',selectedReport.report_id)}
+                      onClick={() => handleDropdownSelect('ระงับการเผยแพร่', 'red',selectedReport.report_id)}
                     >
                       ระงับการเผยแพร่
                     </div>

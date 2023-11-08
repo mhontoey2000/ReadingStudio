@@ -460,7 +460,55 @@ app.post('/api/updateLeveltext', (req, res) => {
       }
     );
   });
+  app.get('/api/getarticleban/:id', function (req, res) {
+    const book_id = req.params.id;
   
+    connection.query(
+      `SELECT article.*, reports.report_status
+      FROM article
+      LEFT JOIN reports ON article.article_id = reports.article_id
+      WHERE article.book_id = ?
+      AND (
+        reports.report_status IS NULL
+        OR (
+          SELECT COUNT(*) FROM reports AS r
+          WHERE r.article_id = article.article_id
+          AND r.report_status = 'Banned'
+        ) = 0
+      )
+      GROUP BY article.article_id
+      HAVING COUNT(reports.article_id) <= 2;`,
+      // `SELECT article.*, reports.report_status
+      // FROM article
+      // LEFT JOIN reports ON article.article_id = reports.article_id
+      // WHERE article.book_id = ?
+      // AND NOT EXISTS (
+      //   SELECT 1
+      //   FROM reports AS r
+      //   WHERE r.article_id = article.article_id
+      //   AND r.report_status = 'Banned'
+      // )
+      // ;`,
+      [book_id],
+      function(err, results) {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+        }
+  
+        const articlesWithImages = results.map((article) => {
+          const img = helper.convertBlobToBase64(article.article_imagedata);
+          return {
+            ...article,
+            article_imagedata: img,
+          };
+        });
+        console.log(articlesWithImages);
+        res.json(articlesWithImages);
+      }
+    );
+  });
 
 app.get('/api/articledetail/:id', function (req, res) {
   const article_id = req.params.id;
@@ -1096,7 +1144,7 @@ app.post('/api/report', (req, res) => {
     VALUES (?, ?, ?, ?,?)
   `;
 
-  connection.query(insertReportQuery, [bookid, articleid, remail, rdetail,	'NotCheckedYet'], (err, result) => {
+  connection.query(insertReportQuery, [bookid, articleid, remail, rdetail,	'InProgress'], (err, result) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Error inserting report data' });

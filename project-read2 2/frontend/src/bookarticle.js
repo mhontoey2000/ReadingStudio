@@ -36,7 +36,7 @@ function Bookarticle({ match }) {
     // }
     // setBookID(location.state.book_id)
     axios
-      .get(`http://localhost:5004/api/article/${bookid}`)
+      .get(`http://localhost:5004/api/getarticleban/${bookid}`)
       .then((response) => {
         setItems(response.data);
       })

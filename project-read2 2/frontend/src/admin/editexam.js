@@ -134,7 +134,7 @@ function Editexam() {
       updatedQuestions[index].image = file;
       updatedQuestions[index].imageURL = URL.createObjectURL(file);
     } else {
-      updatedQuestions[index].image = null;
+      updatedQuestions[index].image = file;
       updatedQuestions[index].imageURL = updatedQuestions[index].imagetemp;
     }
 
@@ -300,7 +300,6 @@ function Editexam() {
                               ? question.imageURL
                               : question.image
                           }
-                          alt="Uploaded Image"
                           style={{ maxWidth: "100%", maxHeight: "200px" }}
                         />
                         </div>
