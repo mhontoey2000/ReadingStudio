@@ -946,7 +946,7 @@ app.post('/api/updateStatusBook/:bookId', (req, res) => {
 app.post("/api/updateStatus", (req, res) => {
   const { bookId, newStatus, unpublishReason } = req.body;
 
-  // Update the status of the book
+
   const bookQuery = "UPDATE book SET status_book = ? WHERE book_id = ?";
 connection.query(bookQuery, [newStatus, bookId], (bookErr) => {
   if (bookErr) {

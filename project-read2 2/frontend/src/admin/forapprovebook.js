@@ -258,7 +258,7 @@ function Forapprovebook() {
                       {selectitem.status_book === "deny" && "คุณปฏิเสธ"}
                       {selectitem.status_book === "published" && "เผยแพร่แล้ว"}
                     </option>
-                    {/* <option value="published">อนุมัติ</option> */}
+                    {/* <option value="published">:อนุมัติ</option> */}
                     <option value="deny">ระงับบทความ</option>
                   </select>
                   <label htmlFor="status">เลือกสถานะ:</label>
