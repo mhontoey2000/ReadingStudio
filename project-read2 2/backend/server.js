@@ -881,7 +881,7 @@ app.get('/api/forapprove', function (req, res) {
       b.book_imagedata
       FROM book b
       JOIN article a ON b.book_id = a.book_id
-      WHERE b.status_book = 'published'
+      WHERE b.status_book IN ('published', 'deny')
       GROUP BY b.book_id, b.book_name, b.status_book, b.book_imagedata;`,
     function(err, results) {
       const bookdata = results.map((book) => {
