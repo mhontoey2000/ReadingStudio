@@ -911,6 +911,11 @@ app.get('/api/notification', function (req, res) {
     WHERE b.book_creator = ?
     ORDER BY f.created_at DESC`,[email],
     function(err, results) {
+      if (!results || results.length === 0) {
+        // handle the case where there are no results
+        res.json([]);
+        return;
+      }
       const articledata = results.map((article) => {
         const img = helper.convertBlobToBase64(article.article_imagedata);
         return {
