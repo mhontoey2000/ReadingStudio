@@ -249,7 +249,7 @@ app.post('/api/updatebook', upload.single('book_image'), async (req, res) => {
   const { book_id, book_name, book_detail } = req.body;
   console.log("Received image file:", req.file);
   let updateValues = [];
-  let updateQuery = "UPDATE book SET book_name=?, book_detail=?";
+  let updateQuery = "UPDATE book SET book_name=?, book_detail=?, status_book='published' ";
 
   updateValues.push(book_name, book_detail);
 

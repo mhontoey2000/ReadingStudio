@@ -77,7 +77,7 @@ function Allbookcreator() {
                 <th scope="col" className="col-sm-1">
                   ลำดับ
                 </th>
-                <th scope="col" className="col-sm-2">
+                <th scope="col" className="col-sm-1">
                   บทความ
                 </th>
                 <th scope="col" className="col-sm-2">
