@@ -950,6 +950,9 @@ app.post('/api/updateStatusBook/:bookId', (req, res) => {
 
 app.post("/api/updateStatus", (req, res) => {
   const { bookId, newStatus, unpublishReason } = req.body;
+  console.log("bookId : " + bookId);
+  console.log("newStatus : " + newStatus);
+  console.log("unpublishReason : " + unpublishReason);
 
 
   const bookQuery = "UPDATE book SET status_book = ? WHERE book_id = ?";
@@ -959,6 +962,8 @@ connection.query(bookQuery, [newStatus, bookId], (bookErr) => {
     res.status(500).json({ error: "Failed to update book status" });
     return;
   }
+  console.log("bookId : " + bookId);
+  console.log("newStatus : " + newStatus);
 
   // Check if newStatus is "published" or "deny" and there's an unpublishReason
   if ((newStatus === "published" || newStatus === "deny") && unpublishReason) {

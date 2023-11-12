@@ -69,13 +69,17 @@ function Articlecreator() {
                                             <img src={book.book_imagedata || book.book_image} width="100" height="100" alt={book.book_name} />
                                         </td>
                                         <td>
-                                            <Link
-                                                className="btn btn-success amt3"
-                                                to={{ pathname: '/Page/toaddarticle', state: { book_id: book.book_id } }}
-                                            >
-                                                เพิ่มตอน
-                                            </Link>
-                                        </td>
+                                {user === book.book_creator ? (
+                                    <Link
+                                    className="btn btn-success amt3"
+                                    to={{ pathname: '/Page/toaddarticle', state: { book_id: book.book_id } }}
+                                    >
+                                    เพิ่มตอน
+                                    </Link>
+                                ) : (
+                                    <span></span>
+                                )}
+                                </td>
                                         {/* <td>
                                             <Button className="btn btn-danger amt2" 
                                              //onClick={() => deleteBook(book.book_id)}
