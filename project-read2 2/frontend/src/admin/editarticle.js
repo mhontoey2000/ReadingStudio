@@ -449,7 +449,7 @@ function Editarticle() {
                 ) : (
                   <div>
                     <Link
-                      className="btn btn-warning"
+                      className="btn btn-success"
                       style={{ color: "white" }}
                       to={{
                         pathname: "/Page/addexam",

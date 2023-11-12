@@ -340,7 +340,8 @@ function Bookdetail(match) {
                         {article.article_level}
                       </span>
                     </h5>
-
+                    
+                    {Vitems.length > 0 && (
                     <Button
                       className="btn btn-success btn-lg"
                       style={{ color: "white" }}
@@ -348,7 +349,8 @@ function Bookdetail(match) {
                     >
                       {highlighted ? "ซ่อน" : "แสดงคำศัพท์"}
                     </Button>
-                  </div>
+                    )}
+                    </div>
 
                   <div className="detailtext parsed-article">
                     {highlighted
@@ -469,7 +471,9 @@ function Bookdetail(match) {
                   </div>
                 ))
               ) : (
-                <div className="no-items bb">ไม่มีชุดข้อสอบในตอนของบทความนี้.</div>
+                <div className="no-items bb">
+                  ไม่มีชุดข้อสอบในตอนของบทความนี้.
+                </div>
               )}
             </div>
             {Array.isArray(qitems) && qitems.length > 0 && (
