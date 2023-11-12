@@ -91,6 +91,11 @@ const Allbookadmin = () => {
             <div style={{ padding: "10px" }}>
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
           </div>
+
+          <div className="text-center" style={{margin:"10px"}}>
+            <cite style={{color:"#192655",fontWeight:"bold"}}>สร้างยังไม่เสร็จ</cite>
+            <cite style={{color:"red",marginLeft:"10px"}}>หมายถึงบทความของคุณยังไม่สร้างตอนของบทความนั้น</cite>
+          </div>
             
             <table className="table table-hover">
               <thead>
@@ -101,7 +106,7 @@ const Allbookadmin = () => {
                   <th scope="col" className="col-sm-2">
                     บทความ
                   </th>
-                  <th scope="col" className="col-sm-5">
+                  <th scope="col" className="col-sm-3">
                     รายการตอนของบทความ
                   </th>
                   <th scope="col" className="col-sm-1">
@@ -113,7 +118,7 @@ const Allbookadmin = () => {
                   <th scope="col" className="col-sm-1">
                     แก้ไขบทความ
                   </th>
-                  <th scope="col" className="col-sm-1">
+                  <th scope="col" className="col-sm-2">
                     แก้ไขตอน
                   </th>
                   <th scope="col" className="col-sm-1">
