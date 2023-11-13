@@ -44,7 +44,7 @@ function Score() {
     axios
       .get(`http://localhost:5004/api/exam/${articleid}`)
       .then((response) => {
-        let tempArr = response.data.slice().reverse();
+        let tempArr = response.data;
         setqItems(tempArr);
         console.log("tempArr", tempArr);
       })
@@ -95,9 +95,9 @@ function Score() {
                         const isCorrect = option.is_correct === 1;
 
                         return (
-                          <div className="">
+                          <div className="" key={`option_${optionIndex}`}>
                             <div
-                              key={`option_${optionIndex}`}
+                              
                               className={`option-container ${
                                 isChecked && !isCorrect ? "red-background" : ""
                               } ${isCorrect ? "green-background" : ""}`}

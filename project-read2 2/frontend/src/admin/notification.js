@@ -136,19 +136,19 @@ const Notification = () => {
                 <h1>แจ้งเตือนการรายงาน</h1>
                 <div className="grid-containerr">
                     <div className="row">
-                        <div className="col-12">
-                            <table className="table table-bordered">
+                        <div >
+                            <table className="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Id</th>
-                                        <th>ชื่อหนังสือ</th>
-                                        <th>ชื่อบท</th>
-                                        <th>รายละเอียด</th>
-                                        <th>ผู้แจ้ง</th>
-                                        <th>เวลา</th>
-                                        <th>สถานะ</th>
-                                        <th>ดู</th>
-                                        <th>จัดการ</th>
+                                        <th scope="col" className="col-sm-1">ลำดับ</th>
+                                        <th scope="col" className="col-sm-1">บทความ</th>
+                                        <th scope="col" className="col-sm-1">ตอน</th>
+                                        <th scope="col" className="col-sm-3">รายละเอียด</th>
+                                        <th scope="col" className="col-sm-2">ผู้แจ้ง</th>
+                                        <th scope="col" className="col-sm-1">เวลา</th>
+                                        <th scope="col" className="col-sm-1">สถานะ</th>
+                                        <th scope="col" className="col-sm-1">ดู</th>
+                                        <th scope="col" className="col-sm-1">จัดการ</th>
                                     </tr>
                                 </thead>
 
@@ -156,14 +156,14 @@ const Notification = () => {
                                     {report.map((item) => {
                                         return (
                                             <tr key={item.report_id}>
-                                                <td>{item.report_id}</td>
-                                                <td>{item.book_id}</td>
-                                                <td>{item.report_articlename}</td>
-                                                <td>{item.report_detail}</td>
-                                                <td>{item.reporter}</td>
-                                                <td>{item.date_time}</td>
-                                                <td>{ Getth(item.report_status)}</td>
-                                                <td>
+                                                <td className="col-sm-1">{item.report_id}</td>
+                                                <td className="col-sm-1">{item.book_id}</td>
+                                                <td className="col-sm-1">{item.report_articlename}</td>
+                                                <td className="col-sm-3">{item.report_detail}</td>
+                                                <td className="col-sm-2">{item.reporter}</td>
+                                                <td className="col-sm-1">{item.date_time}</td>
+                                                <td className="col-sm-1">{ Getth(item.report_status)}</td>
+                                                <td className="col-sm-1">
                                                     <Link
                                                         to={{ pathname: '/Page/bookdetail', state: { article_id: item.article_id } }}
                                                         className="btn btn-success"
@@ -173,7 +173,7 @@ const Notification = () => {
                                                     </Link>
                                                   
                                                 </td>
-                                                <td>
+                                                <td className="col-sm-1">
                                                     <Button onClick={() => openModal(item)}>จัดการ</Button>
                                                 </td>
                                             </tr>

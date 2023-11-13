@@ -169,7 +169,7 @@ function Forapprovebook() {
                         {item.status_book === "pending" && "รออนุมัติ"}
                         {item.status_book === "creating" && "สร้างยังไม่เสร็จ"}
                         {item.status_book === "finished" && "สร้างเสร็จแล้ว"}
-                        {item.status_book === "deny" && "คุณปฏิเสธ"}
+                        {item.status_book === "deny" && "ถูกระงับ"}
                         {item.status_book === "published" && "เผยแพร่แล้ว"}
                       </Button>
                     </td>
@@ -255,7 +255,7 @@ function Forapprovebook() {
                     <option value="default" hidden>
                       {selectitem.status_book === "pending" && "รออนุมัติ"}
                       {selectitem.status_book === "finished" && "สร้างเสร็จแล้ว"}
-                      {selectitem.status_book === "deny" && "คุณปฏิเสธ"}
+                      {selectitem.status_book === "deny" && "ถูกระงับ"}
                       {selectitem.status_book === "published" && "เผยแพร่แล้ว"}
                     </option>
                     {/* <option value="published">:อนุมัติ</option> */}

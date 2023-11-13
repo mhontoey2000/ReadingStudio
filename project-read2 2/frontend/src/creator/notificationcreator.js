@@ -110,7 +110,7 @@ function Notificationcreator() {
                         )}
                         {items.status === "deny" && (
                           <span style={{ color: "red", fontWeight: "bold" }}>
-                            ถูกปฏิเสธ
+                            ถูกระงับ
                           </span>
                         )}
                         {items.status === "published" && (
