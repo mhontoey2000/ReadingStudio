@@ -69,6 +69,32 @@ function Profile() {
       history.goBack();
   }
 
+  const getUserTypeLabel = (usertype) => {
+    switch (usertype) {
+      case 'admin':
+        return 'แอดมิน';
+      case 'creator':
+        return 'ผู้สร้าง';
+      case 'learner':
+        return 'ผู้ใช้งานทั่วไป';
+      default:
+        return usertype; // or return a default label if usertype doesn't match any case
+    }
+  };
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'approved':
+        return 'อนุมัติ';
+      case 'pending':
+        return 'รออนุมัติ';
+      case 'rejecting':
+        return 'ถูกปฏิเสธ';
+      default:
+        return status; // or return a default label if status doesn't match any case
+    }
+  };
+
     return (
         <>
         <Header/>
@@ -96,7 +122,7 @@ function Profile() {
 
           <div className="mb-3 form-group">
             <label className="form-label">ประเภทบัญชี</label>
-            <input type="text" className="form-control" value={usertype} disabled readOnly></input>
+            <input type="text" className="form-control" value={getUserTypeLabel(usertype)} disabled readOnly></input>
           </div>
 
           {["admin", "creator"].includes(usertype) && (
@@ -105,7 +131,7 @@ function Profile() {
               <input 
                type="text" 
                className="form-control" 
-               value={status} 
+               value={getStatusLabel(status)}  
                disabled 
                readOnly
                style={{

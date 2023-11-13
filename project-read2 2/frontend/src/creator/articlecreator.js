@@ -142,7 +142,7 @@ function Articlecreator() {
                         className="btn btn-danger"
                         onClick={() => deleteBook(book.book_id)}
                       >
-                        Delete
+                        ลบ
                       </Button>
                     </td>
                   </tr>

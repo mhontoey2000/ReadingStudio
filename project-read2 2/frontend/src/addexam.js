@@ -3,6 +3,7 @@ import Header from "./header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
+import Modal from "react-bootstrap/Modal";
 import "./styles/addexam.css";
 import { Await, useLocation } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
@@ -19,6 +20,7 @@ function Addexam() {
   const history = useHistory();
   const [bname, setBname] = useState("");
   const [aname, setAname] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     apiClient.get(`api/articledetail/${articleid}`)
@@ -143,7 +145,7 @@ const submitExam = async () => {
               correctOption: 0,
             },
           ]);
-          alert("Success");
+          setShowModal(true);
         }
     }
     cancelExam();
@@ -154,6 +156,10 @@ const submitExam = async () => {
   }
 };
 
+const handleCloseModal = () => {
+  // Close the modal
+  setShowModal(false);
+};
  
   const cancelExam = () => {
     history.goBack();
@@ -330,6 +336,21 @@ const submitExam = async () => {
         </div>
         </div>
       </section>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>สำเร็จ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>สร้างชุดข้อสอบสำเร็จ</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            ตกลง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   );
 }

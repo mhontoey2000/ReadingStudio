@@ -46,7 +46,7 @@ function Score() {
       .then((response) => {
         let tempArr = response.data;
         setqItems(tempArr);
-        console.log("tempArr", tempArr);
+        //console.log("tempArr", tempArr);
       })
       .catch((error) => {
         console.error(error);
