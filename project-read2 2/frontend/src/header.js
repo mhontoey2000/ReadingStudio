@@ -122,6 +122,10 @@ function Header() {
                           <i className="bi bi-person-workspace"></i>
                             เมนูผู้สร้าง
                           </Nav.Link>)}
+                        <Nav.Link href="./watchedhistory" className="list_item">
+                          <i className="bi bi-clock-history"></i>
+                            ประวัติการดู
+                          </Nav.Link>
                         <Nav.Link href="./logout" onClick={logout } className="list_item">
                           <i className="bi bi-box-arrow-right"></i>
                             ล็อกเอาท์

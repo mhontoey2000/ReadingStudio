@@ -16,6 +16,7 @@ function Bookdetail(match) {
   // const [articleid, setArticleid] = useState("");
   const articleid = location.state.article_id;
   const user = localStorage.getItem("email");
+  const userId = localStorage.getItem("user_id");
   const [Vitems, setVitems] = useState([]);
   const [bookid, setBookid] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -99,6 +100,20 @@ function Bookdetail(match) {
   }, [user]);
 
   useEffect(() => {
+    if (userId) {
+      console.log("UserId for recording history:", userId);
+      axios
+        .post(`http://localhost:5004/api/articledetail/${articleid}/record-history`, { user_id: userId })
+        .then((response) => {
+          console.log("Recorded history successfully");
+        })
+        .catch((error) => {
+          console.error("Error recording history:", error);
+        });
+    }
+  }, [articleid, userId]);
+
+  useEffect(() => {
     axios
       .get(`http://localhost:5004/api/vocabs/${articleid}`)
       .then((response) => {
@@ -112,18 +127,14 @@ function Bookdetail(match) {
   }, [articleid]);
 
   useEffect(() => {
-    // if (!location.state || location.state.article_id === undefined) {
 
-    //   history.push('/Page/home');
-    //   return;
-    // }
-    // setArticleid(location.state.article_id)
     axios
-      .get(`http://localhost:5004/api/articledetail/${articleid}`)
+      .get(`http://localhost:5004/api/articledetail/${articleid}?user_id=${userId}`)
       .then((response) => {
         setItems(response.data);
         setIsLoaded(true);
         setBookid(response.data[0].book_id);
+        console.log("articledetailuserid",userId);
 
         const audioData = response.data[0].article_sounddata;
 
@@ -133,12 +144,19 @@ function Bookdetail(match) {
           });
           const audioUrl = URL.createObjectURL(audioBlob);
           setAudioUrl(audioUrl);
+
         }
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [articleid]);
+  }, [articleid, userId]);
+
+  useEffect(() => {
+    console.log("Running useEffect to fetch article details and record history");
+  
+    // ... rest of the code
+  }, [articleid, userId]);
 
   useEffect(() => {
     axios

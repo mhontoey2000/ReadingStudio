@@ -478,17 +478,7 @@ app.post('/api/updateLeveltext', (req, res) => {
       )
       GROUP BY article.article_id
       HAVING COUNT(reports.article_id) <= 2;`,
-      // `SELECT article.*, reports.report_status
-      // FROM article
-      // LEFT JOIN reports ON article.article_id = reports.article_id
-      // WHERE article.book_id = ?
-      // AND NOT EXISTS (
-      //   SELECT 1
-      //   FROM reports AS r
-      //   WHERE r.article_id = article.article_id
-      //   AND r.report_status = 'Banned'
-      // )
-      // ;`,
+
       [book_id],
       function(err, results) {
         if (err) {
@@ -510,14 +500,22 @@ app.post('/api/updateLeveltext', (req, res) => {
     );
   });
 
-app.get('/api/articledetail/:id', function (req, res) {
-  const article_id = req.params.id;
-  const searchTerm = req.query.q;
-  const sql = `SELECT * FROM articles WHERE article_name LIKE '%${searchTerm}%'`;
-   connection.query(
-       `SELECT * FROM article WHERE article_id = ?;`,
-       [article_id],
-       function(err, results) {
+  app.get('/api/articledetail/:id', function (req, res) {
+    const userId = req.query.user_id;  // Assuming you have a user_id in the request
+    const article_id = req.params.id;
+    console.log("getuser_id1",userId);
+    console.log("getarticle_id",article_id);
+  
+    connection.query(
+      `SELECT * FROM article WHERE article_id = ?;`,
+      [article_id],
+      function(err, results) {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+        }
+  
         const articlesWithImages = results.map((article) => {
           const img = helper.convertBlobToBase64(article.article_imagedata);
           return {
@@ -525,12 +523,59 @@ app.get('/api/articledetail/:id', function (req, res) {
             article_imagedata: img,
           };
         });
-        console.log(articlesWithImages);
-        res.json(articlesWithImages);
-        //  res.json(results);
-       }
-     );
- });
+        
+        connection.query(
+          `SELECT * FROM user WHERE user_id = ?;`,
+          [userId],
+          function (err, userResults) {
+              if (err || userResults.length === 0) {
+                  console.error("User not found or error:", err);
+                  res.status(500).json({ error: 'User not found or error' });
+                  return;
+              }
+
+              connection.query(
+                  `INSERT INTO user_history (user_id, article_id) VALUES (?, ?);`,
+                  [userId, article_id],
+                  function (err) {
+                      if (err) {
+                          console.error(err);
+                          res.status(500).json({ error: 'Error recording reading history' });
+                      } else {
+                          res.json(articlesWithImages);
+                      }
+                  }
+              );
+          }
+      );
+  }
+);
+});
+
+ app.post('/api/articledetail/:id/record-history', (req, res) => {
+  const userId = req.body.user_id;
+  const article_id = req.params.id;
+  console.log("Record History - User ID:", userId);
+  console.log("Record History - Article ID:", article_id);
+  if (!userId) {
+        console.error("Invalid user ID");
+        res.status(400).json({ error: 'Invalid user ID' });
+        return;
+    }
+
+    connection.query(
+        `INSERT INTO user_history (user_id, article_id) VALUES (?, ?);`,
+        [userId, article_id],
+        function (err) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Error recording reading history' });
+            } else {
+                res.json({ success: true });
+            }
+        }
+    );
+});
 
  app.get('/api/exam', function (req, res) {
    connection.query(
@@ -638,7 +683,7 @@ app.post('/api/login', (req, res) => {
             if(true)
             {
               const accessToken = generateAccessToken({ user_id: user.user_id });
-              res.status(200).send({ accessToken: accessToken, email: req.body.email });
+              res.status(200).send({ accessToken: accessToken, email: req.body.email,user_id: user.user_id });
             }else {
               res.status(401).send({ message: "อีเมลยังไม่ได้รับการอนุมัติ" });
             }
@@ -732,6 +777,7 @@ app.get('/api/token_check', async (req, res) => {
 
 
 
+
 app.get('/api/userdata', (req, res) => {
   const email = req.query.user_email;
   connection.query("SELECT * FROM user WHERE user_email = ?", [email], (err, result) => {
@@ -742,6 +788,26 @@ app.get('/api/userdata', (req, res) => {
       res.send(result);
     }
   });
+});
+
+app.get('/api/watchedhistory', (req, res) => {
+  const user_id = req.query.user_id;
+
+  connection.query(
+    `SELECT article.*, user_history.watched_at
+     FROM user_history
+     JOIN article ON user_history.article_id = article.article_id
+     WHERE user_history.user_id = ?;`,
+    [user_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Error retrieving reading history' });
+      } else {
+        res.json(result);
+      }
+    }
+  );
 });
 
 app.put('/api/userdata', (req, res) => {
