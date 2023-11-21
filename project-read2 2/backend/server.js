@@ -501,10 +501,9 @@ app.post('/api/updateLeveltext', (req, res) => {
   });
   
   app.get('/api/articledetail/:id', function (req, res) {
-    const userId = req.query.user_id;  // Assuming you have a user_id in the request
+    const userId = req.query.user_id; 
     const article_id = req.params.id;
-    console.log("getuser_id1", userId);
-    console.log("getarticle_id", article_id); 
+
     connection.query(
       `SELECT * FROM article WHERE article_id = ?;`,
       [article_id],
@@ -530,9 +529,6 @@ app.post('/api/articledetail/:id/record-history', (req, res) => {
   const userId = req.body.user_id;
   const article_id = req.params.id;
   const book_id = req.body.book_id;
-  console.log("userId",userId);
-          console.log("bookid",book_id);
-          console.log("articleid",article_id);
 
   if (!userId || !article_id || !book_id) {
     console.error("Invalid user ID, article ID, or book ID");
@@ -788,7 +784,7 @@ app.get('/api/watchedhistory', (req, res) => {
   const user_id = req.query.user_id;
 
   connection.query(
-    `SELECT a.article_id, a.article_name, b.book_name, h.watched_at
+    `SELECT a.article_id, a.article_name, b.book_name, h.watched_at, a.article_imagedata
     FROM history h
     JOIN article a ON h.article_id = a.article_id
     JOIN book b ON h.book_id = b.book_id
@@ -800,7 +796,15 @@ app.get('/api/watchedhistory', (req, res) => {
         console.log(err);
         res.status(500).json({ error: 'Error retrieving reading history' });
       } else {
-        res.json(result);
+        const articlesWithImages = result.map((article) => {
+          // Convert blob to base64
+          const img = helper.convertBlobToBase64(article.article_imagedata);
+          return {
+            ...article,
+            article_imagedata: img,
+          };
+        });
+        res.json(articlesWithImages);
       }
     }
   );
