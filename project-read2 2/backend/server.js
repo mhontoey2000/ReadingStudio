@@ -499,13 +499,12 @@ app.post('/api/updateLeveltext', (req, res) => {
       }
     );
   });
-
+  
   app.get('/api/articledetail/:id', function (req, res) {
     const userId = req.query.user_id;  // Assuming you have a user_id in the request
     const article_id = req.params.id;
-    console.log("getuser_id1",userId);
-    console.log("getarticle_id",article_id);
-  
+    console.log("getuser_id1", userId);
+    console.log("getarticle_id", article_id); 
     connection.query(
       `SELECT * FROM article WHERE article_id = ?;`,
       [article_id],
@@ -515,7 +514,6 @@ app.post('/api/updateLeveltext', (req, res) => {
           res.status(500).json({ error: 'Internal Server Error' });
           return;
         }
-  
         const articlesWithImages = results.map((article) => {
           const img = helper.convertBlobToBase64(article.article_imagedata);
           return {
@@ -523,58 +521,54 @@ app.post('/api/updateLeveltext', (req, res) => {
             article_imagedata: img,
           };
         });
-        
-        connection.query(
-          `SELECT * FROM user WHERE user_id = ?;`,
-          [userId],
-          function (err, userResults) {
-              if (err || userResults.length === 0) {
-                  console.error("User not found or error:", err);
-                  res.status(500).json({ error: 'User not found or error' });
-                  return;
-              }
+        res.json(articlesWithImages);
+      }
+    );
+  });
 
-              connection.query(
-                  `INSERT INTO user_history (user_id, article_id) VALUES (?, ?);`,
-                  [userId, article_id],
-                  function (err) {
-                      if (err) {
-                          console.error(err);
-                          res.status(500).json({ error: 'Error recording reading history' });
-                      } else {
-                          res.json(articlesWithImages);
-                      }
-                  }
-              );
-          }
-      );
-  }
-);
-});
-
- app.post('/api/articledetail/:id/record-history', (req, res) => {
+app.post('/api/articledetail/:id/record-history', (req, res) => {
   const userId = req.body.user_id;
   const article_id = req.params.id;
-  console.log("Record History - User ID:", userId);
-  console.log("Record History - Article ID:", article_id);
-  if (!userId) {
-        console.error("Invalid user ID");
-        res.status(400).json({ error: 'Invalid user ID' });
-        return;
-    }
+  const book_id = req.body.book_id;
+  console.log("userId",userId);
+          console.log("bookid",book_id);
+          console.log("articleid",article_id);
 
-    connection.query(
-        `INSERT INTO user_history (user_id, article_id) VALUES (?, ?);`,
-        [userId, article_id],
-        function (err) {
+  if (!userId || !article_id || !book_id) {
+    console.error("Invalid user ID, article ID, or book ID");
+    res.status(400).json({ error: 'Invalid user ID, article ID, or book ID' });
+    return;
+  }
+  connection.query(
+    `SELECT * FROM history WHERE user_id = ? AND article_id = ? AND book_id = ?;`,
+    [userId, article_id, book_id],
+    function (err, results) {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+      // Check if a history record already exists
+      // if (results.length > 0) {
+      //   // History record already exists, do not insert a new one
+      //   res.json({ success: true, message: 'History record already exists' });
+      // } else {
+        // Insert a new history record
+        connection.query(
+          `INSERT INTO history (user_id, article_id, book_id, watched_at) VALUES (?, ?, ?, NOW());`,
+          [userId, article_id, book_id],
+          function (err) {
             if (err) {
-                console.error(err);
-                res.status(500).json({ error: 'Error recording reading history' });
+              console.error(err);
+              res.status(500).json({ error: 'Error recording reading history' });
             } else {
-                res.json({ success: true });
+              res.json({ success: true });
             }
-        }
-    );
+          }
+        );
+      //}
+    }
+  );
 });
 
  app.get('/api/exam', function (req, res) {
@@ -794,10 +788,12 @@ app.get('/api/watchedhistory', (req, res) => {
   const user_id = req.query.user_id;
 
   connection.query(
-    `SELECT article.*, user_history.watched_at
-     FROM user_history
-     JOIN article ON user_history.article_id = article.article_id
-     WHERE user_history.user_id = ?;`,
+    `SELECT a.article_id, a.article_name, b.book_name, h.watched_at
+    FROM history h
+    JOIN article a ON h.article_id = a.article_id
+    JOIN book b ON h.book_id = b.book_id
+    WHERE h.user_id = ?
+    ORDER BY h.watched_at DESC`,
     [user_id],
     (err, result) => {
       if (err) {

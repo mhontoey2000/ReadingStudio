@@ -13,12 +13,12 @@ import formatTime from "./formattime";
 function Bookdetail(match) {
   const [items, setItems] = useState([]);
   const location = useLocation();
-  // const [articleid, setArticleid] = useState("");
+  const [historyRecorded, setHistoryRecorded] = useState(false); 
   const articleid = location.state.article_id;
   const user = localStorage.getItem("email");
   const userId = localStorage.getItem("user_id");
   const [Vitems, setVitems] = useState([]);
-  const [bookid, setBookid] = useState(false);
+  const [bookid, setBookid] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -34,7 +34,7 @@ function Bookdetail(match) {
   const [showModal, setShowModal] = useState(false);
   const [unansweredQuestions, setUnansweredQuestions] = useState([]);
   const [highlightedArticleDetail, setHighlightedArticleDetail] = useState([]);
-
+  
   const history = useHistory();
   const [submittedAnswers, setSubmittedAnswers] = useState([]);
 
@@ -100,20 +100,6 @@ function Bookdetail(match) {
   }, [user]);
 
   useEffect(() => {
-    if (userId) {
-      console.log("UserId for recording history:", userId);
-      axios
-        .post(`http://localhost:5004/api/articledetail/${articleid}/record-history`, { user_id: userId })
-        .then((response) => {
-          console.log("Recorded history successfully");
-        })
-        .catch((error) => {
-          console.error("Error recording history:", error);
-        });
-    }
-  }, [articleid, userId]);
-
-  useEffect(() => {
     axios
       .get(`http://localhost:5004/api/vocabs/${articleid}`)
       .then((response) => {
@@ -127,36 +113,44 @@ function Bookdetail(match) {
   }, [articleid]);
 
   useEffect(() => {
-
     axios
       .get(`http://localhost:5004/api/articledetail/${articleid}?user_id=${userId}`)
       .then((response) => {
         setItems(response.data);
         setIsLoaded(true);
-        setBookid(response.data[0].book_id);
-        console.log("articledetailuserid",userId);
-
+        const fetchedBookId = response.data[0].book_id;
+        setBookid(fetchedBookId);
+  
         const audioData = response.data[0].article_sounddata;
-
+  
         if (audioData) {
           const audioBlob = new Blob([new Uint8Array(audioData.data)], {
             type: "audio/mpeg",
           });
           const audioUrl = URL.createObjectURL(audioBlob);
           setAudioUrl(audioUrl);
-
         }
       })
       .catch((error) => {
         console.error(error);
       });
   }, [articleid, userId]);
-
-  useEffect(() => {
-    console.log("Running useEffect to fetch article details and record history");
   
-    // ... rest of the code
-  }, [articleid, userId]);
+  useEffect(() => {
+    if (isLoaded) {
+      axios
+        .post(`http://localhost:5004/api/articledetail/${articleid}/record-history`, {
+          user_id: userId,
+          book_id: bookid,
+        })
+        .then((response) => {
+          setHistoryRecorded(true);
+        })
+        .catch((error) => {
+          console.error("Error recording history:", error);
+        });
+    }
+  }, [isLoaded, articleid, userId, bookid]);
 
   useEffect(() => {
     axios
