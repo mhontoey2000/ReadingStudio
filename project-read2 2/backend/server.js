@@ -1231,6 +1231,7 @@ app.post('/api/report', (req, res) => {
     }
   });
 });
+
 app.post('/api/updatereport', (req, res) => {
   const report_id = req.body.report_id;
   const report_status = req.body.report_status;
@@ -1341,6 +1342,7 @@ app.delete('/api/report/:id', function (req, res) {
     }
   );
 });
+
 app.get('/api/report', function (req, res) {
   connection.query(`SELECT * FROM reports`, function (err, results) {
     if (err) {
