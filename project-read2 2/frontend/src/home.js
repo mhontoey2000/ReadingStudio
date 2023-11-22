@@ -49,7 +49,7 @@ function Home() {
                   <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
                 </div>
 
-                <div className="container bc">
+                <div className="bc">
                     <div className="row">
                         {filteredItems.length === 0 ? (
                             <div className="col-12 text-center">

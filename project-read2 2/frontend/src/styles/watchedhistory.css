@@ -56,18 +56,20 @@
   }
 
 .boxoflist {
-    border: 1px solid black;
+    
     border-radius: 10px;
     margin: 10px 50px 0px 50px;
     padding: 20px;
+    border: 1px solid black;
+    overflow: hidden;
+    box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
 
 }
 
 .boxoflist:hover {
-    background-color: #b4dcfc;
-    border: 1px solid white;
-    cursor: pointer;
-    transition: 0.3s; 
+    /* background-color: #b4dcfc; */
+    transform: translateY(-0.5rem);
+    box-shadow: 0 3.2rem 6.4rem rgba(0, 0, 0, 0.06);
 }
 
 .boxhistory ul {

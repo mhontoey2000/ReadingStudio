@@ -60,7 +60,7 @@ function Bookarticle({ match }) {
           <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
         </div>
 
-        <div className="container ac">
+        <div className="ac">
           <div className="row">
             {filteredItems.length === 0 ? (
               <div className="col-12 text-center">
