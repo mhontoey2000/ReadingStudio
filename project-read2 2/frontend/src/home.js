@@ -59,7 +59,7 @@ function Home() {
                             filteredItems.map((book) => (
                                 <div className="col-6 col-md-3" key={book.book_id}>
                                     <div className="grid-item-wrapper" style={{ padding: "10px" }}>
-                                        <div className="card">
+                                        <div className="card cardhover">
                                             {book.book_imagedata || book.book_image ? (
                                                 <img className="card-img-top img-fluid simg" src={book.book_imagedata || book.book_image} alt={book.book_name} />
                                             ) : null}

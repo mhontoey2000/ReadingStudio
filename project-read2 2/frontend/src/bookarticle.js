@@ -73,7 +73,7 @@ function Bookarticle({ match }) {
                     className="grid-item-wrapper"
                     style={{ padding: "10px" }}
                   >
-                    <div className="card">
+                    <div className="card boxarhover">
                       {article.article_imagedata || article.article_images ? (
                         <img
                           className="card-img-top img-fluid simg"

@@ -95,47 +95,17 @@ section h1 {
     margin: 10px 20px;
 
 }
-/* 
-  .grid-containerh {
-    display: grid;
-    border-radius: 25px;
-    gap: 50px 0px;
-    grid-template-columns: auto auto auto auto;
-    background-color: #95cfff;
-    padding: 30px ;
-    margin: 10px 20px;
+
+.cardhover{
+  box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
+  border-radius: 11px;
+  overflow: hidden;
+  transition: all 0.4s;
+  }
+
+.cardhover:hover{
+  transform: translateY(-1.2rem);
+  box-shadow: 0 3.2rem 6.4rem rgba(0, 0, 0, 0.06);
 }
-
-
-  .grid-item {
-    height: 500px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 25px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    padding: 30px;
-    margin: 10px 30px;
-  }
-   */
-
-  /* .card-title {
-    font-size: 26px;
-    flex-grow: 0; 
-    padding-top: 10px;
-    margin: 10px;
-    text-align: center;
-  }
-  
-  .card-text {
-    font-size: 16px;
-    flex-grow: 0; 
-    text-align: start;
-  }
-  
-  .center-h6 {
-    display: flex;
-    align-items: center;
-    margin-right: 5px;
-  }
-   */
 
   
