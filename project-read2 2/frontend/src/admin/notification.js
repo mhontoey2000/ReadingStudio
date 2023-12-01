@@ -10,15 +10,19 @@ import Modal from 'react-bootstrap/Modal';
 const Notification = () => {
     const [showModal, setShowModal] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [selectedReport, setSelectedReport] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState('รอตรวจสอบ');
     const [buttonColor, setButtonColor] = useState('');
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [selectitem, setSelectitem] = useState(null);
     const [report, setReport] = useState([]);
     const [error, setError] = useState('');
     const user = localStorage.getItem('email');
-    const [bname, setBname] = useState("");
-    const [aname, setAname] = useState("");
+    const [status, setStatus] = useState("");
+    const [unpublishReason, setUnpublishReason] = useState("-");
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+  
 
     useEffect(() => {
         axios.get(`http://localhost:5004/api/report`)
@@ -33,10 +37,10 @@ const Notification = () => {
     const handleClick = (items) => {
         console.log(items.report_id);
         console.log(items.report_status);
-        if (items.report_status === 'Checked') return;
+        if (items.report_status !== 'pending') return;
         const data = {
             report_id: items.report_id,
-            report_status: 'InProgress',
+            report_status: 'pending',
         };
         axios.post('http://localhost:5004/api/updatereport', data, {
                 headers: {
@@ -51,59 +55,80 @@ const Notification = () => {
             });
     };
 
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
-    };
+    const Getth = (value) =>{
+      if(value === 'published')
+         return 'ตรวจสอบแล้ว';
+      else if(value === 'pending')
+         return 'กำลังดำเนินการ';
+      else if(value === 'deny')
+         return 'ถูกระงับ';
+        
+    }
 
-    const handleDropdownSelect = (status, color,selectedid) => {
-        setSelectedStatus(status);
-        console.log(status);
-        toggleDropdown();
-        setButtonColor(color);
-        if(selectedid === undefined)
-        return;
-        const data = {
-          report_id: selectedid,
-          report_status: status ==='ตรวจสอบแล้ว'? 'Checked' :'Banned'
+    const submitStatusChange = (event) => {
+      console.log(status);
+      event.preventDefault();
+      const data = {
+        report_id: selectitem.report_id,
+        report_status: status ==='published'? 'published' :'deny'
       };
       console.log(data);
-      axios.post('http://localhost:5004/api/updatereport', data, {
+     
+      if (status === "published" || (status === "deny" && unpublishReason !== "-")) {
+        const data1 = {
+          bookId: selectitem.bookid,
+          newStatus: status,
+          unpublishReason:
+            status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
+        };
+      console.log(data1);
+        axios
+        .post("http://localhost:5004/api/updateStatus", data1)
+        .then((response) => {
+          if (response.status === 200) {
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+        axios.post('http://localhost:5004/api/updatereport', data, {
               headers: {
                   'Content-Type': 'application/json',
               },
           })
           .then((response) => {
-              console.log(response);
+            if (response.status === 200) {
+              setShowModal(false);
+              setSuccessMessage("อัพเดทสถานะเรียบร้อย!");
+              setShowSuccessModal(true);
+            }
           })
           .catch((error) => {
-              console.error(error);
+            console.error(error);
+            setShowModal(false);
+            setErrorMessage("ไม่สามมารถอัพเดทสถานะได้");
+            setShowErrorModal(true);
           });
+         
+      } else if (status === "deny") {
+        setErrorMessage("กรุณากรอกเหตุผลที่ปฎิเสธ");
+        setShowErrorModal(true);
+      }
     };
-    const Getcolor = (value) =>{
-        // if(value === 'InProgress')
-        //     return '007BFF';
-       if(value === 'Checked')
-            return 'green';
-        else if(value === 'InProgress') 
-            return 'orange';
-        else
-            return 'red';
-        
-    }
-    const Getth = (value) =>{
-      if(value === 'Checked')
-         return 'ตรวจสอบแล้ว';
-      else if(value === 'InProgress')
-         return 'กำลังดำเนินการ';
-      else
-         return 'ระงับการเผยแพร่';
-        
-    }
-    const openModal = (report) => {
-        setSelectedReport(report);
-        setShowModal(true);
-        handleDropdownSelect(Getth(report.report_status), Getcolor(report.report_status))
-        setDropdownOpen(false);
+
+    const openStatusModal = (item) => {
+      setShowModal(true);
+      setSelectitem(item);
+    };
+
+    const handleSuccessModalOK = () => {
+      setShowSuccessModal(false);
+      window.location.reload();
+    };
+
+    const handleErrorModalOK = () => {
+      setShowErrorModal(false);
+      window.location.reload();
     };
 
     const deleteUser = (id) => {
@@ -147,8 +172,8 @@ const Notification = () => {
                                         <th scope="col" className="col-sm-2">ผู้แจ้ง</th>
                                         <th scope="col" className="col-sm-1">เวลา</th>
                                         <th scope="col" className="col-sm-1">สถานะ</th>
-                                        <th scope="col" className="col-sm-1">ดู</th>
-                                        <th scope="col" className="col-sm-1">จัดการ</th>
+                                        <th scope="col" className="col-sm-1">ดูเนื้อหา</th>
+                                        {/* <th scope="col" className="col-sm-1">จัดการ</th> */}
                                     </tr>
                                 </thead>
 
@@ -162,7 +187,32 @@ const Notification = () => {
                                                 <td className="col-sm-3">{item.report_detail}</td>
                                                 <td className="col-sm-2">{item.reporter}</td>
                                                 <td className="col-sm-1">{item.date_time}</td>
-                                                <td className="col-sm-1">{ Getth(item.report_status)}</td>
+                                                {/* <td className="col-sm-1">{ Getth(item.report_status)}</td> */}
+                                                <td className="col-sm-2">
+                                                    <Button
+                                                      className={`btn ${
+                                                        item.report_status === "pending"
+                                                          ? "btn-info"
+                                                          : item.report_status === "creating"
+                                                          ? "btn-secondary"
+                                                          : item.report_status === "finished"
+                                                          ? "btn-secondary"
+                                                          : item.report_status === "deny"
+                                                          ? "btn-danger"
+                                                          : item.report_status === "published"
+                                                          ? "btn-success"
+                                                          : "btn-secondary"
+                                                      }`}
+                                                      style={{ color: "white" }}
+                                                      onClick={() => openStatusModal(item)}
+                                                    >
+                                                      {item.report_status === "pending" && "กำลังดำเนินการ"}
+                                                      {/* {item.report_status === "creating" && "สร้างยังไม่เสร็จ"} */}
+                                                      {/* {item.report_status === "finished" && "สร้างเสร็จแล้ว"} */}
+                                                      {item.report_status === "deny" && "ถูกระงับ"}
+                                                      {item.report_status === "published" && "ตรวจสอบแล้ว"}
+                                                    </Button>
+                                                  </td>
                                                 <td className="col-sm-1">
                                                     <Link
                                                         to={{ pathname: '/Page/bookdetail', state: { article_id: item.article_id } }}
@@ -173,9 +223,9 @@ const Notification = () => {
                                                     </Link>
                                                   
                                                 </td>
-                                                <td className="col-sm-1">
+                                                {/* <td className="col-sm-1">
                                                     <Button onClick={() => openModal(item)}>จัดการ</Button>
-                                                </td>
+                                                </td> */}
                                             </tr>
                                         )
                                     })}
@@ -186,118 +236,141 @@ const Notification = () => {
                 </div>
             </section>
 
-    <Modal show={showModal} onHide={() => setShowModal(false)}>
-      <Modal.Header closeButton>
-        <Modal.Title>ข้อมูลรายงาน</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {selectedReport && (
-          <div>
-            <p>Report ID: {selectedReport.report_id}</p>
-            <p>Book ID: {selectedReport.book_id}</p>
-            <p>ชื่อบท: {selectedReport.report_articlename}</p>
-            <p>รายละเอียด: {selectedReport.report_detail}</p>
-            <p>ผู้แจ้ง: {selectedReport.reporter}</p>
-            <p>เวลา: {selectedReport.date_time}</p>
-            <p>สถานะ:
-              <div
-                onClick={toggleDropdown}
-                style={{
-                  position: 'relative',
-                  display: 'inline-block',
-                }}
+       <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ทำการยืนยัน</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectitem && (
+            <div className="table-approve">
+              <form
+                className="form-control"
+                //onSubmit={(e) => submitStatusChange(e, selectitem.book_id,selectitem.article_id)}
+                onSubmit={submitStatusChange}
               >
-                <Button
-                  style={{
-                    backgroundColor: buttonColor, // ใช้สีจาก state
-                    top: '100%',
-                    color: 'white',
-                    border: 'none',
-                    padding: '5px 10px',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    width: '150px',
-                    height: '40px',
-                  }}
-                >
-                  {selectedStatus} {dropdownOpen ? '▲' : '▼'}
-                </Button>
-                {dropdownOpen && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '100%',
-                      right: '0',
-                      width: '150px',
-                      height: '40px',
-                      color: 'white',
-                      background: 'white',
-                      border: '1px solid #ccc',
-                      borderRadius: '5px',
-                      boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-                      zIndex: '1',
+                <p style={{ textAlign: "center", margin: "10px" }}>
+                  คุณต้องการเปลี่ยนสถานะของ
+                </p>
+                <div className="mb-3 row">
+                  <label htmlFor="bookname" className="col-sm-2 col-form-label">
+                    บทความ:
+                  </label>
+                  <div className="col-sm-10">
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      disabled
+                      id="bookname"
+                      value={selectitem.book_id}
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-3 row">
+                  <label
+                    htmlFor="articlename"
+                    className="col-sm-2 col-form-label"
+                  >
+                    ตอน:
+                  </label>
+                  <div className="col-sm-10">
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      disabled
+                      id="articlename"
+                      value={selectitem.report_articlename}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-floating">
+                  <select
+                    className="form-select mb-3"
+                    id="status"
+                    required
+                    onChange={(event) => {
+                      setStatus(event.target.value);
                     }}
                   >
-                    {/* <div
-                      className="dropdown-item"
-                      style={{ background: '#007BFF', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
-                      onClick={() => handleDropdownSelect('รอตรวจสอบ', '#007BFF')}
-                    >
-                      รอตรวจสอบ
-                    </div> */}
-                    <div
-                      className="dropdown-item"
-                      style={{ background: 'green', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
-                      onClick={() => handleDropdownSelect('ตรวจสอบแล้ว', 'green',selectedReport.report_id)}
-                    >
-                      ตรวจสอบแล้ว
-                    </div>
-                    <div
-                      className="dropdown-item"
-                      style={{ background: 'red', color: 'while', padding: '5px 20px', borderRadius: '5px' }}
-                      onClick={() => handleDropdownSelect('ระงับการเผยแพร่', 'red',selectedReport.report_id)}
-                    >
-                      ระงับการเผยแพร่
-                    </div>
+                    <option value="default" hidden>
+                      {Getth(selectitem.report_status)}
+                    </option>
+                    <option value="published">ตรวจสอบแล้ว</option>
+                    <option value="deny">ระงับการเผยแพร่</option>
+                  </select>
+                  <label htmlFor="status">เลือกสถานะ:</label>
+                </div>
+
+                {status === "deny" && (
+                  <div className="mb-3" style={{ marginTop: "5px" }}>
+                    <label htmlFor="reasonforunpublish" className="form-label">
+                      เหตุผลที่ระงับการเผยแพร่
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="reasonforunpublish"
+                      rows="3"
+                      required
+                      onChange={(event) => {
+                        setUnpublishReason(event.target.value);
+                      }}
+                    ></textarea>
                   </div>
                 )}
-              </div>
-            </p>
-            <p>&nbsp;</p>
-          </div>
-        )}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowModal(false)}>
-          ปิด
-        </Button>
-        {/* <Button variant="danger" onClick={deleteUser(selectedReport.report_id)}>Delete</Button> */}
-        <Button variant="danger" onClick={() => deleteUser(selectedReport.report_id)}>ลบ</Button>
 
-      </Modal.Footer>
-    </Modal>
-        </div>
-    )
+                <div
+                  className="d-flex justify-content-between"
+                  style={{ margin: "10px 0px" }}
+                >
+                  <Button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => setShowModal(false)}
+                  >
+                    ยกเลิก
+                  </Button>
+
+                  <Button type="submit" className="btn btn-success">
+                    ตกลง
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>สำเร็จ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p style={{ textAlign: "center" }}>{successMessage}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="success" onClick={handleSuccessModalOK}>
+            ตกลง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showErrorModal} onHide={() => setShowErrorModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ไม่สำเร็จ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p style={{ textAlign: "center" }}>{errorMessage}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={handleErrorModalOK}>
+            ตกลง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
 }
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <Button
-      type="button"
-      ref={ref}
-      onClick={(e) => {
-        e.preventDefault();
-        onClick(e);
-      }}
-      style={{
-        backgroundColor: '#007BFF',
-        color: 'white',
-        border: 'none',
-        maxWidth: '150px',
-        padding: '5px 10px',
-        borderRadius: '5px',
-        cursor: 'pointer',
-      }}
-    >
-      {children}
-    </Button>
-  ));
 export default Notification;

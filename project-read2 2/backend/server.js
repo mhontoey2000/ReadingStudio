@@ -1220,7 +1220,7 @@ app.post('/api/report', (req, res) => {
     VALUES (?, ?, ?, ?,?)
   `;
 
-  connection.query(insertReportQuery, [bookid, articleid, remail, rdetail,	'InProgress'], (err, result) => {
+  connection.query(insertReportQuery, [bookid, articleid, remail, rdetail,	'pending'], (err, result) => {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Error inserting report data' });
@@ -1364,6 +1364,7 @@ app.get('/api/report', function (req, res) {
             connection.query(`SELECT * FROM book WHERE book_id = ?;`, [report.book_id], (err, book) => {
               if (!err) {
                 entry.book_id = book[0] ? book[0].book_name : "ไม่มีข้อมูล";
+                entry.bookid =report.book_id;
               }
               resolve(entry);
             });
