@@ -23,7 +23,6 @@ function Watchedhistory() {
         const articlesByDay = groupByDay(response.data);
         setWatchedArticles(articlesByDay);
         setFilteredWatchedArticles(articlesByDay);
-        console.log("sda", articlesByDay);
       })
       .catch((error) => {
         console.error(error);
@@ -143,7 +142,7 @@ function Watchedhistory() {
                 <ul>
                   {articles.map((article, index) => (
                     <li
-                      key={article.article_id}
+                      key={`${article.article_id}-${index}`}
                       className="boxoflist"
                       onClick={() => handleToPage(article.article_id)}
                     >
