@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Header from "../header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
@@ -6,6 +7,31 @@ import Searchbar from "../searchbar";
 import "../styles/adminpage.css"
 
 function Adminpage() {
+
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [userCount, setUserCount] = useState(0);
+
+  useEffect(() => {
+    // Fetch the count of new notifications from your backend
+    axios.get("http://localhost:5004/api/notificationCount")
+      .then((response) => {
+        setNotificationCount(response.data.count);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []); 
+
+  useEffect(() => {
+    axios.get("http://localhost:5004/api/userCount")
+        .then((response) => {
+          setUserCount(response.data.count);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+  }, []); 
+
   return (
     <div>
       <Header />
@@ -37,7 +63,10 @@ function Adminpage() {
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./notification"
               >
-                <i className="bi bi-bell-fill"></i> ตรวจสอบแจ้งเตือน
+                <i className="bi bi-bell-fill"></i> ตรวจสอบแจ้งเตือน{" "}
+                {notificationCount > 0 && (
+                  <span className="badge badge-danger">{notificationCount}</span>
+                )}
               </Button>
 
               <Button
@@ -48,29 +77,15 @@ function Adminpage() {
                 <i className="bi bi-book-fill"></i> จัดการบทความ
               </Button>
 
-              {/* <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./allarticleadmin"
-              >
-                <i className="bi bi-book-fill"></i> จัดการตอนของบทความ
-              </Button> */}
-
-              {/* <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./allexamadmin"
-              >
-                <i className="bi bi-file-earmark-spreadsheet-fill"></i>{" "}
-                จัดการข้อสอบ
-              </Button> */}
-
               <Button
                 type="button"
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./alluseradmin"
               >
-                <i className="bi bi-file-person-fill"></i> จัดการบัญชี
+                <i className="bi bi-file-person-fill"></i> จัดการบัญชี{" "}
+                {userCount > 0 && (
+                  <span className="badge badge-danger">{userCount}</span>
+                )}
               </Button>
 
               <Button

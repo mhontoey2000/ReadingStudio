@@ -21,3 +21,7 @@
     margin: 30px 30px 30px 30px; 
   }
    
+  .badge.badge-danger {
+    background-color: red;
+  }
+  
