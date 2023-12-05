@@ -22,6 +22,8 @@ function Reportbook() {
     const [rdetail, setRdetail] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
+    const [showSuccessReportedModal, setShowSuccessReportedModal] = useState(false);
+  
 
     // const user = JSON.parse(localStorage.getItem('email')); 
     const user = localStorage.getItem('email');
@@ -85,10 +87,21 @@ function Reportbook() {
         })
         .then((response) => {
           console.log(response);
-          setSuccessModal(true);
+          // Check if the status code is 400 (Bad Request)
+          if (response.status === 400) {
+            console.log("Error");
+            setShowSuccessReportedModal(true);
+          } else {
+            // If not 400, assume success and open the success modal
+            console.log("Success");
+            setSuccessModal(true);
+          }
         })
+
         .catch((error) => {
-          console.error(error);
+            console.log("Error1");
+            console.error(error);
+            setShowSuccessReportedModal(true);
         });
       };
     
@@ -103,12 +116,17 @@ function Reportbook() {
         history.goBack();
       }
 
+    const handleSuccessReportedModalOK = () => {
+        setShowSuccessReportedModal(false);
+        //window.location.reload();
+        history.goBack();
+      }
   return (
+
+    
     <div>
 
             <Header/>
-
-
         <section>
             <h1>รายงานหนังสือ</h1>
 
@@ -183,7 +201,6 @@ function Reportbook() {
                      
                     </div>
 
-
                 </form>
             </div>
             </div>
@@ -216,7 +233,22 @@ function Reportbook() {
             variant="primary"
             onClick={handleSuccessModalOK}
           >
-            OK
+            ตกลง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showSuccessReportedModal} onHide={() => setShowSuccessReportedModal(false)}>
+        <Modal.Header closeButton onClick={handleSuccessReportedModalOK}>
+          {/* <Modal.Title>Success</Modal.Title> */}
+        </Modal.Header>
+        <Modal.Body>คุณเคยรายงานเนื้อหานี้ไปแล้ว</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={handleSuccessReportedModalOK}
+          >
+            ปิด
           </Button>
         </Modal.Footer>
       </Modal>

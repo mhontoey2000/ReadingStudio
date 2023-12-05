@@ -1212,25 +1212,64 @@ app.get('/api/allexamadmin', function (req, res) {
   
 });
 
+// app.post('/api/report', (req, res) => {
+//   const { bookid, articleid, remail, rdetail } = req.body;
+
+//   const insertReportQuery = `
+//     INSERT INTO reports (book_id, article_id, reporter, report_detail,	report_status)
+//     VALUES (?, ?, ?, ?,?)
+//   `;
+
+//   connection.query(insertReportQuery, [bookid, articleid, remail, rdetail,	'pending'], (err, result) => {
+//     if (err) {
+//       console.error(err);
+//       res.status(500).json({ error: 'Error inserting report data' });
+//     } else {
+//       const reportId = result.insertId;
+      
+//       res.json({ message: 'Report data inserted successfully', report_id: reportId });
+//     }
+//   });
+// });
+
 app.post('/api/report', (req, res) => {
   const { bookid, articleid, remail, rdetail } = req.body;
 
-  const insertReportQuery = `
-    INSERT INTO reports (book_id, article_id, reporter, report_detail,	report_status)
-    VALUES (?, ?, ?, ?,?)
+  // Check if the reporter has already reported for this article
+  const checkReportQuery = `
+    SELECT * FROM reports
+    WHERE article_id = ? AND reporter = ? AND report_status = 'pending'
   `;
 
-  connection.query(insertReportQuery, [bookid, articleid, remail, rdetail,	'pending'], (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Error inserting report data' });
+  connection.query(checkReportQuery, [articleid, remail], (checkErr, checkResult) => {
+    if (checkErr) {
+      console.error(checkErr);
+      res.status(500).json({ error: 'Error checking existing report' });
     } else {
-      const reportId = result.insertId;
-      
-      res.json({ message: 'Report data inserted successfully', report_id: reportId });
+      // If the reporter has already reported for this article, send a response
+      if (checkResult.length > 0) {
+        res.status(400).json({ error: 'Reporter has already reported for this article' });
+      } else {
+        // If not, proceed to insert the new report
+        const insertReportQuery = `
+          INSERT INTO reports (book_id, article_id, reporter, report_detail, report_status)
+          VALUES (?, ?, ?, ?, ?)
+        `;
+
+        connection.query(insertReportQuery, [bookid, articleid, remail, rdetail, 'pending'], (insertErr, result) => {
+          if (insertErr) {
+            console.error(insertErr);
+            res.status(500).json({ error: 'Error inserting report data' });
+          } else {
+            const reportId = result.insertId;
+            res.json({ message: 'Report data inserted successfully', report_id: reportId });
+          }
+        });
+      }
     }
   });
 });
+
 
 app.post('/api/updatereport', (req, res) => {
   const report_id = req.body.report_id;
@@ -1379,6 +1418,57 @@ app.get('/api/report', function (req, res) {
   });
 });
 
+app.get('/api/reportnotification', function (req, res) {
+  connection.query(`SELECT * FROM reports`, function (err, results) {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ message: 'Failed to Find Report' });
+    } else {
+      const reportdata = results.map((report) => {
+        return new Promise((resolve, reject) => {
+          const entry = {
+            ...report,
+            report_articlename: "ไม่มีข้อมูล",
+            book_id: "ไม่มีข้อมูล",
+            reporter: "ไม่มีข้อมูล",
+          };
+
+          connection.query(`SELECT * FROM article WHERE article_id = ?;`, [report.article_id], (err, article) => {
+            if (!err) {
+              entry.report_articlename = article[0] ? article[0].article_name : "ไม่มีข้อมูล";
+            }
+            connection.query(`SELECT * FROM book WHERE book_id = ?;`, [report.book_id], (err, book) => {
+              if (!err) {
+                entry.book_id = book[0] ? book[0].book_name : "ไม่มีข้อมูล";
+                entry.bookid = report.book_id;
+                entry.reporter = report.reporter;  // เพิ่ม line นี้
+              }
+              resolve(entry);
+            });
+          });
+        });
+      });
+
+      Promise.all(reportdata).then((completedData) => {
+        const bookIdReporters = completedData.reduce((acc, report) => {
+          if (!acc[report.bookid]) {
+            acc[report.bookid] = new Set();
+          }
+          acc[report.bookid].add(report.reporter);
+          return acc;
+        }, {});
+      
+        const validBookIds = Object.keys(bookIdReporters).filter(bookid => bookIdReporters[bookid].size >= 3);
+      
+        const filteredData = completedData.filter((report) => {
+          return validBookIds.includes(report.bookid) && bookIdReporters[report.bookid].has(report.reporter);
+        });
+      
+        res.json(filteredData);
+      });
+    }
+  });
+});
 app.get('/api/notificationCount', function (req, res) {
   connection.query(`SELECT COUNT(*) as count FROM reports WHERE report_status = 'pending'`, function (err, results) {
     if (err) {

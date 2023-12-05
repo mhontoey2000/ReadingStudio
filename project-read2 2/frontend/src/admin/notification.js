@@ -25,7 +25,7 @@ const Notification = () => {
   
 
     useEffect(() => {
-        axios.get(`http://localhost:5004/api/report`)
+        axios.get(`http://localhost:5004/api/reportnotification`)
             .then((response) => {
                 setReport(response.data);
             })
