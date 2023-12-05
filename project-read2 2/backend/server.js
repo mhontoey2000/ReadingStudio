@@ -1379,29 +1379,6 @@ app.get('/api/report', function (req, res) {
   });
 });
 
-app.get('/api/notificationCount', function (req, res) {
-  connection.query(`SELECT COUNT(*) as count FROM reports WHERE report_status = 'pending'`, function (err, results) {
-    if (err) {
-      console.log(err);
-      res.status(500).json({ message: 'Failed to fetch notification count' });
-    } else {
-      res.json({ count: results[0].count });
-    }
-  });
-});
-
-app.get('/api/userCount', function (req, res) {
-  connection.query(`SELECT COUNT(*) as count FROM user WHERE approval_status = 'pending'`, function (err, results) {
-    if (err) {
-      console.log(err);
-      res.status(500).json({ message: 'Failed to fetch notification count' });
-    } else {
-      res.json({ count: results[0].count });
-    }
-  });
-});
-
-
 
 const fs = require('fs');
 const path = require('path');

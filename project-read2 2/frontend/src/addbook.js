@@ -11,7 +11,6 @@ import {
   convertImageToBase64,
 } from "./config";
 import Modal from "react-bootstrap/Modal";
-import ReCAPTCHA from "react-google-recaptcha";
 
 function Addbook() {
   const [bookName, setBookName] = useState("");
@@ -21,8 +20,6 @@ function Addbook() {
   const history = useHistory();
   const [showModal, setShowModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
-  const [captchaCode, setCaptchaCode] = useState("");
-  const [userEnteredCode, setUserEnteredCode] = useState("");
 
   // const addBook = async () => {
   //     // Create a FormData object to send the data as a multipart/form-data request
@@ -61,28 +58,10 @@ function Addbook() {
   //     }
   //   };
 
-  useEffect(() => {
-    generateCaptchaCode();
-  }, []);
-
-  const generateCaptchaCode = () => {
-    // Generate a random code (you can use a library for more complexity)
-    const randomCode = Math.random().toString(36).substring(7).toUpperCase();
-    // Set the generated code to the state
-    setCaptchaCode(randomCode);
-  };
-
   const handleSubmit = (e) => {
+    // Show the confirmation modal
+    setShowModal(true);
     e.preventDefault();
-
-    // Check if the entered code matches the generated code
-    if (userEnteredCode === captchaCode) {
-      // Proceed with the form submission logic
-      setShowModal(true);
-    } else {
-      // Display an error message or take appropriate action
-      alert("CAPTCHA code does not match. Please try again.");
-    }
   };
 
   const handleConfirmed = () => {
@@ -155,10 +134,7 @@ function Addbook() {
 
               <div className="mb-3">
                 <label className="form-label" htmlFor="bookimage">
-                  รูปหน้าปกบทความ{" "}
-                  <cite style={{ color: "red" }}>
-                    *ขนาดรูปที่แนะนำคือ 500x500
-                  </cite>
+                  รูปหน้าปกบทความ <cite style={{color:"red"}}>*ขนาดรูปที่แนะนำคือ 500x500</cite>
                 </label>
                 <input
                   type="file"
@@ -169,13 +145,13 @@ function Addbook() {
                   onChange={handleImageChange}
                 />
                 <div className="d-flex justify-content-center align-items-center">
-                  {bookImage && (
-                    <img
-                      src={URL.createObjectURL(bookImage)}
-                      alt="Uploaded Image"
-                      style={{ maxWidth: "100%", maxHeight: "200px" }}
-                    />
-                  )}
+                {bookImage && (
+                  <img
+                    src={URL.createObjectURL(bookImage)}
+                    alt="Uploaded Image"
+                    style={{ maxWidth: "100%", maxHeight: "200px" }}
+                  />
+                )}
                 </div>
               </div>
 
@@ -198,23 +174,6 @@ function Addbook() {
                 </span>
               </div>
 
-              <div className="mb-3">
-                <label htmlFor="captcha">CAPTCHA</label>
-                <div className="d-flex align-items-center">
-                  <span className="mr-2">{captchaCode}</span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="captcha"
-                    placeholder="Enter the CAPTCHA code"
-                    required
-                    onChange={(event) => {
-                      setUserEnteredCode(event.target.value.toUpperCase());
-                    }}
-                  />
-                </div>
-              </div>
-
               <div className="btn-containerr">
                 <div className="btn-group me-2">
                   <Button
@@ -226,7 +185,10 @@ function Addbook() {
                   </Button>
                 </div>
                 <div className="btn-group me-2">
-                  <Button className="btn1 btn-primary" type="submit">
+                  <Button
+                    className="btn1 btn-primary"
+                    type="submit" 
+                  >
                     ยืนยัน
                   </Button>
                 </div>
