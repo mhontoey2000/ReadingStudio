@@ -23,6 +23,7 @@ function Addbook() {
   const [successModal, setSuccessModal] = useState(false);
   const [captchaCode, setCaptchaCode] = useState("");
   const [userEnteredCode, setUserEnteredCode] = useState("");
+  const [errorModal, setErrorModal] = useState(false);
 
   // const addBook = async () => {
   //     // Create a FormData object to send the data as a multipart/form-data request
@@ -80,8 +81,9 @@ function Addbook() {
       // Proceed with the form submission logic
       setShowModal(true);
     } else {
-      // Display an error message or take appropriate action
-      alert("CAPTCHA code does not match. Please try again.");
+      setErrorModal(true);
+      generateCaptchaCode();
+      setUserEnteredCode("");
     }
   };
 
@@ -199,14 +201,15 @@ function Addbook() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="captcha">CAPTCHA</label>
+                <label htmlFor="captcha" style={{fontWeight:"bold",marginBottom:"10px"}}>CAPTCHA</label>
                 <div className="d-flex align-items-center">
-                  <span className="mr-2">{captchaCode}</span>
+                  <span className="mr-2" style={{marginRight:"10px"}}>{captchaCode}</span>
                   <input
+                    key={captchaCode} 
                     type="text"
                     className="form-control"
                     id="captcha"
-                    placeholder="Enter the CAPTCHA code"
+                    placeholder="กรุณากรอกรหัส CAPTCHA"
                     required
                     onChange={(event) => {
                       setUserEnteredCode(event.target.value.toUpperCase());
@@ -263,6 +266,18 @@ function Addbook() {
         <Modal.Footer>
           <Button variant="primary" onClick={handleSuccessModalOK}>
             ตกลง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={errorModal} onHide={() => setErrorModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ไม่สำเร็จ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>รหัสไม่ถูกต้อง กรุณาลองอีกครั้ง</Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => setErrorModal(false)}>
+            ปิด
           </Button>
         </Modal.Footer>
       </Modal>
