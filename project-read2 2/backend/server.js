@@ -576,6 +576,8 @@ app.post('/api/articledetail/:id/record-history', (req, res) => {
      );
  });
 
+ 
+
 
  app.get('/api/user', function (req, res) {
   connection.query(
@@ -1418,6 +1420,58 @@ app.get('/api/report', function (req, res) {
   });
 });
 
+// app.get('/api/reportnotification', function (req, res) {
+//   connection.query(`SELECT * FROM reports`, function (err, results) {
+//     if (err) {
+//       console.log(err);
+//       res.status(500).json({ message: 'Failed to Find Report' });
+//     } else {
+//       const reportdata = results.map((report) => {
+//         return new Promise((resolve, reject) => {
+//           const entry = {
+//             ...report,
+//             report_articlename: "ไม่มีข้อมูล",
+//             book_id: "ไม่มีข้อมูล",
+//             reporter: "ไม่มีข้อมูล",
+//           };
+
+//           connection.query(`SELECT * FROM article WHERE article_id = ?;`, [report.article_id], (err, article) => {
+//             if (!err) {
+//               entry.report_articlename = article[0] ? article[0].article_name : "ไม่มีข้อมูล";
+//             }
+//             connection.query(`SELECT * FROM book WHERE book_id = ?;`, [report.book_id], (err, book) => {
+//               if (!err) {
+//                 entry.book_id = book[0] ? book[0].book_name : "ไม่มีข้อมูล";
+//                 entry.bookid = report.book_id;
+//                 entry.reporter = report.reporter;  // เพิ่ม line นี้
+//               }
+//               resolve(entry);
+//             });
+//           });
+//         });
+//       });
+
+//       Promise.all(reportdata).then((completedData) => {
+//         const bookIdReporters = completedData.reduce((acc, report) => {
+//           if (!acc[report.bookid]) {
+//             acc[report.bookid] = new Set();
+//           }
+//           acc[report.bookid].add(report.reporter);
+//           return acc;
+//         }, {});
+      
+//         const validBookIds = Object.keys(bookIdReporters).filter(bookid => bookIdReporters[bookid].size >= 3);
+      
+//         const filteredData = completedData.filter((report) => {
+//           return validBookIds.includes(report.bookid) && bookIdReporters[report.bookid].has(report.reporter);
+//         });
+      
+//         res.json(filteredData);
+//       });
+//     }
+//   });
+// });
+
 app.get('/api/reportnotification', function (req, res) {
   connection.query(`SELECT * FROM reports`, function (err, results) {
     if (err) {
@@ -1441,7 +1495,7 @@ app.get('/api/reportnotification', function (req, res) {
               if (!err) {
                 entry.book_id = book[0] ? book[0].book_name : "ไม่มีข้อมูล";
                 entry.bookid = report.book_id;
-                entry.reporter = report.reporter;  // เพิ่ม line นี้
+                entry.reporter = report.reporter;
               }
               resolve(entry);
             });
@@ -1450,25 +1504,13 @@ app.get('/api/reportnotification', function (req, res) {
       });
 
       Promise.all(reportdata).then((completedData) => {
-        const bookIdReporters = completedData.reduce((acc, report) => {
-          if (!acc[report.bookid]) {
-            acc[report.bookid] = new Set();
-          }
-          acc[report.bookid].add(report.reporter);
-          return acc;
-        }, {});
-      
-        const validBookIds = Object.keys(bookIdReporters).filter(bookid => bookIdReporters[bookid].size >= 3);
-      
-        const filteredData = completedData.filter((report) => {
-          return validBookIds.includes(report.bookid) && bookIdReporters[report.bookid].has(report.reporter);
-        });
-      
-        res.json(filteredData);
+        res.json(completedData);
       });
     }
   });
 });
+
+
 app.get('/api/notificationCount', function (req, res) {
   connection.query(`SELECT COUNT(*) as count FROM reports WHERE report_status = 'pending'`, function (err, results) {
     if (err) {
@@ -1832,4 +1874,51 @@ app.post('/api/updatebookstatus', (req, res) => {
       res.status(200).send('Book status updated to "published" successfully');
     }
   });
+});
+
+// app.post('/api/examhistory', (req, res) => {
+//   const {  option_id, question_id, user_id, watchedexam_at} = req.body;
+//   console.log(option_id);
+//   console.log(question_id);
+//   console.log(user_id);
+//   console.log(watchedexam_at);
+
+//   connection.query("INSERT INTO examhistory (option_id, question_id, user_id, watchedexam_at) VALUES (?, ?, ?, ?)", 
+//    [option_id, question_id, user_id, watchedexam_at],
+//   (err, result) => {
+//     if (err) {
+//         console.error('Error adding book:', err);
+//         res.status(500).json({ error: 'Error adding book' });
+//     } else {
+//         console.log('Book added successfully');
+//         res.status(200).json({ message: 'Book added successfully' });
+//     }
+//     });
+//   });
+
+app.post('/api/examhistory', upload.none(), (req, res) => {
+  // ดึงข้อมูลจาก FormData
+  const submittedAnswers = req.body.submittedAnswers;
+  const examDetails = JSON.parse(req.body.examDetails); // แปลง JSON string เป็น Object
+  const articleid = req.body.articleid;
+
+  console.log('Submitted Answers:', submittedAnswers);
+  console.log('Exam Details:', examDetails);
+  console.log('Article ID:', articleid);
+
+  // connection.query("INSERT INTO examhistory (option_id, question_id, user_id, watchedexam_at) VALUES (?, ?, ?, ?)", 
+  //  [option_id, question_id, user_id, watchedexam_at],
+  // (err, result) => {
+  //   if (err) {
+  //       console.error('Error adding book:', err);
+  //       res.status(500).json({ error: 'Error adding book' });
+  //   } else {
+  //       console.log('Book added successfully');
+  //       res.status(200).json({ message: 'Book added successfully' });
+  //   }
+  //   });
+
+
+  // ส่งคำตอบกลับ
+  // res.status(200).json({ message: 'Data received successfully' });
 });
