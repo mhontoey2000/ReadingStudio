@@ -1,27 +1,71 @@
-
 .custom-button {
-    background-color: #007bff; 
-    color: #fff; 
-    padding: 10px;
-    margin: 10px; 
-    border-radius: 15px; 
-    align-items: center;
-    text-align: center;
-  }
-   
-  .fga{
-    background-color: white;
-    display: block;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border-radius: 25px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-    padding: 30px 30px 30px 30px;
-    margin: 30px 30px 30px 30px; 
-  }
-   
-  .badge.badge-danger {
-    background-color: red;
-  }
-  
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 15px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width: 300px;
+  height: 150px;
+}
+
+.custom-button div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.custom-button i {
+  margin-bottom: 10px; /* Adjust as needed to create space between icon and text */
+}
+
+.fga {
+  background-color: white;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 25px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  padding: 30px 30px 30px 30px;
+  margin: 30px 30px 30px 30px;
+}
+
+.badge.badge-danger {
+  background-color: red;
+  margin-left: 10px;
+}
+
+.custom-icon {
+  font-size: 55px;
+  margin-right: 10px;
+}
+
+.text-in-box{
+  text-align: left;
+  padding-left: 20px;
+  margin: 20px;
+  color: black;
+}
+.box-container {
+  background-color: white;
+  border-radius: 10px;
+  margin: 10px 50px 0px 50px;
+  padding: 20px;
+  box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.15);
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+}
+
+.text-in-content{
+  text-align: center;
+}
+
+.box-addbook, .box-manage{
+  padding-bottom: 20px;
+}

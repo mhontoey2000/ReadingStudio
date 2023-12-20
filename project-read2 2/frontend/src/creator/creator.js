@@ -22,36 +22,35 @@ function Creator() {
   return (
     <div>
       <Header />
+
       <section>
-        <h1 className="text-center">Creator</h1>
+        <h1 className="text-center">เมนูของผู้สร้าง</h1>
+
         <div className="fgc">
-          <div className="d-flex justify-content-center">
-            {" "}
-            {/* Center-align the buttons */}
+          
             {["approved"].includes(status) && (
-              <div className="d-flex">
-                {" "}
-                {/* Wrap buttons in a d-flex container */}
-                <div className="mx-2">
+              <div className="box-addbook-c">
+                <h4 className="text-in-box">เพิ่มบทความ</h4>
+              <div className="btn-toolbar d-flex justify-content-center custom-item-box">
+                
                   <Button
                     type="button"
-                    className="btn btn-primary btn-lg text-truncate custom-button"
+                    className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                     href="./addbook"
                   >
-                    <i className="bi bi-file-earmark-plus-fill"></i>{" "}
+                    <i className="bi bi-file-earmark-plus-fill custom-icon"></i>
                     1.สร้างบทความ
                   </Button>
-                </div>
-                <div className="mx-2">
+
                   <Button
                     type="button"
-                    className="btn btn-primary btn-lg text-truncate custom-button"
+                    className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                     href="./articlecreator"
                   >
-                    <i className="bi bi-file-earmark-plus-fill"></i>{" "}
+                    <i className="bi bi-file-earmark-plus-fill custom-icon"></i>
                     2.สร้างตอนของบทความ
                   </Button>
-                </div>
+                
                 {/* <Button
                   type="button"
                   className="btn btn-primary btn-lg text-truncate custom-button"
@@ -60,26 +59,32 @@ function Creator() {
                   <i className="bi bi-file-earmark-plus-fill"></i> 3.เผยแพร่บทความ
                 </Button> */}
               </div>
+              </div>
             )}
-            <div className="mx-2">
-              <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate custom-button"
-                href="./allbookcreator"
-              >
-                <i className="bi bi-book-fill"></i> บทความของฉัน
-              </Button>
-            </div>
-            <div className="mx-2">
-              <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate custom-button"
-                href="./notificationcreator"
-              >
-                <i className="bi bi-envelope-fill"></i> แจ้งเตือน
-              </Button>
-            </div>
-          </div>
+
+            <div className="box-manage-c">
+              <h4 className="text-in-box">จัดการ</h4>
+              <div className="btn-toolbar d-flex justify-content-center custom-item-box">
+                
+                  <Button
+                    type="button"
+                    className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
+                    href="./allbookcreator"
+                  >
+                    <i className="bi bi-book-fill custom-icon"></i> บทความของฉัน
+                  </Button>
+                
+                  <Button
+                    type="button"
+                    className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
+                    href="./notificationcreator"
+                  >
+                    <i className="bi bi-envelope-fill custom-icon"></i> แจ้งเตือน
+                  </Button>
+                
+              </div>
+              </div>
+          
         </div>
       </section>
     </div>

@@ -37,17 +37,20 @@ function Adminpage() {
       <Header />
 
       <section>
-        <h1>ADMIN</h1>
+        <h1>เมนูของแอดมิน</h1>
 
           <div className="fga"> 
-            <div className="btn-toolbar d-flex justify-content-center">
-              
-            <Button
+
+            <div className="box-addbook">
+              <h4 className="text-in-box">เพิ่มบทความ</h4>
+
+              <div className="btn-toolbar d-flex justify-content-center custom-item-box">
+              <Button
                 type="button"
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./addbook"
               >
-                <i className="bi bi-file-earmark-plus-fill"></i> 1.สร้างบทความ
+                <i className="bi bi-file-earmark-plus-fill custom-icon"></i> 1.สร้างบทความ
               </Button>
 
               <Button
@@ -55,46 +58,54 @@ function Adminpage() {
                 className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
                 href="./toaddarticleadmin"
               >
-                <i className="bi bi-file-earmark-plus-fill"></i> 2.สร้างตอนของบทความ
+                  <i className="bi bi-file-earmark-plus-fill custom-icon"></i> 2.สร้างตอนของบทความ
               </Button>
+              </div>
 
-              <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./notification"
-              >
-                <i className="bi bi-bell-fill"></i> ตรวจสอบแจ้งเตือน{" "}
-                {notificationCount > 0 && (
-                  <span className="badge badge-danger">{notificationCount}</span>
-                )}
-              </Button>
+            </div>
 
-              <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./allbookadmin"
-              >
-                <i className="bi bi-book-fill"></i> จัดการบทความ
-              </Button>
+            <div className="box-manage">
+              <h4 className="text-in-box">จัดการ</h4>
+              <div className="btn-toolbar d-flex justify-content-center custom-item-box">
 
-              <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./alluseradmin"
-              >
-                <i className="bi bi-file-person-fill"></i> จัดการบัญชี{" "}
-                {userCount > 0 && (
-                  <span className="badge badge-danger">{userCount}</span>
-                )}
-              </Button>
+                <Button
+                  type="button"
+                  className="btn btn-primary btn-lg mx-2 custom-button"
+                  href="./notification"
+                >
+                  <i className="bi bi-bell-fill custom-icon"></i> ตรวจสอบแจ้งเตือน{" "}
+                  {notificationCount > 0 && (
+                    <span className="badge badge-danger">{notificationCount}</span>
+                  )}
+                </Button>
 
-              <Button
-                type="button"
-                className="btn btn-primary btn-lg text-truncate mx-2 custom-button"
-                href="./forapprovebook"
-              >
-                <i className="bi bi-file-person-fill"></i> กลั่นกรองบทความ
-              </Button>
+                <Button
+                  type="button"
+                  className="btn btn-primary btn-lg mx-2 custom-button"
+                  href="./allbookadmin"
+                >
+                  <i className="bi bi-book-fill custom-icon"></i> จัดการบทความ
+                </Button>
+
+                <Button
+                  type="button"
+                  className="btn btn-primary btn-lg mx-2 custom-button"
+                  href="./alluseradmin"
+                >
+                  <i className="bi bi-file-person-fill custom-icon"></i> จัดการบัญชี{" "}
+                  {userCount > 0 && (
+                    <span className="badge badge-danger">{userCount}</span>
+                  )}
+                </Button>
+
+                <Button
+                  type="button"
+                  className="btn btn-primary btn-lg mx-2 custom-button"
+                  href="./forapprovebook"
+                >
+                  <i className="bi bi-file-person-fill custom-icon"></i> กลั่นกรองบทความ
+                </Button>
+              </div>
             </div>
           </div>
 
