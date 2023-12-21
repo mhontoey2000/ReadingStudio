@@ -460,25 +460,12 @@ app.post('/api/updateLeveltext', (req, res) => {
       }
     );
   });
+
   app.get('/api/getarticleban/:id', function (req, res) {
-    const book_id = req.params.id;
+     const book_id = req.params.id;
   
     connection.query(
-      `SELECT article.*, reports.report_status
-      FROM article
-      LEFT JOIN reports ON article.article_id = reports.article_id
-      WHERE article.book_id = ?
-      AND (
-        reports.report_status IS NULL
-        OR (
-          SELECT COUNT(*) FROM reports AS r
-          WHERE r.article_id = article.article_id
-          AND r.report_status = 'Banned'
-        ) = 0
-      )
-      GROUP BY article.article_id
-      HAVING COUNT(reports.article_id) <= 2;`,
-
+      `SELECT * FROM article WHERE book_id = ?;`,
       [book_id],
       function(err, results) {
         if (err) {
@@ -811,6 +798,39 @@ app.get('/api/watchedhistory', (req, res) => {
     }
   );
 });
+app.get('/api/examhistory', (req, res) => {
+  const user_id = req.query.user_id;
+  console.log(user_id);
+ 
+  connection.query(
+    `SELECT a.article_id, a.article_name, b.book_name, h.submittedAnswers, h.watched_at, a.article_imagedata
+    FROM examhistory h
+    JOIN article a ON h.article_id = a.article_id
+    JOIN book b ON h.book_id = b.book_id
+    WHERE h.user_id = ?
+    ORDER BY h.watched_at DESC`,
+    [user_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Error retrieving reading examhistory' });
+      } else {
+       console.log(result);
+        const articlesWithImages = result.map((article) => {
+          // Convert blob to base64
+          const img = helper.convertBlobToBase64(article.article_imagedata);
+          return {
+            ...article,
+            article_imagedata: img,
+          };
+        });
+
+        res.json(articlesWithImages);
+      }
+    }
+  );
+});
+
 
 app.put('/api/userdata', (req, res) => {
   const name = req.body.user_name;
@@ -1899,26 +1919,29 @@ app.post('/api/updatebookstatus', (req, res) => {
 app.post('/api/examhistory', upload.none(), (req, res) => {
   // ดึงข้อมูลจาก FormData
   const submittedAnswers = req.body.submittedAnswers;
-  const examDetails = JSON.parse(req.body.examDetails); // แปลง JSON string เป็น Object
   const articleid = req.body.articleid;
+  const bookid = req.body.bookid;
+  const userId = req.body.userId;
 
   console.log('Submitted Answers:', submittedAnswers);
-  console.log('Exam Details:', examDetails);
   console.log('Article ID:', articleid);
+  console.log('User ID:', userId);
+  console.log('bookid ID:', bookid);
+  connection.query("INSERT INTO examhistory (submittedAnswers, article_id, user_id, book_id) VALUES (?, ?, ?, ?)", 
+    [submittedAnswers, articleid, userId, bookid],
+    (err, result) => {
+      if (err) {
+        console.error('Error adding book:', err);
+        res.status(500).json({ error: 'Error adding book' });
+      } else {
+        console.log('Book added successfully');
+        res.status(200).json({ message: 'Book added successfully' });
+      }
+    });
+});
 
-  // connection.query("INSERT INTO examhistory (option_id, question_id, user_id, watchedexam_at) VALUES (?, ?, ?, ?)", 
-  //  [option_id, question_id, user_id, watchedexam_at],
-  // (err, result) => {
-  //   if (err) {
-  //       console.error('Error adding book:', err);
-  //       res.status(500).json({ error: 'Error adding book' });
-  //   } else {
-  //       console.log('Book added successfully');
-  //       res.status(200).json({ message: 'Book added successfully' });
-  //   }
-  //   });
 
 
   // ส่งคำตอบกลับ
-  // res.status(200).json({ message: 'Data received successfully' });
-});
+  //  res.status(200).json({ message: 'Data received successfully' });
+// });

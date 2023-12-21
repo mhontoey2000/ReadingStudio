@@ -73,17 +73,38 @@ function Bookdetail(match) {
 
     if (unansweredQuestions.length > 0) {
       handleShowModal(); // Show the modal
-    } else {
-      // All questions have been answered, navigate to the score page
-      history.push({
-        pathname: "/Page/score",
-        state: {
-          submittedAnswers: submittedAnswers,
-          examDetails: qitems,
-          articleid: articleid,
-        },
-      });
+
+    }else {
+      console.log('4');
+      
+      // สร้าง FormData object
+      const formData = new FormData();
+      formData.append('submittedAnswers', submittedAnswers);
+      // formData.append('examDetails', JSON.stringify(qitems)); // แปลง qitems เป็น JSON string
+      formData.append('bookid', bookid);
+      formData.append('articleid', articleid);
+      formData.append('userId', userId );
+    
+      // ทำการ HTTP POST ด้วย FormData
+      axios.post(`http://localhost:5004/api/examhistory`, formData)
+        .then((response) => {
+          // setHistoryRecorded(true);
+    
+          // All questions have been answered, navigate to the score page
+          history.push({
+            pathname: "/Page/score",
+            state: {
+              submittedAnswers: submittedAnswers,
+              examDetails: qitems,
+              articleid: articleid,
+            },
+          });
+        })
+        .catch((error) => {
+          console.error("Error recording history:", error);
+        });
     }
+    
   };
   const handleButtonClick = (divToShow) => {
     setVisibleDiv(divToShow);

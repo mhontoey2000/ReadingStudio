@@ -10,16 +10,30 @@ import Button from "react-bootstrap/Button";
 function Watchedhistory() {
   const user_id = localStorage.getItem("user_id");
   const [watchedArticles, setWatchedArticles] = useState([]);
+  const [examHistory, setExamHistory] = useState([]); // เพิ่ม state สำหรับประวัติการทำข้อสอบ
   const history = useHistory();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredWatchedArticles, setFilteredWatchedArticles] = useState([]);
+  const [filteredExamHistory, setFilteredExamHistory] = useState([]); // เพิ่ม state สำหรับประวัติการทำข้อสอบ
   const [activeMenu, setActiveMenu] = useState("watched");
 
   useEffect(() => {
+    // ดึงข้อมูลประวัติการทำข้อสอบ
+    axios
+      .get(`http://localhost:5004/api/examhistory?user_id=${user_id}`)
+      .then((response) => {
+        const examsByDay = groupByDay(response.data);
+        setExamHistory(examsByDay);
+        setFilteredExamHistory(examsByDay);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    // ดึงข้อมูลประวัติการดู
     axios
       .get(`http://localhost:5004/api/watchedhistory?user_id=${user_id}`)
       .then((response) => {
-        // Organize watched articles by day
         const articlesByDay = groupByDay(response.data);
         setWatchedArticles(articlesByDay);
         setFilteredWatchedArticles(articlesByDay);
@@ -69,7 +83,25 @@ function Watchedhistory() {
       state: { article_id: articleId },
     });
   };
-
+  const handleToPageExam = (exam) => {
+      axios
+        .get(`http://localhost:5004/api/exam/${exam.article_id}`)
+        .then((response) => {
+          let tempArr = response.data;
+          history.push({
+            pathname: "/Page/score",
+            state: {
+              submittedAnswers: exam.submittedAnswers.split(',').map(Number),
+              examDetails: tempArr,
+              articleid: exam.article_id,
+            },
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+   
+  };
   useEffect(() => {
     // Filter watched articles based on the search term
     const filteredArticles = watchedArticlesFilter(searchTerm);
@@ -188,12 +220,53 @@ function Watchedhistory() {
           </div>
         )}
 
-        {activeMenu === "exam" && (
-          <div className="menumidhisexam">
+      {activeMenu === "exam" && (
+          <div className="menumidhistory">
             <h1 className="text-left">ประวัติการทำข้อสอบ</h1>
+            <div style={{ alignItems: "center", margin: "20px" }}>
+              <Searchbar onSearch={(term) => setSearchTerm(term)} />
+            </div>
+            {Object.entries(filteredExamHistory).map(([day, exams]) => (
+              <div style={{ marginLeft: "50px", padding: "10px" }} key={day}>
+                <div className="">
+                  <h4 style={{ padding: "20px" }}>{day}</h4>
+                </div>
+                <ul>
+                  {exams.map((exam, index) => (
+                    <li
+                      key={`${exam.article_id}-${index}`}
+                      className="boxoflist"
+                      onClick={() => handleToPageExam(exam)}
+                    >
+                      <div className="flex-container">
+                        <div className="left-content">
+                          <div style={{ display: "flex" }}>
+                            <p style={{ fontWeight: "bold", marginRight: "5px" }}>
+                              ชื่อข้อสอบ:
+                            </p>
+                            <p>{exam.article_name}</p>
+                          </div>
+                          {/* (ตามความเหมาะสมในโค้ดของคุณ) */}
+                        </div>
+                        <div className="text-center right-content">
+                          <img
+                            className="imgsize"
+                            src={exam.article_imagedata || exam.article_images}
+                            alt="Exam"
+                          />
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            {Object.keys(filteredExamHistory).length === 0 && (
+              <p>ไม่มีรายการข้อสอบที่ค้นหา</p>
+            )}
           </div>
         )}
-
         {activeMenu === "watched" && (
           <div className="menuright">
             <Button
