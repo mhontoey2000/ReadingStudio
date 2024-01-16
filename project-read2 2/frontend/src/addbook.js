@@ -24,61 +24,40 @@ function Addbook() {
   const [captchaCode, setCaptchaCode] = useState("");
   const [userEnteredCode, setUserEnteredCode] = useState("");
   const [errorModal, setErrorModal] = useState(false);
-
-  // const addBook = async () => {
-  //     // Create a FormData object to send the data as a multipart/form-data request
-  //     try{
-  //     // const data = {
-  //     //   book_name: bookName,
-  //     //   book_detail: bookDetail,
-  //     //   book_image: bookImage ? await convertImageToBase64(bookImage) : null
-  //     // };
-  //     // console.log(data.book_image)
-  //     const formData = new FormData();
-  //       formData.append('book_name', bookName);
-  //       formData.append('book_detail', bookDetail);
-  //       formData.append('book_image', bookImage);
-  //       formData.append('book_creator',user);
-  //     // Send a POST request to the backend API to add the book
-  //     apiClient
-  //       .post('api/addbook', formData) // Replace '/api/addbook' with your actual API endpoint
-  //       .then((response) => {
-  //         // Handle a successful response here (e.g., show a success message)
-  //         alert('Book added successfully');
-  //         console.log('Book added successfully');
-  //         // Optionally, you can clear the input fields and image after adding the book
-  //         setBookName('');
-  //         setBookDetail('');
-  //         setBookImage(null);
-  //       })
-  //       .catch((error) => {
-  //         // Handle errors here (e.g., show an error message)
-  //         console.error('Error adding book:', error);
-  //       });
-  //     }
-  //     catch(err)
-  //     {
-  //       console.log(err);
-  //     }
-  //   };
+  const [captchaBackgroundColor, setCaptchaBackgroundColor] = useState("#")
+  const [captchaTextColor, setCaptchaTextColor] = useState("#FFFFFF");
 
   useEffect(() => {
     generateCaptchaCode();
   }, []);
 
   const generateCaptchaCode = () => {
-    // Generate a random code (you can use a library for more complexity)
     const randomCode = Math.random().toString(36).substring(7).toUpperCase();
-    // Set the generated code to the state
+    const randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+    const complementaryTextColor = calculateComplementaryColor(randomColor);
     setCaptchaCode(randomCode);
+    setCaptchaBackgroundColor(randomColor);
+    setCaptchaTextColor(complementaryTextColor);
+  };
+
+  const calculateComplementaryColor = (color) => {
+    // Function to calculate complementary color
+    const hex = color.replace(/^#/, '');
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+
+    const complementaryR = 255 - r;
+    const complementaryG = 255 - g;
+    const complementaryB = 255 - b;
+
+    return `rgb(${complementaryR}, ${complementaryG}, ${complementaryB})`;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if the entered code matches the generated code
     if (userEnteredCode === captchaCode) {
-      // Proceed with the form submission logic
       setShowModal(true);
     } else {
       setErrorModal(true);
@@ -88,11 +67,8 @@ function Addbook() {
   };
 
   const handleConfirmed = () => {
-    // Close the confirmation modal
     setShowModal(false);
 
-    // Now, proceed to add the book
-    // Create a FormData object to send the data as a multipart/form-data request
     const formData = new FormData();
     formData.append("book_name", bookName);
     formData.append("book_detail", bookDetail);
@@ -200,10 +176,21 @@ function Addbook() {
                 </span>
               </div>
 
-              <div className="mb-3">
+              <div className="mb-3 d-flex flex-column align-items-center">
                 <label htmlFor="captcha" style={{fontWeight:"bold",marginBottom:"10px"}}>CAPTCHA</label>
-                <div className="d-flex align-items-center">
-                  <span className="mr-2" style={{marginRight:"10px"}}>{captchaCode}</span>
+                <div className="d-flex flex-column align-items-center">
+                  <span className="mr-2" 
+                    style={{
+                      marginBottom:"10px",
+                      backgroundColor: captchaBackgroundColor,
+                      color: captchaTextColor,
+                      fontWeight:"bold",
+                      padding: "40px", 
+                      borderRadius: "5px",
+                      fontSize: "36px"
+                      }}>
+                        {captchaCode}
+                      </span>
                   <input
                     key={captchaCode} 
                     type="text"

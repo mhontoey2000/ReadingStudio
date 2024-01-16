@@ -28,6 +28,15 @@ function Articleedit() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const levels = [
+    "ประถมศึกษาปีที่ 1",
+    "ประถมศึกษาปีที่ 2",
+    "ประถมศึกษาปีที่ 3",
+    "ประถมศึกษาปีที่ 4",
+    "ประถมศึกษาปีที่ 5",
+    "ประถมศึกษาปีที่ 6",
+    "ระดับที่สูงกว่าประถมศึกษาปีที่ 6",
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -358,14 +367,25 @@ function Articleedit() {
                         ระดับของบทความ:
                       </label>
 
-                      <input
+                      {/* <input
                         type="text"
                         id="leveltext"
                         className="form-control"
                         value={leveltext}
                         onChange={(event) => setLeveltext(event.target.value)}
                         placeholder="กรุณากรอกระดับของบทความ"
-                      />
+                      /> */}
+                      <select
+                        id="leveltext"
+                        className="form-control"
+                        value={leveltext}
+                        onChange={(event) => setLeveltext(event.target.value)}
+                      >
+                        <option value="" disabled>กรุณาเลือกระดับของบทความ</option>
+                          {levels.map((level, index) => (
+                            <option key={index} value={level}>{level}</option>
+                          ))}
+                      </select>
                     </div>
 
                     <div className="d-flex justify-content-between">
