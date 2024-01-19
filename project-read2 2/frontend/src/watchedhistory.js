@@ -17,6 +17,38 @@ function Watchedhistory() {
   const [filteredExamHistory, setFilteredExamHistory] = useState([]); // เพิ่ม state สำหรับประวัติการทำข้อสอบ
   const [activeMenu, setActiveMenu] = useState("watched");
 
+  const [examScores, setExamScores] = useState(0);
+  const [examDetails, setExamDetails] = useState([]);
+  const totalQuestions = examDetails.length;
+
+  const calculateExamScore = (exam, examDetailsMap) => {
+    const examDetails = examDetailsMap[exam.article_id];
+
+    if (!examDetails || examDetails.length === 0) {
+      console.log("No exam details for exam:", exam);
+      return 0; // Return 0 if exam details are not available
+    }
+
+    let calculatedScore = 0;
+    const submittedAnswersArray = exam.submittedAnswers.split(",").map(Number);
+
+    for (let i = 0; i < examDetails.length; i++) {
+      const correctOption = examDetails[i].question_options.find(
+        (option) => option.is_correct === 1
+      );
+
+      if (
+        correctOption &&
+        submittedAnswersArray[i] === correctOption.option_id
+      ) {
+        calculatedScore++;
+      }
+    }
+
+    //console.log('calculatedScore for exam:', exam, 'is', calculatedScore);
+    return calculatedScore;
+  };
+
   useEffect(() => {
     // ดึงข้อมูลประวัติการทำข้อสอบ
     axios
@@ -25,6 +57,46 @@ function Watchedhistory() {
         const examsByDay = groupByDay(response.data);
         setExamHistory(examsByDay);
         setFilteredExamHistory(examsByDay);
+
+        // Extracting unique article IDs from the exams
+        const uniqueArticleIds = [
+          ...new Set(response.data.map((exam) => exam.article_id)),
+        ];
+
+        // Fetch all exam details
+        const fetchExamDetails = uniqueArticleIds.map((articleId) =>
+          axios.get(`http://localhost:5004/api/exam/${articleId}`)
+        );
+
+        // Wait for all exam detail requests to complete
+        Promise.all(fetchExamDetails)
+          .then((examDetailsResponses) => {
+            //console.log('examDetailsResponses', examDetailsResponses);
+
+            const examDetailsMap = {};
+
+            // Create a map of article_id to exam details for quick access
+            examDetailsResponses.forEach((examDetailsResponse, index) => {
+              const articleId = uniqueArticleIds[index];
+              examDetailsMap[articleId] = examDetailsResponse.data;
+            });
+
+            //console.log('examDetailsMap', examDetailsMap);
+
+            // Update the state with exam details
+            setExamDetails(examDetailsMap);
+
+            // Now you can run the calculateExamScore function for each exam
+            const scores = response.data.map((exam) =>
+              calculateExamScore(exam, examDetailsMap)
+            );
+            //console.log('scores', scores);
+
+            setExamScores(scores);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       })
       .catch((error) => {
         console.error(error);
@@ -84,23 +156,22 @@ function Watchedhistory() {
     });
   };
   const handleToPageExam = (exam) => {
-      axios
-        .get(`http://localhost:5004/api/exam/${exam.article_id}`)
-        .then((response) => {
-          let tempArr = response.data;
-          history.push({
-            pathname: "/Page/score",
-            state: {
-              submittedAnswers: exam.submittedAnswers.split(',').map(Number),
-              examDetails: tempArr,
-              articleid: exam.article_id,
-            },
-          });
-        })
-        .catch((error) => {
-          console.error(error);
+    axios
+      .get(`http://localhost:5004/api/exam/${exam.article_id}`)
+      .then((response) => {
+        let tempArr = response.data;
+        history.push({
+          pathname: "/Page/score",
+          state: {
+            submittedAnswers: exam.submittedAnswers.split(",").map(Number),
+            examDetails: tempArr,
+            articleid: exam.article_id,
+          },
         });
-   
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   useEffect(() => {
     // Filter watched articles based on the search term
@@ -220,7 +291,7 @@ function Watchedhistory() {
           </div>
         )}
 
-      {activeMenu === "exam" && (
+        {activeMenu === "exam" && (
           <div className="menumidhistory">
             <h1 className="text-left">ประวัติการทำข้อสอบ</h1>
             <div style={{ alignItems: "center", margin: "20px" }}>
@@ -232,32 +303,67 @@ function Watchedhistory() {
                   <h4 style={{ padding: "20px" }}>{day}</h4>
                 </div>
                 <ul>
-                  {exams.map((exam, index) => (
-                    <li
-                      key={`${exam.article_id}-${index}`}
-                      className="boxoflist"
-                      onClick={() => handleToPageExam(exam)}
-                    >
-                      <div className="flex-container">
-                        <div className="left-content">
-                          <div style={{ display: "flex" }}>
-                            <p style={{ fontWeight: "bold", marginRight: "5px" }}>
-                              ชื่อข้อสอบ:
-                            </p>
-                            <p>{exam.article_name}</p>
+                  {exams.map((exam, index) => {
+                    const totalQuestions =
+                      examDetails[exam.article_id]?.length || 0;
+                    const scoreText = `${examScores[index]}/${totalQuestions}`;
+
+                    return (
+                      <li
+                        key={`${exam.article_id}-${index}`}
+                        className="boxoflist"
+                        onClick={() => handleToPageExam(exam)}
+                      >
+                        <div className="flex-container">
+                          <div className="left-content">
+                            <div style={{ display: "flex" }}>
+                              <p
+                                style={{
+                                  fontWeight: "bold",
+                                  marginRight: "5px",
+                                }}
+                              >
+                                ชื่อบทความ:
+                              </p>
+                              <p>{exam.book_name}</p>
+                            </div>
+                            <div style={{ display: "flex" }}>
+                              <p
+                                style={{
+                                  fontWeight: "bold",
+                                  marginRight: "5px",
+                                }}
+                              >
+                                ชื่อข้อสอบ:
+                              </p>
+                              <p>{exam.article_name}</p>
+                            </div>
+                            <div style={{ display: "flex" }}>
+                              <p
+                                style={{
+                                  fontWeight: "bold",
+                                  marginRight: "5px",
+                                }}
+                              >
+                                คะแนนที่คุณทำได้:
+                              </p>
+                              <p>{scoreText}</p>
+                            </div>
+                            {/* (ตามความเหมาะสมในโค้ดของคุณ) */}
                           </div>
-                          {/* (ตามความเหมาะสมในโค้ดของคุณ) */}
+                          <div className="text-center right-content">
+                            <img
+                              className="imgsize"
+                              src={
+                                exam.article_imagedata || exam.article_images
+                              }
+                              alt="Exam"
+                            />
+                          </div>
                         </div>
-                        <div className="text-center right-content">
-                          <img
-                            className="imgsize"
-                            src={exam.article_imagedata || exam.article_images}
-                            alt="Exam"
-                          />
-                        </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}
