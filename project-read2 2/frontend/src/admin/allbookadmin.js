@@ -16,9 +16,13 @@ const Allbookadmin = () => {
   const [bookToDelete, setBookToDelete] = useState(null);
   const [statusUser, setStatusUser] = useState("");
   const user = localStorage.getItem("email");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
   useEffect(() => {
     init();
-  }, []);
+  }, [currentPage, searchTerm]);
 
   function init() {
     //console.log(user);
@@ -80,6 +84,11 @@ const Allbookadmin = () => {
     return book.book_name.includes(searchTerm);
   });
 
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = filteredItems.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+
   return (
     <div>
       <Header />
@@ -127,18 +136,18 @@ const Allbookadmin = () => {
                 </tr>
               </thead>
               <tbody className="table-group-divider">
-              {filteredItems.length === 0 ? (
+              {currentItems.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center">
+                  <td colSpan="10" className="text-center">
                     ไม่มีรายการของบทความที่คุณค้นหา
                     หรือคุณเขียนชื่อของบทความผิด.
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((book, index) => (
+                currentItems.map((book, index) => (
                   <tr key={book.book_id}>
                     <td className="col-sm-1" key={`book${index}`}>
-                      {index}
+                    {startIndex + index + 1}
                     </td>
                     <td className="col-sm-2">{book.book_name}</td>
                     {/* <td className='col-sm-4'>{book.book_detail}</td> */}
@@ -225,6 +234,33 @@ const Allbookadmin = () => {
                 ))
               )}
               </tbody>
+              <tfoot>
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                    }
+                    disabled={currentPage === 1}
+                  >
+                    ย้อนกลับ
+                  </Button>
+                  <span style={{ margin: "0 10px" }}>
+                    {currentPage} จาก {totalPages}
+                  </span>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) =>
+                        Math.min(prevPage + 1, totalPages)
+                      )
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    ถัดไป
+                  </Button>
+                </td>
+              </tr>
+            </tfoot>
             </table>
           </div>
         </div>

@@ -17,9 +17,17 @@ function Articlecreator() {
   const [bookToDelete, setBookToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = items.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+
   useEffect(() => {
     init();
-  }, []);
+  }, [currentPage]);
   function init() {
     axios
       .get("http://localhost:5004/api/allbookarticlecreator?user_email=" + user)
@@ -98,15 +106,16 @@ function Articlecreator() {
             <tbody className="table-group-divider">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan="6">
-                    ไม่มีรายการบทของบทความที่คุณค้นหา
-                    หรือคุณเขียนชื่อบทความผิด.
+                  <td colSpan="10">
+                    ไม่มีรายการบทของบทความที่คุณค้นหา หรือคุณเขียนชื่อบทความผิด.
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((book, index) => (
+                currentItems.map((book, index) => (
                   <tr key={book.book_id}>
-                    <td className="col-sm-1" key={`book${index + 1}`}>{index + 1}</td>
+                    <td className="col-sm-1" key={`book${index + 1}`}>
+                    {startIndex + index + 1}
+                    </td>
                     <td className="col-sm-2">{book.book_name}</td>
                     <td className="col-sm-2">{book.book_detail}</td>
                     <td className="col-sm-2">
@@ -149,6 +158,33 @@ function Articlecreator() {
                 ))
               )}
             </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                    }
+                    disabled={currentPage === 1}
+                  >
+                    ย้อนกลับ
+                  </Button>
+                  <span style={{ margin: "0 10px" }}>
+                    {currentPage} จาก {totalPages}
+                  </span>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) =>
+                        Math.min(prevPage + 1, totalPages)
+                      )
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    ถัดไป
+                  </Button>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </section>

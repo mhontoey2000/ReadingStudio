@@ -992,7 +992,7 @@ app.get('/api/notification', function (req, res) {
   const email = req.query.user_email;
 
   connection.query(
-    `SELECT f.request_id, b.book_name, a.article_name, a.article_imagedata, f.status, f.request_comment, f.created_at
+    `SELECT f.request_id, b.book_name, a.article_id, a.article_name, a.article_imagedata, f.status, f.request_comment, f.created_at
     FROM book b
     INNER JOIN article a ON b.book_id = a.book_id
     INNER JOIN forrequest f ON b.book_id = f.book_id AND a.article_id = f.article_id

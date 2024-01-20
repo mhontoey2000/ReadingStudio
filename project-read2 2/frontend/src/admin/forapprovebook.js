@@ -19,6 +19,14 @@ function Forapprovebook() {
   const [errorMessage, setErrorMessage] = useState("");
   const user = localStorage.getItem("email");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = items.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+
   useEffect(() => {
     axios
       .get("http://localhost:5004/api/forapprove")
@@ -46,15 +54,18 @@ function Forapprovebook() {
 
   const submitStatusChange = (event) => {
     event.preventDefault();
-  
-    if (status === "published" || (status === "deny" && unpublishReason !== "-")) {
+
+    if (
+      status === "published" ||
+      (status === "deny" && unpublishReason !== "-")
+    ) {
       const data = {
         bookId: selectitem.book_id,
         newStatus: status,
         unpublishReason:
           status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
-  
+
       axios
         .post("http://localhost:5004/api/updateStatus", data)
         .then((response) => {
@@ -117,77 +128,107 @@ function Forapprovebook() {
                 </tr>
               </thead>
               <tbody className="table-group-divider">
-              {items.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="text-center">
-                    ไม่มีรายการบทความที่รอการอนุมัติ.
-                  </td>
-                </tr>
-              ) : (
-                items.map((item, index) => (
-                  <tr key={item.book_id}>
-                    <td className="col-sm-1" key={`book${index + 1}`}>
-                      {index + 1}
-                    </td>
-                    <td className="col-sm-2">{item.book_name}</td>
-                    <td className="col-sm-2">
-                      {Array.isArray(item.article_name)
-                        ? item.article_name.map((article, index) => (
-                            <span key={index}>
-                              {article}
-                              {index < item.article_name.length - 1 && ", "}
-                            </span>
-                          ))
-                        : "ไม่มีตอนของบทความ"}
-                    </td>
-                    <td className="col-sm-3">
-                      <img
-                        src={item.book_imagedata || "url_to_default_image"}
-                        width="100"
-                        height="100"
-                        alt={item.book_name}
-                      />
-                    </td>
-                    <td className="col-sm-2">
-                      <Button
-                        className={`btn ${
-                          item.status_book === "pending"
-                            ? "btn-info"
-                            : item.status_book === "creating"
-                            ? "btn-secondary"
-                            : item.status_book === "finished"
-                            ? "btn-secondary"
-                            : item.status_book === "deny"
-                            ? "btn-danger"
-                            : item.status_book === "published"
-                            ? "btn-success"
-                            : "btn-secondary"
-                        }`}
-                        style={{ color: "white" }}
-                        onClick={() => openStatusModal(item)}
-                      >
-                        {item.status_book === "pending" && "รออนุมัติ"}
-                        {item.status_book === "creating" && "สร้างยังไม่เสร็จ"}
-                        {item.status_book === "finished" && "สร้างเสร็จแล้ว"}
-                        {item.status_book === "deny" && "ถูกระงับ"}
-                        {item.status_book === "published" && "เผยแพร่แล้ว"}
-                      </Button>
-                    </td>
-                    <td className="col-sm-2">
-                      <Link
-                        to={{
-                          pathname: "/Page/bookarticle",
-                          state: { book_id: item.book_id },
-                        }}
-                        className="btn btn-primary"
-                      >
-                        ดู
-                      </Link>
+                {items.length === 0 ? (
+                  <tr>
+                    <td colSpan="10" className="text-center">
+                      ไม่มีรายการบทความที่รอการอนุมัติ.
                     </td>
                   </tr>
-                ))
+                ) : (
+                  currentItems.map((item, index) => (
+                    <tr key={item.book_id}>
+                      <td className="col-sm-1" key={`book${index + 1}`}>
+                        {startIndex + index + 1}
+                      </td>
+                      <td className="col-sm-2">{item.book_name}</td>
+                      <td className="col-sm-2">
+                        {Array.isArray(item.article_name)
+                          ? item.article_name.map((article, index) => (
+                              <span key={index}>
+                                {article}
+                                {index < item.article_name.length - 1 && ", "}
+                              </span>
+                            ))
+                          : "ไม่มีตอนของบทความ"}
+                      </td>
+                      <td className="col-sm-3">
+                        <img
+                          src={item.book_imagedata || "url_to_default_image"}
+                          width="100"
+                          height="100"
+                          alt={item.book_name}
+                        />
+                      </td>
+                      <td className="col-sm-2">
+                        <Button
+                          className={`btn ${
+                            item.status_book === "pending"
+                              ? "btn-info"
+                              : item.status_book === "creating"
+                              ? "btn-secondary"
+                              : item.status_book === "finished"
+                              ? "btn-secondary"
+                              : item.status_book === "deny"
+                              ? "btn-danger"
+                              : item.status_book === "published"
+                              ? "btn-success"
+                              : "btn-secondary"
+                          }`}
+                          style={{ color: "white" }}
+                          onClick={() => openStatusModal(item)}
+                        >
+                          {item.status_book === "pending" && "รออนุมัติ"}
+                          {item.status_book === "creating" &&
+                            "สร้างยังไม่เสร็จ"}
+                          {item.status_book === "finished" && "สร้างเสร็จแล้ว"}
+                          {item.status_book === "deny" && "ถูกระงับ"}
+                          {item.status_book === "published" && "เผยแพร่แล้ว"}
+                        </Button>
+                      </td>
+                      <td className="col-sm-2">
+                        <Link
+                          to={{
+                            pathname: "/Page/bookarticle",
+                            state: { book_id: item.book_id },
+                          }}
+                          className="btn btn-primary"
+                        >
+                          ดู
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
                 )}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center" }}>
+                    <Button
+                      onClick={() =>
+                        setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                      className="btn btn-primary"
+                    >
+                      ย้อนกลับ
+                    </Button>
+                    <span style={{ margin: "0 10px" }}>
+                      {currentPage} จาก {totalPages}
+                    </span>
+                    <Button
+                      onClick={() =>
+                        setCurrentPage((prevPage) =>
+                          Math.min(prevPage + 1, totalPages)
+                        )
+                      }
+                      disabled={currentPage === totalPages}
+                      className="btn btn-primary"
+                    >
+                      ถัดไป
+                    </Button>
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>
@@ -254,7 +295,8 @@ function Forapprovebook() {
                   >
                     <option value="default" hidden>
                       {selectitem.status_book === "pending" && "รออนุมัติ"}
-                      {selectitem.status_book === "finished" && "สร้างเสร็จแล้ว"}
+                      {selectitem.status_book === "finished" &&
+                        "สร้างเสร็จแล้ว"}
                       {selectitem.status_book === "deny" && "ถูกระงับ"}
                       {selectitem.status_book === "published" && "เผยแพร่แล้ว"}
                     </option>

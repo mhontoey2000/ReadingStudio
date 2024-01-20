@@ -1,88 +1,97 @@
-import React, { useState, useEffect } from 'react';
-import Header from '../header';
+import React, { useState, useEffect } from "react";
+import Header from "../header";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from 'axios';
-import Button from 'react-bootstrap/Button';
-import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import Modal from 'react-bootstrap/Modal';
+import axios from "axios";
+import Button from "react-bootstrap/Button";
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
 
 const Notification = () => {
-    const [showModal, setShowModal] = useState(false);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState('รอตรวจสอบ');
-    const [buttonColor, setButtonColor] = useState('');
-    const [selectitem, setSelectitem] = useState(null);
-    const [report, setReport] = useState([]);
-    const [error, setError] = useState('');
-    const user = localStorage.getItem('email');
-    const [status, setStatus] = useState("");
-    const [unpublishReason, setUnpublishReason] = useState("-");
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
-    const [showErrorModal, setShowErrorModal] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-  
+  const [showModal, setShowModal] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("รอตรวจสอบ");
+  const [buttonColor, setButtonColor] = useState("");
+  const [selectitem, setSelectitem] = useState(null);
+  const [report, setReport] = useState([]);
+  const [error, setError] = useState("");
+  const user = localStorage.getItem("email");
+  const [status, setStatus] = useState("");
+  const [unpublishReason, setUnpublishReason] = useState("-");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-    useEffect(() => {
-        axios.get(`http://localhost:5004/api/reportnotification`)
-            .then((response) => {
-                setReport(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
-    const handleClick = (items) => {
-        console.log(items.report_id);
-        console.log(items.report_status);
-        if (items.report_status !== 'pending') return;
-        const data = {
-            report_id: items.report_id,
-            report_status: 'pending',
-        };
-        axios.post('http://localhost:5004/api/updatereport', data, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then((response) => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = report.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(report.length / ITEMS_PER_PAGE);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5004/api/reportnotification`)
+      .then((response) => {
+        setReport(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const handleClick = (items) => {
+    //console.log(items.report_id);
+    //console.log(items.report_status);
+    if (items.report_status !== "pending") return;
+    const data = {
+      report_id: items.report_id,
+      report_status: "pending",
     };
+    axios
+      .post("http://localhost:5004/api/updatereport", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-    const Getth = (value) =>{
-      if(value === 'published')
-         return 'ตรวจสอบแล้ว';
-      else if(value === 'pending')
-         return 'กำลังดำเนินการ';
-      else if(value === 'deny')
-         return 'ถูกระงับ';
-        
-    }
+  const Getth = (value) => {
+    if (value === "published") return "ตรวจสอบแล้ว";
+    else if (value === "pending") return "กำลังดำเนินการ";
+    else if (value === "deny") return "ถูกระงับ";
+  };
 
-    const submitStatusChange = (event) => {
-      console.log(status);
-      event.preventDefault();
-      const data = {
-        report_id: selectitem.report_id,
-        report_status: status ==='published'? 'published' :'deny'
+  const submitStatusChange = (event) => {
+    console.log(status);
+    event.preventDefault();
+    const data = {
+      report_id: selectitem.report_id,
+      report_status: status === "published" ? "published" : "deny",
+    };
+    console.log(data);
+
+    if (
+      status === "published" ||
+      (status === "deny" && unpublishReason !== "-")
+    ) {
+      const data1 = {
+        bookId: selectitem.bookid,
+        newStatus: status,
+        unpublishReason:
+          status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
-      console.log(data);
-     
-      if (status === "published" || (status === "deny" && unpublishReason !== "-")) {
-        const data1 = {
-          bookId: selectitem.bookid,
-          newStatus: status,
-          unpublishReason:
-            status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
-        };
       console.log(data1);
-        axios
+      axios
         .post("http://localhost:5004/api/updateStatus", data1)
         .then((response) => {
           if (response.status === 200) {
@@ -91,152 +100,201 @@ const Notification = () => {
         .catch((error) => {
           console.error(error);
         });
-        axios.post('http://localhost:5004/api/updatereport', data, {
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              setShowModal(false);
-              setSuccessMessage("อัพเดทสถานะเรียบร้อย!");
-              setShowSuccessModal(true);
-            }
-          })
-          .catch((error) => {
-            console.error(error);
+      axios
+        .post("http://localhost:5004/api/updatereport", data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
             setShowModal(false);
-            setErrorMessage("ไม่สามมารถอัพเดทสถานะได้");
-            setShowErrorModal(true);
-          });
-         
-      } else if (status === "deny") {
-        setErrorMessage("กรุณากรอกเหตุผลที่ปฎิเสธ");
-        setShowErrorModal(true);
-      }
-    };
+            setSuccessMessage("อัพเดทสถานะเรียบร้อย!");
+            setShowSuccessModal(true);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          setShowModal(false);
+          setErrorMessage("ไม่สามมารถอัพเดทสถานะได้");
+          setShowErrorModal(true);
+        });
+    } else if (status === "deny") {
+      setErrorMessage("กรุณากรอกเหตุผลที่ปฎิเสธ");
+      setShowErrorModal(true);
+    }
+  };
 
-    const openStatusModal = (item) => {
-      setShowModal(true);
-      setSelectitem(item);
-    };
+  const openStatusModal = (item) => {
+    setShowModal(true);
+    setSelectitem(item);
+  };
 
-    const handleSuccessModalOK = () => {
-      setShowSuccessModal(false);
-      window.location.reload();
-    };
+  const handleSuccessModalOK = () => {
+    setShowSuccessModal(false);
+    window.location.reload();
+  };
 
-    const handleErrorModalOK = () => {
-      setShowErrorModal(false);
-      window.location.reload();
-    };
+  const handleErrorModalOK = () => {
+    setShowErrorModal(false);
+    window.location.reload();
+  };
 
-    const deleteUser = (id) => {
-        if (window.confirm("Are you sure you want to delete this user?")) {
-            fetch('http://localhost:5004/api/report/' + id, {
-                method: 'DELETE',
-            })
-                .then(res => res)
-                .then(res => {
-                      console.log(res);
-                      if (res.status === 200) {
-                        alert("Delete user successfully");
-                        window.location.reload();
-                    } else {
-                        alert("Delete user failed");
-                    }
-                })
-                .catch(err => {
-                  console.log(err);
-                    setError(err);
-                });
-        }
-    };
-    
-    return (
-        <div>
-            <Header />
+  const deleteUser = (id) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      fetch("http://localhost:5004/api/report/" + id, {
+        method: "DELETE",
+      })
+        .then((res) => res)
+        .then((res) => {
+          console.log(res);
+          if (res.status === 200) {
+            alert("Delete user successfully");
+            window.location.reload();
+          } else {
+            alert("Delete user failed");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setError(err);
+        });
+    }
+  };
 
-            <section>
-                <h1>แจ้งเตือนการรายงาน</h1>
-                <div className="grid-containerr">
-                    <div className="row">
-                        <div >
-                            <table className="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" className="col-sm-1">ลำดับ</th>
-                                        <th scope="col" className="col-sm-1">บทความ</th>
-                                        <th scope="col" className="col-sm-1">ตอน</th>
-                                        <th scope="col" className="col-sm-3">รายละเอียด</th>
-                                        <th scope="col" className="col-sm-2">ผู้แจ้ง</th>
-                                        <th scope="col" className="col-sm-1">เวลา</th>
-                                        <th scope="col" className="col-sm-1">สถานะ</th>
-                                        <th scope="col" className="col-sm-1">ดูเนื้อหา</th>
-                                        {/* <th scope="col" className="col-sm-1">จัดการ</th> */}
-                                    </tr>
-                                </thead>
+  return (
+    <div>
+      <Header />
 
-                                <tbody>
-                                    {report.map((item) => {
-                                        return (
-                                            <tr key={item.report_id}>
-                                                <td className="col-sm-1">{item.report_id}</td>
-                                                <td className="col-sm-1">{item.book_id}</td>
-                                                <td className="col-sm-1">{item.report_articlename}</td>
-                                                <td className="col-sm-3">{item.report_detail}</td>
-                                                <td className="col-sm-2">{item.reporter}</td>
-                                                <td className="col-sm-1">{item.date_time}</td>
-                                                {/* <td className="col-sm-1">{ Getth(item.report_status)}</td> */}
-                                                <td className="col-sm-2">
-                                                    <Button
-                                                      className={`btn ${
-                                                        item.report_status === "pending"
-                                                          ? "btn-info"
-                                                          : item.report_status === "creating"
-                                                          ? "btn-secondary"
-                                                          : item.report_status === "finished"
-                                                          ? "btn-secondary"
-                                                          : item.report_status === "deny"
-                                                          ? "btn-danger"
-                                                          : item.report_status === "published"
-                                                          ? "btn-success"
-                                                          : "btn-secondary"
-                                                      }`}
-                                                      style={{ color: "white" }}
-                                                      onClick={() => openStatusModal(item)}
-                                                    >
-                                                      {item.report_status === "pending" && "กำลังดำเนินการ"}
-                                                      {/* {item.report_status === "creating" && "สร้างยังไม่เสร็จ"} */}
-                                                      {/* {item.report_status === "finished" && "สร้างเสร็จแล้ว"} */}
-                                                      {item.report_status === "deny" && "ถูกระงับ"}
-                                                      {item.report_status === "published" && "ตรวจสอบแล้ว"}
-                                                    </Button>
-                                                  </td>
-                                                <td className="col-sm-1">
-                                                    <Link
-                                                        to={{ pathname: '/Page/bookdetail', state: { article_id: item.article_id } }}
-                                                        className="btn btn-success"
-                                                        onClick={() => handleClick(item)}
-                                                    >
-                                                        ดู
-                                                    </Link>
-                                                  
-                                                </td>
-                                                {/* <td className="col-sm-1">
+      <section>
+        <h1>แจ้งเตือนการรายงาน</h1>
+        <div className="grid-containerr">
+          <div className="row">
+            <div>
+              <table className="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col" className="col-sm-1">
+                      ลำดับ
+                    </th>
+                    <th scope="col" className="col-sm-1">
+                      บทความ
+                    </th>
+                    <th scope="col" className="col-sm-1">
+                      ตอน
+                    </th>
+                    <th scope="col" className="col-sm-3">
+                      รายละเอียด
+                    </th>
+                    <th scope="col" className="col-sm-2">
+                      ผู้แจ้ง
+                    </th>
+                    <th scope="col" className="col-sm-1">
+                      เวลา
+                    </th>
+                    <th scope="col" className="col-sm-1">
+                      สถานะ
+                    </th>
+                    <th scope="col" className="col-sm-1">
+                      ดูเนื้อหา
+                    </th>
+                    {/* <th scope="col" className="col-sm-1">จัดการ</th> */}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {currentItems.map((item, index) => {
+                    return (
+                      <tr key={item.report_id}>
+                        <td className="col-sm-1">{startIndex + index + 1}</td>
+                        <td className="col-sm-1">{item.book_id}</td>
+                        <td className="col-sm-1">{item.report_articlename}</td>
+                        <td className="col-sm-3">{item.report_detail}</td>
+                        <td className="col-sm-2">{item.reporter}</td>
+                        <td className="col-sm-1">{item.date_time}</td>
+                        {/* <td className="col-sm-1">{ Getth(item.report_status)}</td> */}
+                        <td className="col-sm-2">
+                          <Button
+                            className={`btn ${
+                              item.report_status === "pending"
+                                ? "btn-info"
+                                : item.report_status === "creating"
+                                ? "btn-secondary"
+                                : item.report_status === "finished"
+                                ? "btn-secondary"
+                                : item.report_status === "deny"
+                                ? "btn-danger"
+                                : item.report_status === "published"
+                                ? "btn-success"
+                                : "btn-secondary"
+                            }`}
+                            style={{ color: "white" }}
+                            onClick={() => openStatusModal(item)}
+                          >
+                            {item.report_status === "pending" &&
+                              "กำลังดำเนินการ"}
+                            {/* {item.report_status === "creating" && "สร้างยังไม่เสร็จ"} */}
+                            {/* {item.report_status === "finished" && "สร้างเสร็จแล้ว"} */}
+                            {item.report_status === "deny" && "ถูกระงับ"}
+                            {item.report_status === "published" &&
+                              "ตรวจสอบแล้ว"}
+                          </Button>
+                        </td>
+                        <td className="col-sm-1">
+                          <Link
+                            to={{
+                              pathname: "/Page/bookdetail",
+                              state: { article_id: item.article_id },
+                            }}
+                            className="btn btn-success"
+                            onClick={() => handleClick(item)}
+                          >
+                            ดู
+                          </Link>
+                        </td>
+                        {/* <td className="col-sm-1">
                                                     <Button onClick={() => openModal(item)}>จัดการ</Button>
                                                 </td> */}
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colSpan="8" style={{ textAlign: "center" }}>
+                      <Button
+                        onClick={() =>
+                          setCurrentPage((prevPage) =>
+                            Math.max(prevPage - 1, 1)
+                          )
+                        }
+                        disabled={currentPage === 1}
+                      >
+                        ย้อนกลับ
+                      </Button>
+                      <span style={{ margin: "0 10px" }}>
+                        {currentPage} จาก {totalPages}
+                      </span>
+                      <Button
+                        onClick={() =>
+                          setCurrentPage((prevPage) =>
+                            Math.min(prevPage + 1, totalPages)
+                          )
+                        }
+                        disabled={currentPage === totalPages}
+                      >
+                        ถัดไป
+                      </Button>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
 
-       <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>ทำการยืนยัน</Modal.Title>
         </Modal.Header>
@@ -372,5 +430,5 @@ const Notification = () => {
       </Modal>
     </div>
   );
-}
+};
 export default Notification;

@@ -11,9 +11,12 @@ const Alluseradmin = () => {
   const [showModal, setShowModal] = useState(false); // State for Modal visibility
   const [selectedUser, setSelectedUser] = useState(null); // State to hold the selected user's data
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [currentPage]);
 
   const fetchUsers = () => {
     axios
@@ -28,7 +31,7 @@ const Alluseradmin = () => {
   const approvalStatus = (status) => {
     if (!selectedUser) return;
     const email = selectedUser.user_email;
-    console.log(email);
+    //console.log(email);
 
     const data = { status, email };
 
@@ -38,7 +41,7 @@ const Alluseradmin = () => {
         data
       )
       .then((response) => {
-        console.log(`User with ID ${selectedUser.user_id} has been ${status}.`);
+        //console.log(`User with ID ${selectedUser.user_id} has been ${status}.`);
         // Refresh the user list after deletion
         fetchUsers();
       })
@@ -51,13 +54,14 @@ const Alluseradmin = () => {
     setShowModal(false);
     setSelectedUser(null);
   };
+
   const deleteUser = () => {
     if (!selectedUser) return;
     if (window.confirm("Are you sure you want to delete this user?")) {
       axios
         .delete(`http://localhost:5004/api/user/${selectedUser.user_id}`)
         .then((response) => {
-          console.log(`User with ID ${selectedUser.user_id} has been deleted.`);
+          //console.log(`User with ID ${selectedUser.user_id} has been deleted.`);
           // Refresh the user list after deletion
           fetchUsers();
         })
@@ -71,10 +75,20 @@ const Alluseradmin = () => {
       setSelectedUser(null);
     }
   };
+
   const handleEditClick = (user) => {
     setSelectedUser(user);
     setShowModal(true);
   };
+
+   const handlePageClick = (selectedPage) => {
+    setCurrentPage(selectedPage.selected + 1);
+  };
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentUsers = user.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(user.length / ITEMS_PER_PAGE);
 
   return (
     <div>
@@ -102,9 +116,9 @@ const Alluseradmin = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((item, index) => (
+                  {currentUsers.map((item, index) => (
                     <tr key={item.user_id}>
-                      <td key={`item${index + 1}`}>{index + 1}</td>
+                      <td key={`item${index + 1}`}>{startIndex + index + 1}</td>
                       <td>{item.user_name}</td>
                       <td>{item.user_surname}</td>
                       <td>{item.user_email}</td>
@@ -141,6 +155,29 @@ const Alluseradmin = () => {
                     </tr>
                   ))}
                 </tbody>
+                <tfoot>
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  <Button
+                   onClick={() => setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))}
+                   disabled={currentPage === 1}
+                   className="btn btn-primary"
+                  >
+                    ย้อนกลับ
+                  </Button>
+                  <span style={{ margin: "0 10px" }}>
+                    {currentPage} จาก {totalPages}
+                  </span>
+                  <Button
+                    onClick={() => setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    className="btn btn-primary"
+                  >
+                    ถัดไป
+                  </Button>
+                </td>
+              </tr>
+            </tfoot>
               </table>
             </div>
           </div>

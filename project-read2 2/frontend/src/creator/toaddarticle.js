@@ -29,6 +29,14 @@ function Toaddarticle() {
   const [articleToDelete, setArticleToDelete] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = items.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+
   useEffect(() => {
     setLoading(true);
 
@@ -279,9 +287,9 @@ function Toaddarticle() {
                     </td>
                   </tr>
                 ) : (
-                  filteredItems.map((article, index) => (
+                  currentItems.map((article, index) => (
                     <tr key={article.article_id}>
-                      <td className="col-sm-2" key={`article${index + 1}`}>{index + 1}</td>
+                      <td className="col-sm-2" key={`article${index + 1}`}>{startIndex + index + 1}</td>
                       <td className="col-sm-2">{article.article_name}</td>
                       <td className="col-sm-2">
                         {article.article_imagedata ? (
@@ -325,8 +333,36 @@ function Toaddarticle() {
                   ))
                 )}
               </tbody>
+              <tfoot>
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                    }
+                    disabled={currentPage === 1}
+                  >
+                    ย้อนกลับ
+                  </Button>
+                  <span style={{ margin: "0 10px" }}>
+                    {currentPage} จาก {totalPages}
+                  </span>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) =>
+                        Math.min(prevPage + 1, totalPages)
+                      )
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    ถัดไป
+                  </Button>
+                </td>
+              </tr>
+            </tfoot>
             </table>
           </div>
+          
         </div>
       </section>
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>

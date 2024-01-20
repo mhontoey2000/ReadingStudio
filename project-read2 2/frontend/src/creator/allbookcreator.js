@@ -16,9 +16,17 @@ function Allbookcreator() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = items.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+
   useEffect(() => {
     init();
-  }, []);
+  }, [currentPage]);
   function init() {
     axios
       .get("http://localhost:5004/api/allbookarticlecreator?user_email=" + user)
@@ -67,9 +75,13 @@ function Allbookcreator() {
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
           </div>
 
-          <div className="text-center" style={{margin:"10px"}}>
-            <cite style={{color:"#192655",fontWeight:"bold"}}>สร้างยังไม่เสร็จ</cite>
-            <cite style={{color:"red",marginLeft:"10px"}}>หมายถึงบทความของคุณยังไม่สร้างตอนของบทความนั้น</cite>
+          <div className="text-center" style={{ margin: "10px" }}>
+            <cite style={{ color: "#192655", fontWeight: "bold" }}>
+              สร้างยังไม่เสร็จ
+            </cite>
+            <cite style={{ color: "red", marginLeft: "10px" }}>
+              หมายถึงบทความของคุณยังไม่สร้างตอนของบทความนั้น
+            </cite>
           </div>
           <table className="table table-hover">
             <thead>
@@ -103,15 +115,16 @@ function Allbookcreator() {
             <tbody className="table-group-divider">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan="6">
-                    ไม่มีรายการบทความที่คุณค้นหา
-                    หรือคุณเขียนชื่อบทความผิด.
+                  <td colSpan="10">
+                    ไม่มีรายการบทความที่คุณค้นหา หรือคุณเขียนชื่อบทความผิด.
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((book, index) => (
+                currentItems.map((book, index) => (
                   <tr key={book.book_id}>
-                    <td className="col-sm-1" key={`book${index + 1}`}>{index + 1}</td>
+                    <td className="col-sm-1" key={`book${index + 1}`}>
+                    {startIndex + index + 1}
+                    </td>
                     <td className="col-sm-2">{book.book_name}</td>
                     <td className="col-sm-2">
                       {book.article_name.map((article, index) => (
@@ -135,19 +148,29 @@ function Allbookcreator() {
 
                     <td className="col-sm-2">
                       {book.status_book === "pending" && (
-                        <span style={{ color: "#FFC436",fontWeight:"bold" }}>รออนุมัติ</span>
+                        <span style={{ color: "#FFC436", fontWeight: "bold" }}>
+                          รออนุมัติ
+                        </span>
                       )}
                       {book.status_book === "creating" && (
-                        <span style={{ color: "#192655",fontWeight:"bold" }}>สร้างยังไม่เสร็จ</span>
+                        <span style={{ color: "#192655", fontWeight: "bold" }}>
+                          สร้างยังไม่เสร็จ
+                        </span>
                       )}
                       {book.status_book === "finished" && (
-                        <span style={{ color: "#3876BF",fontWeight:"bold" }}>สร้างเสร็จแล้ว</span>
+                        <span style={{ color: "#3876BF", fontWeight: "bold" }}>
+                          สร้างเสร็จแล้ว
+                        </span>
                       )}
                       {book.status_book === "deny" && (
-                        <span style={{ color: "red",fontWeight:"bold" }}>ถูกปฏิเสธ</span>
+                        <span style={{ color: "red", fontWeight: "bold" }}>
+                          ถูกปฏิเสธ
+                        </span>
                       )}
                       {book.status_book === "published" && (
-                        <span style={{ color: "green",fontWeight:"bold" }}>เผยแพร่แล้ว</span>
+                        <span style={{ color: "green", fontWeight: "bold" }}>
+                          เผยแพร่แล้ว
+                        </span>
                       )}
                     </td>
 
@@ -185,6 +208,33 @@ function Allbookcreator() {
                 ))
               )}
             </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                    }
+                    disabled={currentPage === 1}
+                  >
+                    ย้อนกลับ
+                  </Button>
+                  <span style={{ margin: "0 10px" }}>
+                    {currentPage} จาก {totalPages}
+                  </span>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) =>
+                        Math.min(prevPage + 1, totalPages)
+                      )
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    ถัดไป
+                  </Button>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </section>

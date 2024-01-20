@@ -373,7 +373,7 @@ function Watchedhistory() {
             )}
           </div>
         )}
-        {activeMenu === "watched" && (
+        {/* {activeMenu === "watched" && (
           <div className="menuright">
             <Button
               className="btn btn-danger clrbtn"
@@ -382,7 +382,7 @@ function Watchedhistory() {
               ล้างประวัติ
             </Button>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

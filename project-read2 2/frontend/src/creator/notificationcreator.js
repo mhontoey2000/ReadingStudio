@@ -5,11 +5,36 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import Searchbar from "../searchbar";
+import { Link } from "react-router-dom";
+
+const ITEMS_PER_PAGE = 10;
+
+function formatDate(dateString) {
+  const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+}
 
 function Notificationcreator() {
   const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const user = localStorage.getItem("email");
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 10;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = items.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
 
   useEffect(() => {
     axios
@@ -21,7 +46,7 @@ function Notificationcreator() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [user]);
 
   const filteredItems = items.filter((items) => {
     return items.book_name.includes(searchTerm);
@@ -61,6 +86,9 @@ function Notificationcreator() {
                     คอมเมนต์
                   </th>
                   <th scope="col" className="col-sm-1">
+                    ดูเนื้อหา
+                  </th>
+                  <th scope="col" className="col-sm-1">
                     เวลา
                   </th>
                 </tr>
@@ -68,17 +96,17 @@ function Notificationcreator() {
               <tbody className="table-group-divider">
                 {filteredItems.length === 0 ? (
                   <tr>
-                    <td colSpan="6">ไม่มีรายการสถานะของบทความ.</td>
+                    <td colSpan="10">ไม่มีรายการสถานะของบทความ.</td>
                   </tr>
                 ) : (
-                  filteredItems.map((items, index) => (
+                  currentItems.map((items, index) => (
                     <tr key={items.request_id}>
                       <td className="col-sm-1" key={`book${index + 1}`}>
-                        {index + 1}
+                      {startIndex + index + 1}
                       </td>
                       <td className="col-sm-2">{items.book_name}</td>
                       <td className="col-sm-2">{items.article_name}</td>
-                      <td className="col-sm-2">
+                      <td className="col-sm-1">
                         <img
                           src={items.article_imagedata || items.article_image}
                           width="100"
@@ -119,12 +147,38 @@ function Notificationcreator() {
                           </span>
                         )}
                       </td>
-                      <td className="col-sm-3">{items.request_comment}</td>
-                      <td className="col-sm-1">{items.created_at}</td>
+                      <td className="col-sm-2">{items.request_comment}</td>
+                      <td className="col-sm-1">
+                        <Link
+                          to={{
+                            pathname: "/Page/bookdetail",
+                            state: { article_id: items.article_id },
+                          }}
+                          className="btn btn-success"
+                        >
+                          ดู
+                        </Link>
+                      </td>
+                      <td className="col-sm-2">{formatDate(items.created_at)}</td>
                     </tr>
                   ))
                 )}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center" }}>
+                    <Button onClick={handlePrevPage} disabled={currentPage === 1}>
+                      ย้อนกลับ
+                    </Button>
+                    <span style={{ margin: "0 10px" }}>
+                       {currentPage} จาก {totalPages}
+                    </span>
+                    <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                      ถัดไป
+                    </Button>
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>

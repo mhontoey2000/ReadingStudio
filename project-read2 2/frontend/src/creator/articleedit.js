@@ -28,6 +28,9 @@ function Articleedit() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
   const levels = [
     "ประถมศึกษาปีที่ 1",
     "ประถมศึกษาปีที่ 2",
@@ -114,7 +117,7 @@ function Articleedit() {
           setScreenLoaded(true);
         });
     }
-  }, [bookid]);
+  }, [bookid, currentPage]);
 
   const filteredItems = items.filter((article) => {
     return article.article_name.includes(searchTerm);
@@ -216,6 +219,11 @@ function Articleedit() {
       });
   };
 
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = filteredItems.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+
   return (
     <div>
       <Header />
@@ -257,15 +265,15 @@ function Articleedit() {
             <tbody className="table-group-divider">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center">
+                  <td colSpan="10" className="text-center">
                     ไม่มีรายการตอนของบทความที่คุณค้นหา
                     หรือคุณเขียนชื่อตอนของบทความผิด.
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((article, index) => (
+                currentItems.map((article, index) => (
                   <tr key={article.article_id}>
-                    <td className="col-sm-1" key={`article${index + 1}`}>{index + 1}</td>
+                    <td className="col-sm-1" key={`article${index + 1}`}>{startIndex + index + 1}</td>
                     <td className="col-sm-3">{article.article_name}</td>
                     <td className="col-sm-2">
                       {article.article_imagedata ? (
@@ -309,6 +317,33 @@ function Articleedit() {
                 ))
               )}
             </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                    }
+                    disabled={currentPage === 1}
+                  >
+                    ย้อนกลับ
+                  </Button>
+                  <span style={{ margin: "0 10px" }}>
+                    {currentPage} จาก {totalPages}
+                  </span>
+                  <Button
+                    onClick={() =>
+                      setCurrentPage((prevPage) =>
+                        Math.min(prevPage + 1, totalPages)
+                      )
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    ถัดไป
+                  </Button>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </section>
