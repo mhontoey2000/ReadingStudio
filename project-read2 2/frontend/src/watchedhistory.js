@@ -347,7 +347,12 @@ function Watchedhistory() {
                               >
                                 คะแนนที่คุณทำได้:
                               </p>
-                              <p>{scoreText}</p>
+                              <p 
+                                style={{
+                                  fontWeight: "bold",
+                                  marginRight: "5px",
+                                }}
+                              >{scoreText}</p>
                             </div>
                             {/* (ตามความเหมาะสมในโค้ดของคุณ) */}
                           </div>
