@@ -58,6 +58,11 @@ function Articleedit() {
         setScreenLoaded(true);
       });
 
+
+    fetchLevelData();
+  }, [user]);
+
+  
     // โหลดระดับคำศัพท์ (level files) ในระหว่างโหลดข้อมูลของผู้ใช้และข้อมูลบทความ
     const levelFiles = [
       "level1.json",
@@ -69,35 +74,36 @@ function Articleedit() {
     ];
 
     const fetchLevelData = async () => {
+      const newWordLevels = {};
+    
       for (const file of levelFiles) {
         try {
           const response = await axios.get(`/analysis/${file}`);
           const levelData = response.data;
-
+    
           levelData.forEach((wordData) => {
             const word = wordData.word;
             if (wordData.p1 !== "0") {
-              setWordLevels((prevLevels) => ({ ...prevLevels, [word]: 1 }));
+              newWordLevels[word] = 1;
             } else if (wordData.p2 !== "0") {
-              setWordLevels((prevLevels) => ({ ...prevLevels, [word]: 2 }));
+              newWordLevels[word] = 2;
             } else if (wordData.p3 !== "0") {
-              setWordLevels((prevLevels) => ({ ...prevLevels, [word]: 3 }));
+              newWordLevels[word] = 3;
             } else if (wordData.p4 !== "0") {
-              setWordLevels((prevLevels) => ({ ...prevLevels, [word]: 4 }));
+              newWordLevels[word] = 4;
             } else if (wordData.p5 !== "0") {
-              setWordLevels((prevLevels) => ({ ...prevLevels, [word]: 5 }));
+              newWordLevels[word] = 5;
             } else if (wordData.p6 !== "0") {
-              setWordLevels((prevLevels) => ({ ...prevLevels, [word]: 6 }));
+              newWordLevels[word] = 6;
             }
           });
         } catch (error) {
           console.error(`Error fetching ${file}:`, error);
         }
       }
+    
+      setWordLevels(newWordLevels);
     };
-
-    fetchLevelData();
-  }, [user]);
 
   useEffect(() => {
     setLoading(true);
@@ -163,7 +169,7 @@ function Articleedit() {
     setTimeout(() => {
       setLoadingVisible(false);
       setScreenLoaded(true);
-    }, 5000);
+    }, 3000);
 
     setShowModal(true);
   };
