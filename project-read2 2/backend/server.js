@@ -964,7 +964,7 @@ app.delete('/api/deleteallbookcreator/:bookId', function (req, res) {
 app.get('/api/forapprove', function (req, res) {
 
   connection.query(
-    `SELECT b.book_id, b.book_name, b.status_book,
+    `SELECT b.book_id, b.book_name, b.status_book, b.book_creator,
       GROUP_CONCAT(a.article_name) AS article_names,
       b.book_imagedata
       FROM book b
@@ -1037,7 +1037,7 @@ app.post('/api/updateStatusBook/:bookId', (req, res) => {
 });
 
 app.post("/api/updateStatus", (req, res) => {
-  const { bookId, newStatus, unpublishReason } = req.body;
+  const { bookId, bookCreator, newStatus, unpublishReason } = req.body;
   console.log("bookId : " + bookId);
   console.log("newStatus : " + newStatus);
   console.log("unpublishReason : " + unpublishReason);
@@ -1066,8 +1066,8 @@ connection.query(bookQuery, [newStatus, bookId], (bookErr) => {
 
       if (results.length > 0) {
         // If matching articles found, insert into forrequest
-        const forRequestQuery = "INSERT INTO forrequest (book_id, article_id, request_comment, status) VALUES (?, ?, ?, ?)";
-        connection.query(forRequestQuery, [bookId, results[0].article_id, unpublishReason, newStatus], (forRequestErr) => {
+        const forRequestQuery = "INSERT INTO forrequest (book_id, article_id, request_comment, status, user_email) VALUES (?, ?, ?, ?, ?)";
+        connection.query(forRequestQuery, [bookId, results[0].article_id, unpublishReason, newStatus, bookCreator], (forRequestErr) => {
           if (forRequestErr) {
             console.error("Error creating forrequest record: " + forRequestErr);
             res.status(500).json({ error: "Failed to create forrequest record" });

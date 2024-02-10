@@ -62,6 +62,7 @@ function Forapprovebook() {
       const data = {
         bookId: selectitem.book_id,
         newStatus: status,
+        bookCreator: selectitem.book_creator,
         unpublishReason:
           status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
@@ -116,11 +117,14 @@ function Forapprovebook() {
                   <th scope="col" className="col-sm-2">
                     ตอนของบทความ
                   </th>
-                  <th scope="col" className="col-sm-3">
+                  <th scope="col" className="col-sm-2">
                     รูปหน้าปกตอน
                   </th>
+                  <th scope="col" className="col-sm-1">
+                  ผู้สร้าง
+                  </th>
                   <th scope="col" className="col-sm-2">
-                    สถานะ
+                  สถานะ
                   </th>
                   <th scope="col" className="col-sm-2">
                     ดูเนื้อหา
@@ -159,6 +163,7 @@ function Forapprovebook() {
                           alt={item.book_name}
                         />
                       </td>
+                      <td className="col-sm-1">{item.book_creator}</td>
                       <td className="col-sm-2">
                         <Button
                           className={`btn ${
@@ -280,6 +285,25 @@ function Forapprovebook() {
                       disabled
                       id="articlename"
                       value={selectitem.article_name}
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-3 row">
+                  <label
+                    htmlFor="bookCreator"
+                    className="col-sm-2 col-form-label"
+                  >
+                    ผูู้สร้าง:
+                  </label>
+                  <div className="col-sm-10">
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      disabled
+                      id="bookCreator"
+                      value={selectitem.book_creator}
                     />
                   </div>
                 </div>
