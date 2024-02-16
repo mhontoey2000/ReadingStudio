@@ -398,6 +398,36 @@ app.post('/api/updateLeveltext', (req, res) => {
         }
       );
   });
+  app.post('/api/getarticle', function (req, res) {
+    const article_id = req.body.articleid;
+
+    console.log(article_id);
+ 
+    connection.query(
+      `SELECT * FROM article WHERE article_id = ?;`,
+      [article_id],
+        function(err, results) {
+          if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Failed to retrieve article' });
+            return;
+          }
+
+          if (results.length === 0) {
+            res.status(404).json({ error: 'Article not found' });
+            return;
+          }
+
+          const article = results[0];
+          const img = helper.convertBlobToBase64(article.article_imagedata);
+          const articledata = {
+            ...article,
+            article_imagedata: img,
+          };
+          res.json(articledata);
+        }
+      );
+  });
 
   app.get('/api/typebook/:id', function (req, res) {
     const article_id = req.parems.id;

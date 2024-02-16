@@ -41,81 +41,28 @@ function Editarticle() {
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
   };
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/exam/${articleid}`)
-      .then((response) => {
-        let tempArr = response.data.slice().reverse();
-        setqItems(tempArr);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/vocabs/${articleid}`)
-      .then((response) => {
-        let tempArr = response.data.slice().reverse();
-        setVitems(tempArr);
-        console.log("tempArr", tempArr);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [articleid]);
-
-  useEffect(() => {
-    // Simulate data retrieval delay
-    setTimeout(() => {
-      if (articleDetail != "") {
-        setIsLoading(false);
-      }
-    }, 2000); // Adjust the delay time as needed
-  }, [articleDetail]);
-
-  useEffect(() => {
-    if (!isLoading && textareaRef.current) {
-      // Adjust the height based on content
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [isLoading]);
-
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    accept: "audio/*",
-    onDrop: (acceptedFiles) => {
-      setAudioFile(acceptedFiles[0]);
-      setAudioUrl(URL.createObjectURL(acceptedFiles[0]));
-    },
-  });
-
   useEffect(() => {
     fetchArticleData();
   }, [articleid]);
 
-  useEffect(() => {
-    handleAudioPlayback();
-  }, [isPlaying, audioRef]);
+  
 
   const fetchArticleData = () => {
+    console.log(`http://localhost:5004/api/getarticle/${articleid}`)
+    const jsonData = {
+      articleid: articleid
+      }
     axios
-      .get(`http://localhost:5004/api/article`)
+      .post(`http://localhost:5004/api/getarticle`,jsonData)
       .then((response) => {
-        const article = response.data.find(
-          (item) => item.article_id === articleid
-        );
-        if (article) {
-          setArticleData(article);
-        }
+          console.log(response.data)
+          setArticleData(response.data);
+        // }
       })
       .catch((error) => {
         console.error(error);
       });
   };
-
   const setArticleData = (article) => {
     axios
       .get(`http://localhost:5004/api/book/${article.book_id}`)
@@ -150,6 +97,59 @@ function Editarticle() {
       setAudioUrl(article.article_sounddata);
     }
   };
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5004/api/vocabs/${articleid}`)
+      .then((response) => {
+        let tempArr = response.data.slice().reverse();
+        setVitems(tempArr);
+        console.log("tempArr", tempArr);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [articleid]);
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5004/api/exam/${articleid}`)
+      .then((response) => {
+        let tempArr = response.data.slice().reverse();
+        setqItems(tempArr);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    handleAudioPlayback();
+  }, [isPlaying, audioRef]);
+  useEffect(() => {
+    // Simulate data retrieval delay
+    setTimeout(() => {
+      if (articleDetail != "") {
+        setIsLoading(false);
+      }
+    }, 2000); // Adjust the delay time as needed
+  }, [articleDetail]);
+
+  useEffect(() => {
+    if (!isLoading && textareaRef.current) {
+      // Adjust the height based on content
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [isLoading]);
+
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: "audio/*",
+    onDrop: (acceptedFiles) => {
+      setAudioFile(acceptedFiles[0]);
+      setAudioUrl(URL.createObjectURL(acceptedFiles[0]));
+    },
+  });
+
+  
 
   const handleAudioPlayback = () => {
     if (audioRef) {

@@ -66,7 +66,7 @@ const Notification = () => {
   };
 
   const Getth = (value) => {
-    if (value === "published") return "ตรวจสอบแล้ว";
+    if (value === "published") return "เผยแพร่";
     else if (value === "pending") return "กำลังดำเนินการ";
     else if (value === "deny") return "ถูกระงับ";
   };
@@ -237,7 +237,7 @@ const Notification = () => {
                             {/* {item.report_status === "finished" && "สร้างเสร็จแล้ว"} */}
                             {item.report_status === "deny" && "ถูกระงับ"}
                             {item.report_status === "published" &&
-                              "ตรวจสอบแล้ว"}
+                              "เผยแพร่"}
                           </Button>
                         </td>
                         <td className="col-sm-1">
@@ -356,7 +356,7 @@ const Notification = () => {
                     <option value="default" hidden>
                       {Getth(selectitem.report_status)}
                     </option>
-                    <option value="published">ตรวจสอบแล้ว</option>
+                    <option value="published">เผยแพร่</option>
                     <option value="deny">ระงับการเผยแพร่</option>
                   </select>
                   <label htmlFor="status">เลือกสถานะ:</label>
