@@ -1084,7 +1084,7 @@ connection.query(bookQuery, [newStatus, bookId], (bookErr) => {
   console.log("newStatus : " + newStatus);
 
   // Check if newStatus is "published" or "deny" and there's an unpublishReason
-  if ((newStatus === "published" || newStatus === "deny") && unpublishReason) {
+  if (newStatus === "published" || newStatus === "deny") {
     // Check if there are matching rows in the article table
     const checkArticleQuery = "SELECT article_id FROM article WHERE book_id = ?";
     connection.query(checkArticleQuery, [bookId], (checkArticleErr, results) => {
@@ -1096,8 +1096,8 @@ connection.query(bookQuery, [newStatus, bookId], (bookErr) => {
 
       if (results.length > 0) {
         // If matching articles found, insert into forrequest
-        const forRequestQuery = "INSERT INTO forrequest (book_id, article_id, request_comment, status, user_email) VALUES (?, ?, ?, ?, ?)";
-        connection.query(forRequestQuery, [bookId, results[0].article_id, unpublishReason, newStatus, bookCreator], (forRequestErr) => {
+        const forRequestQuery = "INSERT INTO forrequest (book_id, article_id, request_comment, status) VALUES (?, ?, ?, ?)";
+        connection.query(forRequestQuery, [bookId, results[0].article_id, unpublishReason, newStatus], (forRequestErr) => {
           if (forRequestErr) {
             console.error("Error creating forrequest record: " + forRequestErr);
             res.status(500).json({ error: "Failed to create forrequest record" });

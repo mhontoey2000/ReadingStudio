@@ -66,7 +66,6 @@ function Forapprovebook() {
         unpublishReason:
           status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
-
       axios
         .post("http://localhost:5004/api/updateStatus", data)
         .then((response) => {
@@ -324,7 +323,7 @@ function Forapprovebook() {
                       {selectitem.status_book === "deny" && "ถูกระงับ"}
                       {selectitem.status_book === "published" && "เผยแพร่แล้ว"}
                     </option>
-                    {/* <option value="published">:อนุมัติ</option> */}
+         <option value="published">อนุมัติ</option>
                     <option value="deny">ระงับบทความ</option>
                   </select>
                   <label htmlFor="status">เลือกสถานะ:</label>
