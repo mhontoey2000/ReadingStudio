@@ -1031,13 +1031,13 @@ app.delete('/api/deleteallbookcreator/:bookId', function (req, res) {
 app.get('/api/forapprove', function (req, res) {
 
   connection.query(
-    `SELECT b.book_id, b.book_name, b.status_book, b.book_creator,
+    `SELECT b.book_id, b.book_name, b.status_book, b.book_creator, b.book_view,
       GROUP_CONCAT(a.article_name) AS article_names,
       b.book_imagedata
       FROM book b
       JOIN article a ON b.book_id = a.book_id
       WHERE b.status_book IN ('published', 'deny')
-      GROUP BY b.book_id, b.book_name, b.status_book, b.book_imagedata;`,
+      GROUP BY b.book_id, b.book_name, b.status_book, b.book_imagedata, b.book_view;`,
     function(err, results) {
       const bookdata = results.map((book) => {
         const img = helper.convertBlobToBase64(book.book_imagedata);

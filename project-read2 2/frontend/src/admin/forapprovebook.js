@@ -125,7 +125,10 @@ function Forapprovebook() {
                   <th scope="col" className="col-sm-2">
                   สถานะ
                   </th>
-                  <th scope="col" className="col-sm-2">
+                  <th scope="col" className="col-sm-1">
+                  จำนวนเข้าชม
+                  </th>
+                  <th scope="col" className="col-sm-1">
                     ดูเนื้อหา
                   </th>
                 </tr>
@@ -154,7 +157,7 @@ function Forapprovebook() {
                             ))
                           : "ไม่มีตอนของบทความ"}
                       </td>
-                      <td className="col-sm-3">
+                      <td className="col-sm-2">
                         <img
                           src={item.book_imagedata || "url_to_default_image"}
                           width="100"
@@ -189,7 +192,8 @@ function Forapprovebook() {
                           {item.status_book === "published" && "เผยแพร่แล้ว"}
                         </Button>
                       </td>
-                      <td className="col-sm-2">
+                      <td className="col-sm-1">{item.book_view}</td>
+                      <td className="col-sm-1">
                         <Link
                           to={{
                             pathname: "/Page/bookarticle",
