@@ -207,6 +207,43 @@ app.get('/api/book', function (req, res) {
       }
     );
 });
+
+// New endpoint to increment book_view
+app.post('/api/book/view/:bookId', (req, res) => {
+  const bookId = req.params.bookId;
+
+  connection.query(
+    'UPDATE book SET book_view = book_view + 1 WHERE book_id = ?',
+    [bookId],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json({ success: true });
+      }
+    }
+  );
+});
+
+// New endpoint to increment article_view
+app.post('/api/articles/view/:articleId', (req, res) => {
+  const articleId = req.params.articleId;
+
+  connection.query(
+    'UPDATE article SET article_view = article_view + 1 WHERE article_id = ?',
+    [articleId],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json({ success: true });
+      }
+    }
+  );
+});
+
 app.get('/api/book/:bookId', function (req, res) {
   const bookid = req.params.bookId;
   connection.query(

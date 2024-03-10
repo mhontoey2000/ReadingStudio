@@ -32,6 +32,15 @@ function Home() {
             console.error(error);
           });
     }, []); 
+    
+    const incrementBookView = (bookId) => {
+        axios.post(`http://localhost:5004/api/book/view/${bookId}`)
+          .then((response) => {
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      };
 
     // Function to filter items based on the search term
     const filteredItems = items.filter((item) => {
@@ -65,18 +74,21 @@ function Home() {
                                             ) : null}
                                             <div className="card-body">
                                                 <h4 className="card-title" style={{ fontWeight: "bold" }}>{book.book_name}</h4>
-                                                <span className="card-text">{book.book_detail}</span>
+                                                <h5 className="card-text">{book.book_detail}</h5>
+                                                <span className="card-text" style={{ fontStyle: "italic",marginTop: "10px" }}>ผู้อัปโหลด: {book.book_creator}</span>
+                                                {/* <span className="card-text"><i class="bi bi-eye"></i></span> */}
                                                 <div className="text-center" style={{ margin: "10px" }}>
                                                     <Link
                                                         to={{ pathname: "/Page/bookarticle", state: { book_id: book.book_id } }}
                                                         className="btn btn-primary btn-lg"
+                                                        onClick={() => incrementBookView(book.book_id)}
                                                     >
                                                         อ่าน
                                                     </Link>
                                                 </div>
                                             </div>
                                                 <div className="card-footer">
-                                                    <span style={{ fontStyle: "italic" }}>ผู้อัปโหลด: {book.book_creator}</span>
+                                                    <span style={{ fontStyle: "italic" }}><i className="bi bi-eye"></i>{book.book_view} ผู้เข้าชม</span>
                                                 </div>
                                         </div>
                                     </div>

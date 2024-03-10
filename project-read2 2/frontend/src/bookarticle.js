@@ -45,6 +45,15 @@ function Bookarticle({ match }) {
       });
   }, [bookid]);
 
+  const incrementArticleView = (bookId) => {
+    axios.post(`http://localhost:5004/api/articles/view/${bookId}`)
+      .then((response) => {
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   // Function to filter items based on the search term
   const filteredItems = items.filter((item) => {
     return item.article_name.includes(searchTerm);
@@ -73,7 +82,7 @@ function Bookarticle({ match }) {
                     className="grid-item-wrapper"
                     style={{ padding: "10px" }}
                   >
-                    <div className="card boxarhover">
+                    <div className="card cardhover">
                       {article.article_imagedata || article.article_images ? (
                         <img
                           className="card-img-top img-fluid simg"
@@ -98,9 +107,16 @@ function Bookarticle({ match }) {
                               state: { article_id: article.article_id },
                             }}
                             className="btn btn-primary btn-lg"
+                            onClick={() => incrementArticleView(article.article_id)}
                           >
                             อ่าน
                           </Link>
+                        </div>
+                        <div className="card-footer">
+                          <span style={{ fontStyle: "italic" }}>
+                            <i className="bi bi-eye"></i>
+                            {article.article_view} ผู้เข้าชม
+                          </span>
                         </div>
                       </div>
                     </div>
