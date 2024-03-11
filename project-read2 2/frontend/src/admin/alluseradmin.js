@@ -10,6 +10,7 @@ const Alluseradmin = () => {
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false); // State for Modal visibility
   const [selectedUser, setSelectedUser] = useState(null); // State to hold the selected user's data
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
@@ -55,25 +56,36 @@ const Alluseradmin = () => {
     setSelectedUser(null);
   };
 
+  const handleCloseDeleteConfirmation = () => {
+    setShowDeleteConfirmation(false);
+  };
+
+  const handleDeleteConfirmation = () => {
+    // Close the delete confirmation modal
+    handleCloseDeleteConfirmation();
+
+    // Proceed with the delete operation
+    axios
+      .delete(`http://localhost:5004/api/user/${selectedUser.user_id}`)
+      .then((response) => {
+        // Refresh the user list after deletion
+        fetchUsers();
+      })
+      .catch((error) => {
+        console.error(
+          `Error deleting user with ID ${selectedUser.user_id}: ${error}`
+        );
+      });
+
+    // Reset selectedUser and close the main modal
+    setShowModal(false);
+    setSelectedUser(null);
+  };
   const deleteUser = () => {
     if (!selectedUser) return;
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      axios
-        .delete(`http://localhost:5004/api/user/${selectedUser.user_id}`)
-        .then((response) => {
-          //console.log(`User with ID ${selectedUser.user_id} has been deleted.`);
-          // Refresh the user list after deletion
-          fetchUsers();
-        })
-        .catch((error) => {
-          console.error(
-            `Error deleting user with ID ${selectedUser.user_id}: ${error}`
-          );
-        });
-
-      setShowModal(false);
-      setSelectedUser(null);
-    }
+    setShowModal(false);
+    setShowDeleteConfirmation(true); 
+    
   };
 
   const handleEditClick = (user) => {
@@ -83,6 +95,27 @@ const Alluseradmin = () => {
 
    const handlePageClick = (selectedPage) => {
     setCurrentPage(selectedPage.selected + 1);
+  };
+
+  const formatLastLogin = (timestamp) => {
+    const now = new Date();
+    const lastLoginDate = new Date(timestamp);
+
+    const timeDifference = now - lastLoginDate;
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return `${days} วันที่แล้ว`;
+    } else if (hours > 0) {
+      return `${hours} ชั่วโมงที่แล้ว`;
+    } else if (minutes > 0) {
+      return `${minutes} นาทีที่แล้ว`;
+    } else {
+      return 'เมื่อสักครู่';
+    }
   };
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -106,23 +139,24 @@ const Alluseradmin = () => {
               <table className="table table-bordered">
                 <thead>
                   <tr>
-                    <th>ลำดับ</th>
-                    <th>ชื่อ</th>
-                    <th>นามสกุล</th>
-                    <th>อีเมล์</th>
-                    <th>ประเภทบัญชี</th>
-                    <th>สถานะ</th>
-                    <th>จัดการ</th>
+                    <th scope="col" className="col-sm-1">ลำดับ</th>
+                    <th scope="col" className="col-sm-2">ชื่อ</th>
+                    <th scope="col" className="col-sm-2">นามสกุล</th>
+                    <th scope="col" className="col-sm-2">อีเมล์</th>
+                    <th scope="col" className="col-sm-1">ประเภทบัญชี</th>
+                    <th scope="col" className="col-sm-1">สถานะ</th>
+                    <th scope="col" className="col-sm-2">การเข้าสู่ระบบ</th>
+                    <th scope="col" className="col-sm-1">จัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentUsers.map((item, index) => (
                     <tr key={item.user_id}>
-                      <td key={`item${index + 1}`}>{startIndex + index + 1}</td>
-                      <td>{item.user_name}</td>
-                      <td>{item.user_surname}</td>
-                      <td>{item.user_email}</td>
-                      <td>{item.user_type}</td>
+                      <td className="col-sm-1" key={`item${index + 1}`}>{startIndex + index + 1}</td>
+                      <td className="col-sm-2">{item.user_name}</td>
+                      <td className="col-sm-2">{item.user_surname}</td>
+                      <td className="col-sm-2">{item.user_email}</td>
+                      <td className="col-sm-1">{item.user_type}</td>
                       {/* <td>{item.approval_status}</td> */}
                       <td
                         style={{
@@ -134,6 +168,7 @@ const Alluseradmin = () => {
                               : "#f36c60",
                               fontWeight: "bold",
                         }}
+                        className="col-sm-1"
                       >
                         {item.approval_status === "pending"
                           ? "รออนุมัติ"
@@ -143,10 +178,10 @@ const Alluseradmin = () => {
                           ? "อนุมัติ"
                           : item.approval_status}
                       </td>
-
-                      <td>
+                      <td className="col-sm-2">{formatLastLogin(item.last_login)}</td>
+                      <td className="col-sm-1">
                         <Button
-                          className="btn btn-danger"
+                          className="btn btn-warning"
                           onClick={() => handleEditClick(item)}
                         >
                           จัดการ
@@ -191,19 +226,19 @@ const Alluseradmin = () => {
         </Modal.Header>
         <Modal.Body>
           {selectedUser && (
-            <div>
-              <p>
+            <div className="table-approve">
+              <div className="mb-3">
                 <strong>ชื่อ:</strong> {selectedUser && selectedUser.user_name}
-              </p>
-              <p>
+              </div>
+              <div className="mb-3">
                 <strong>นามสกุล:</strong>{" "}
                 {selectedUser && selectedUser.user_surname}
-              </p>
-              <p>
+              </div>
+              <div className="mb-3">
                 <strong>อีเมล์:</strong>{" "}
                 {selectedUser && selectedUser.user_email}
-              </p>
-              <p>
+              </div>
+              {/* <p>
                 <strong>สถานะ:</strong>{" "}
                 <span
                   style={{
@@ -226,7 +261,7 @@ const Alluseradmin = () => {
                     ? "อนุมัติ"
                     : selectedUser.approval_status}
                 </span>
-              </p>
+              </p> */}
               {selectedUser.user_idcard ? (
                 <img
                   src={selectedUser && selectedUser.user_idcard}
@@ -235,29 +270,53 @@ const Alluseradmin = () => {
                   height="200"
                 />
               ) : null}
-              <p>
+              <div className="d-flex align-items-center" style={{marginTop:"20px"}}>
+                <p className="mr-3" style={{ marginRight: "10px" }}>สถานะของบัญชี</p>
                 <Button
-                  variant="primary"
+                  variant="btn btn-outline-success"
+                  style={{ marginRight: "10px" }}
                   onClick={() => approvalStatus("approved")}
                 >
-                  อนุมัติ
+                  อนุมัติบัญชี
                 </Button>
                 <Button
-                  variant="secondary"
+                  variant="btn btn-outline-danger"
                   onClick={() => approvalStatus("rejected")}
                 >
-                  ปฏิเสธ
+                  ปฏิเสธบัญชี
                 </Button>
-              </p>
+              </div>
             </div>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+        <div className="d-flex justify-content-between w-100">
+          <Button variant="btn btn-danger" onClick={deleteUser}>
+            ลบบัญชี
+          </Button>
+          <Button variant="btn btn-primary" onClick={() => setShowModal(false)}>
             ยกเลิก
           </Button>
-          <Button variant="danger" onClick={deleteUser}>
-            ลบ
+        </div>
+        </Modal.Footer>
+      </Modal>
+      
+      <Modal
+        show={showDeleteConfirmation}
+        onHide={handleCloseDeleteConfirmation}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยันการลบบัญชี</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>คุณแน่ใจหรือไม่ที่ต้องการลบบัญชีนี้?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="btn btn-danger" onClick={handleDeleteConfirmation}>
+            ลบบัญชี
+          </Button>
+          <Button variant="btn btn-primary" onClick={handleCloseDeleteConfirmation}>
+            ยกเลิก
           </Button>
         </Modal.Footer>
       </Modal>
