@@ -11,7 +11,8 @@ const Alluseradmin = () => {
   const [showModal, setShowModal] = useState(false); // State for Modal visibility
   const [selectedUser, setSelectedUser] = useState(null); // State to hold the selected user's data
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
@@ -19,11 +20,18 @@ const Alluseradmin = () => {
     fetchUsers();
   }, [currentPage]);
 
+  useEffect(() => {
+    setFilteredUsers(isFiltering ? filterUsersByLastLogin() : user); // Update filtered users when isFiltering changes
+  }, [isFiltering, user]);
+
   const fetchUsers = () => {
     axios
       .get("http://localhost:5004/api/user")
       .then((response) => {
         setUser(response.data);
+        if (!isFiltering) { 
+          setFilteredUsers(response.data);
+        }
       })
       .catch((error) => {
         setError(error);
@@ -120,8 +128,26 @@ const Alluseradmin = () => {
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentUsers = user.slice(startIndex, endIndex);
+  const currentUsers = filteredUsers.slice(startIndex, endIndex);
   const totalPages = Math.ceil(user.length / ITEMS_PER_PAGE);
+
+  const filterUsersByLastLogin = () => {
+    const now = new Date();
+    const ninetyDaysAgo = new Date(now);
+    ninetyDaysAgo.setDate(now.getDate() - 90);
+
+    return user.filter((item) => {
+      const lastLoginDate = new Date(item.last_login);
+      return lastLoginDate <= ninetyDaysAgo;
+    });
+  };
+
+  const handleFilter90DaysAgo = () => {
+    setCurrentPage(1);
+    setIsFiltering(!isFiltering); // Toggle filtering state
+  };
+
+
 
   return (
     <div>
@@ -131,6 +157,12 @@ const Alluseradmin = () => {
           <div className="row">
             <div className="col-12">
               <h1 className="text-center">บัญชีผู้ใช้ทั้งหมด</h1>
+              <Button  
+                onClick={isFiltering ? () => setIsFiltering(false) : handleFilter90DaysAgo}
+                style={{marginBottom:"10px"}}
+              >
+                {isFiltering ? "ย้อนกลับ" : "บัญชีที่ไม่มีการเคลื่อนไหว"}
+              </Button>
             </div>
           </div>
 
@@ -201,15 +233,16 @@ const Alluseradmin = () => {
                     ย้อนกลับ
                   </Button>
                   <span style={{ margin: "0 10px" }}>
-                    {currentPage} จาก {totalPages}
+                    {`${currentPage} จาก ${Math.ceil(filteredUsers.length / ITEMS_PER_PAGE)}`}
                   </span>
                   <Button
                     onClick={() => setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))}
-                    disabled={currentPage === totalPages}
+                    disabled={currentPage === totalPages || filteredUsers.length === 0 || filteredUsers.length < ITEMS_PER_PAGE}
                     className="btn btn-primary"
                   >
                     ถัดไป
                   </Button>
+
                 </td>
               </tr>
             </tfoot>
