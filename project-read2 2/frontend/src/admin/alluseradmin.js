@@ -8,7 +8,7 @@ import {
   apiClient,
   convertSoundToBase64,
   convertImageToBase64,
-} from "./config"
+} from "../config"
 
 const Alluseradmin = () => {
   const [user, setUser] = useState([]);

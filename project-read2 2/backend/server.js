@@ -674,6 +674,56 @@ app.post('/api/updateuser/:id',async function (req, res) {
   );
 });
 
+// Maintain a set to keep track of users for whom emails have been sent
+const notifiedUsers = new Set();
+
+const checkInactiveUsersAndSendEmails = async () => {
+  console.log('Checking for inactive users...');
+  const ninetyDaysAgo = new Date();
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
+  const query = 'SELECT user_id, user_email FROM user WHERE last_login <= ?';
+  connection.query(query, [ninetyDaysAgo], async (error, results) => {
+    if (error) {
+      console.error('Error querying database:', error);
+      setTimeout(checkInactiveUsersAndSendEmails, 24 * 60 * 60 * 1000);
+      return;
+    }
+    console.log('Found inactive users:', results.length);
+    for (const row of results) {
+      const userId = row.user_id;
+      const email = row.user_email;
+      
+      // Check if the user has already been notified
+      if (notifiedUsers.has(userId)) {
+        console.log(`User ${userId} already notified. Skipping...`);
+        continue;
+      }
+      
+      const subject = 'แจ้งเตือนการเข้าใช้งาน Reading Studio';
+      const content = 'เนื่องบัญชีของคุณไม่ได้ทำการเข้าใช้งานเป็นเวลามากกว่า 90 วัน ระบบจะทำการลบบัญชีของท่าน หากประสงค์ที่จะใช้งานระบบต่อกรุณาล็อกอินเข้าระบบเพื่อใช้งาน';
+      
+      // Send the email
+      await sendMail(email, subject, content);
+      
+      // Add the user to the set of notified users
+      notifiedUsers.add(userId);
+    }
+    
+    setTimeout(checkInactiveUsersAndSendEmails, 24 * 60 * 60 * 1000);
+  });
+};
+
+//checkInactiveUsersAndSendEmails();//the starter of checkInactiveUsersAndSendEmails
+
+const intervalId = setInterval(() => {
+  console.log('Scheduling the function to run again...');
+  checkInactiveUsersAndSendEmails();
+}, 24 * 60 * 60 * 1000);
+
+console.log('Interval ID:', intervalId);
+
+
 // deleting a user by user_id
 app.delete('/api/user/:id', function (req, res) {
   const userId = req.params.id;
