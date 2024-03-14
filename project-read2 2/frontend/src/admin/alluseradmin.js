@@ -4,6 +4,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "./config"
 
 const Alluseradmin = () => {
   const [user, setUser] = useState([]);
@@ -25,8 +30,8 @@ const Alluseradmin = () => {
   }, [isFiltering, user]);
 
   const fetchUsers = () => {
-    axios
-      .get("http://localhost:5004/api/user")
+    apiClient
+      .get("api/user")
       .then((response) => {
         setUser(response.data);
         if (!isFiltering) { 
@@ -44,9 +49,9 @@ const Alluseradmin = () => {
 
     const data = { status, email };
 
-    axios
+    apiClient
       .post(
-        `http://localhost:5004/api/updateuser/${selectedUser.user_id}`,
+        `api/updateuser/${selectedUser.user_id}`,
         data
       )
       .then((response) => {
@@ -73,8 +78,8 @@ const Alluseradmin = () => {
     handleCloseDeleteConfirmation();
 
     // Proceed with the delete operation
-    axios
-      .delete(`http://localhost:5004/api/user/${selectedUser.user_id}`)
+    apiClient
+      .delete(`api/user/${selectedUser.user_id}`)
       .then((response) => {
         // Refresh the user list after deletion
         fetchUsers();
@@ -146,8 +151,6 @@ const Alluseradmin = () => {
     setCurrentPage(1);
     setIsFiltering(!isFiltering); // Toggle filtering state
   };
-
-
 
   return (
     <div>

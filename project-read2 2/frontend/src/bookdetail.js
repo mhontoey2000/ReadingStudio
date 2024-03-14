@@ -9,6 +9,11 @@ import { useLocation } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Searchbar from "./searchbar";
 import formatTime from "./formattime";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "./config"
 
 function Bookdetail(match) {
   const [items, setItems] = useState([]);
@@ -86,7 +91,7 @@ function Bookdetail(match) {
       formData.append('userId', userId );
     
       // ทำการ HTTP POST ด้วย FormData
-      axios.post(`http://localhost:5004/api/examhistory`, formData)
+      apiClient.post(`api/examhistory`, formData)
         .then((response) => {
           // setHistoryRecorded(true);
     
@@ -111,8 +116,8 @@ function Bookdetail(match) {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5004/api/userdata?user_email=" + user)
+    apiClient
+      .get("api/userdata?user_email=" + user)
       .then((response) => {
         setRemail(response.data[0].user_email);
         setUsertype(response.data[0].user_type);
@@ -121,8 +126,8 @@ function Bookdetail(match) {
   }, [user]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/vocabs/${articleid}`)
+    apiClient
+      .get(`api/vocabs/${articleid}`)
       .then((response) => {
         let tempArr = response.data.slice().reverse();
         setVitems(tempArr);
@@ -134,8 +139,8 @@ function Bookdetail(match) {
   }, [articleid]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/articledetail/${articleid}?user_id=${userId}`)
+    apiClient
+      .get(`api/articledetail/${articleid}?user_id=${userId}`)
       .then((response) => {
         setItems(response.data);
         setIsLoaded(true);
@@ -159,8 +164,8 @@ function Bookdetail(match) {
   
   useEffect(() => {
     if (isLoaded) {
-      axios
-        .post(`http://localhost:5004/api/articledetail/${articleid}/record-history`, {
+      apiClient
+        .post(`api/articledetail/${articleid}/record-history`, {
           user_id: userId,
           book_id: bookid,
         })
@@ -174,8 +179,8 @@ function Bookdetail(match) {
   }, [isLoaded, articleid, userId, bookid]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/exam/${articleid}`)
+    apiClient
+      .get(`api/exam/${articleid}`)
       .then((response) => {
         let tempArr = response.data;
         setqItems(tempArr);
@@ -191,11 +196,11 @@ function Bookdetail(match) {
     );
 
     if (confirmed) {
-      axios
-        .delete(`http://localhost:5004/api/vocabs/${vocabId}`)
+      apiClient
+        .delete(`api/vocabs/${vocabId}`)
         .then((response) => {
-          axios
-            .get(`http://localhost:5004/api/vocabs/${articleid}`)
+          apiClient
+            .get(`api/vocabs/${articleid}`)
             .then((response) => {
               setVitems(response.data.slice().reverse());
             })

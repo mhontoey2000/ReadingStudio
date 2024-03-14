@@ -5,6 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import '../styles/profile.css';
+import {
+    apiClient,
+    convertSoundToBase64,
+    convertImageToBase64,
+  } from "../config";
 
 function Edituser() {
 
@@ -16,7 +21,7 @@ function Edituser() {
     const [status, setStatus] = useState("");
 
     useEffect(() => {
-        axios.get('http://localhost:5004/api/userdata?user_email=' + user)
+        apiClient.get('api/userdata?user_email=' + user)
           .then((response) => {
             setFirstname(response.data[0].user_name);
             setLastname(response.data[0].user_surname);

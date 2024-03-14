@@ -6,6 +6,11 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import "../styles/alladmin.css"
+import {
+    apiClient,
+    convertSoundToBase64,
+    convertImageToBase64,
+  } from "../config";
 
 const Allarticleadmin = () => {
     const [articles, setArticles] = useState([]);
@@ -13,7 +18,7 @@ const Allarticleadmin = () => {
     const [articleToDelete, setArticleToDelete] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:5004/api/article')
+        apiClient.get('api/article')
             .then((response) => {
                 setArticles(response.data);
             })
@@ -29,11 +34,11 @@ const Allarticleadmin = () => {
     };
 
     const deleteArticleConfirmed = (articleId) => {
-        axios.delete(`http://localhost:5004/api/deletearticle/${articleId}`)
+        apiClient.delete(`api/deletearticle/${articleId}`)
             .then(() => {
                 console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
                 // Refresh the article list after deletion
-                axios.get('http://localhost:5004/api/article')
+                apiClient.get('api/article')
                     .then((response) => {
                         setArticles(response.data);
                     })

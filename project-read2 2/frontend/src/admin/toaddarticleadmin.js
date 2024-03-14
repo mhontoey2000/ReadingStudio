@@ -7,6 +7,11 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import "../styles/allbookcreator.css";
 import Searchbar from "../searchbar";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 function Articlecreator() {
   const [items, setItems] = useState([]);
@@ -17,8 +22,8 @@ function Articlecreator() {
   const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/allbookadmin`)
+    apiClient
+      .get(`api/allbookadmin`)
       .then((response) => {
         console.log(response);
         setItems(response.data);

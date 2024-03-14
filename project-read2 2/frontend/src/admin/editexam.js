@@ -7,6 +7,11 @@ import Button from "react-bootstrap/Button";
 import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import "../styles/addexam.css";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 function Editexam() {
   const location = useLocation();
@@ -47,8 +52,7 @@ function Editexam() {
     console.log("bookname" + bookname);
     console.log("article_id" + articleid);
 
-    axios
-      .get(`http://localhost:5004/api/exam/${articleid}`)
+    apiClient.get(`api/exam/${articleid}`)
       .then((response) => {
         let tempArr = response.data.slice();
         setqItems(tempArr);
@@ -108,8 +112,8 @@ function Editexam() {
   const removeQuestionFromServer = (questionId) => {
     // สร้างคำขอ HTTP DELETE โดยระบุ URL ของ API และ ID ของคำถามที่ต้องการลบ
     if (questionId !== -1) {
-      axios
-        .delete(`http://localhost:5004/api/deleteeditexam/${questionId}`)
+      apiClient
+        .delete(`api/deleteeditexam/${questionId}`)
         .then((response) => {
           console.log("ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย");
           setTempArrCount(tempArrCount-1);
@@ -166,8 +170,8 @@ function Editexam() {
     formData.append(`questionsoptions`, JSON.stringify(question.options));
     formData.append(`questionscorrectOption`, question.correctOption);
 
-    axios
-      .post(`http://localhost:5004/api/editexam/`, formData)
+    apiClient
+      .post(`api/editexam/`, formData)
       .then((response) => {
         console.error("บันทึกข้อมูลเรียบร้อย");
       })
@@ -188,8 +192,8 @@ function Editexam() {
       data.append(`questionsoptions`, JSON.stringify(question.options));
       data.append(`questionscorrectOption`, question.correctOption);
 
-      const response = await axios.post(
-        "http://localhost:5004/api/add-data",
+      const response = await apiClient.post(
+        "api/add-data",
         data
       );
       if (response.status === 200) {

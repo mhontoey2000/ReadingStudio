@@ -7,6 +7,11 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import "../styles/allbookcreator.css";
 import Searchbar from "../searchbar";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 const Allexamadmin = () => {
 
@@ -15,8 +20,8 @@ const Allexamadmin = () => {
     const [searchTerm, setSearchTerm] = useState("");
   
     useEffect(() => {
-      axios
-        .get("http://localhost:5004/api/allexamadmin")
+      apiClient
+        .get("api/allexamadmin")
         .then((response) => {
           console.log(response);
           setItems(response.data);

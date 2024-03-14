@@ -5,14 +5,19 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Searchbar from "../searchbar";
 import "../styles/creator.css";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config"
 
 function Creator() {
   const user = localStorage.getItem("email");
   const [status, setStatus] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5004/api/userdata?user_email=" + user)
+    apiClient
+      .get("api/userdata?user_email=" + user)
       .then((response) => {
         setStatus(response.data[0].approval_status);
       })

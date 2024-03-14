@@ -6,6 +6,11 @@ import Button from "react-bootstrap/Button";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 const Notification = () => {
   const [showModal, setShowModal] = useState(false);
@@ -33,8 +38,8 @@ const Notification = () => {
   const totalPages = Math.ceil(report.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/reportnotification`)
+    apiClient
+      .get(`api/reportnotification`)
       .then((response) => {
         setReport(response.data);
       })
@@ -51,8 +56,8 @@ const Notification = () => {
       report_id: items.report_id,
       report_status: "pending",
     };
-    axios
-      .post("http://localhost:5004/api/updatereport", data, {
+    apiClient
+      .post("api/updatereport", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -91,8 +96,8 @@ const Notification = () => {
           status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
       console.log(data1);
-      axios
-        .post("http://localhost:5004/api/updateStatus", data1)
+      apiClient
+        .post("api/updateStatus", data1)
         .then((response) => {
           if (response.status === 200) {
           }
@@ -100,8 +105,8 @@ const Notification = () => {
         .catch((error) => {
           console.error(error);
         });
-      axios
-        .post("http://localhost:5004/api/updatereport", data, {
+        apiClient
+        .post("api/updatereport", data, {
           headers: {
             "Content-Type": "application/json",
           },

@@ -6,6 +6,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useHistory } from "react-router-dom";
 import Searchbar from "./searchbar";
 import Button from "react-bootstrap/Button";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "./config"
 
 function Watchedhistory() {
   const user_id = localStorage.getItem("user_id");
@@ -51,8 +56,8 @@ function Watchedhistory() {
 
   useEffect(() => {
     // ดึงข้อมูลประวัติการทำข้อสอบ
-    axios
-      .get(`http://localhost:5004/api/examhistory?user_id=${user_id}`)
+    apiClient
+      .get(`api/examhistory?user_id=${user_id}`)
       .then((response) => {
         const examsByDay = groupByDay(response.data);
         setExamHistory(examsByDay);
@@ -65,7 +70,7 @@ function Watchedhistory() {
 
         // Fetch all exam details
         const fetchExamDetails = uniqueArticleIds.map((articleId) =>
-          axios.get(`http://localhost:5004/api/exam/${articleId}`)
+        apiClient.get(`api/exam/${articleId}`)
         );
 
         // Wait for all exam detail requests to complete
@@ -103,8 +108,8 @@ function Watchedhistory() {
       });
 
     // ดึงข้อมูลประวัติการดู
-    axios
-      .get(`http://localhost:5004/api/watchedhistory?user_id=${user_id}`)
+    apiClient
+      .get(`api/watchedhistory?user_id=${user_id}`)
       .then((response) => {
         const articlesByDay = groupByDay(response.data);
         setWatchedArticles(articlesByDay);
@@ -156,8 +161,8 @@ function Watchedhistory() {
     });
   };
   const handleToPageExam = (exam) => {
-    axios
-      .get(`http://localhost:5004/api/exam/${exam.article_id}`)
+    apiClient
+      .get(`api/exam/${exam.article_id}`)
       .then((response) => {
         let tempArr = response.data;
         history.push({

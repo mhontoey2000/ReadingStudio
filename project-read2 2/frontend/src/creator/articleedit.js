@@ -9,6 +9,11 @@ import Searchbar from "../searchbar";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Loading from "../LoadingIndicator";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config"
 
 function Articleedit() {
   const [items, setItems] = useState([]);
@@ -38,15 +43,15 @@ function Articleedit() {
     "ประถมศึกษาปีที่ 4",
     "ประถมศึกษาปีที่ 5",
     "ประถมศึกษาปีที่ 6",
-    "ระดับที่สูงกว่าประถมศึกษาปีที่ 6",
+    "ไม่ระบุระดับ",
   ];
 
   useEffect(() => {
     setLoading(true);
 
     // โหลดข้อมูลผู้ใช้เมื่อมีความจำเป็น
-    axios
-      .get("http://localhost:5004/api/userdata?user_email=" + user)
+    apiClient
+      .get("api/userdata?user_email=" + user)
       .then((response) => {
         setUsertype(response.data[0].user_type);
         setLoading(false);
@@ -110,8 +115,8 @@ function Articleedit() {
 
     // โหลดข้อมูลบทความเมื่อมีความจำเป็นเท่าที่จำเป็น (ในตัวอย่างนี้เมื่อ bookid เปลี่ยน)
     if (bookid) {
-      axios
-        .get(`http://localhost:5004/api/article/${bookid}`)
+      apiClient
+        .get(`api/article/${bookid}`)
         .then((response) => {
           setItems(response.data);
           setLoading(false);
@@ -182,8 +187,8 @@ function Articleedit() {
       newLevel: leveltext,
     };
 
-    axios
-      .post("http://localhost:5004/api/updateLeveltext", data)
+    apiClient
+      .post("api/updateLeveltext", data)
       .then((response) => {
         console.log(response.data);
         window.location.reload();
@@ -204,12 +209,12 @@ function Articleedit() {
   };
 
   const deleteArticleConfirmed = (articleId) => {
-    axios
-      .delete(`http://localhost:5004/api/deletearticle/${articleId}`)
+    apiClient
+      .delete(`api/deletearticle/${articleId}`)
       .then(() => {
         //console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
-        axios
-          .get(`http://localhost:5004/api/article/${bookid}`)
+        apiClient
+          .get(`api/article/${bookid}`)
           .then((response) => {
             setItems(response.data);
             setShowSuccessModal(true);

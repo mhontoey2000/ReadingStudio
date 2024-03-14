@@ -6,7 +6,11 @@ import Button from "react-bootstrap/Button";
 import { useParams } from "react-router-dom";
 import "../styles/editall.css";
 import { useHistory } from 'react-router-dom';
-
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 function Editbook() {
     const history = useHistory();
@@ -18,7 +22,7 @@ function Editbook() {
 
     useEffect(() => {
 
-        axios.get(`http://localhost:5004/api/book`)
+      apiClient.get(`api/book`)
           .then((response) => {
             for(let i=0; i<response.data.length; i++) {
                 if(response.data[i].book_id === bookid)
@@ -66,7 +70,7 @@ function Editbook() {
         formData.append('book_image', selectedImageFile);
       }
     
-      axios.post('http://localhost:5004/api/updatebook', formData)
+      apiClient.post('api/updatebook', formData)
         .then((response) => {
           cancelEditBook();
         })

@@ -8,6 +8,11 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Searchbar from "../searchbar";
 import "../styles/alladmin.css";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 const Allbookadmin = () => {
   const [items, setItems] = useState([]);
@@ -26,13 +31,13 @@ const Allbookadmin = () => {
 
   function init() {
     //console.log(user);
-    axios
-      .get("http://localhost:5004/api/userdata?user_email=" + user)
+    apiClient
+      .get("api/userdata?user_email=" + user)
       .then((userresponse) => {
         //console.log("User :" + userresponse.data[0].user_type);
 
-        axios
-          .get("http://localhost:5004/api/allbookarticleadmin")
+        apiClient
+          .get("api/allbookarticleadmin")
           .then((response) => {
             //console.log(response);
             const filteredData = response.data.filter((item) => {
@@ -66,8 +71,8 @@ const Allbookadmin = () => {
   };
 
   const deleteBookConfirmed = (bookId) => {
-    axios
-      .delete(`http://localhost:5004/api/deletebook/${bookId}`)
+    apiClient
+      .delete(`api/deletebook/${bookId}`)
       .then(() => {
         //console.log(`บทความที่มี ID ${bookId} ถูกลบแล้ว.`);
         // Refresh the book list after deletion

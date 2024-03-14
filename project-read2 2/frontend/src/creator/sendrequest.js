@@ -8,6 +8,11 @@ import axios from "axios";
 import "../styles/allbookcreator.css";
 import Searchbar from "../searchbar";
 import Modal from "react-bootstrap/Modal";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config"
 
 function Sendrequest() {
   const [items, setItems] = useState([]);
@@ -26,8 +31,8 @@ function Sendrequest() {
     init();
   }, []);
   function init() {
-    axios
-      .get("http://localhost:5004/api/allbookarticlecreator?user_email=" + user)
+    apiClient
+      .get("api/allbookarticlecreator?user_email=" + user)
       .then((response) => {
         console.log(response.data);
         setItems(response.data);
@@ -39,8 +44,8 @@ function Sendrequest() {
 
   const confirmPublish = () => {
     setShowConfirmationModal(false);
-    axios
-      .post(`http://localhost:5004/api/updateStatusBook/${selectedBookId}`, {
+    apiClient
+      .post(`api/updateStatusBook/${selectedBookId}`, {
         status_book: "pending",
       })
       .then((response) => {

@@ -7,6 +7,11 @@ import axios from "axios";
 import { useLocation, useHistory } from "react-router-dom";
 import Searchbar from "./searchbar";
 import Button from "react-bootstrap/Button";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "./config"
 
 function Bookarticle({ match }) {
   const [items, setItems] = useState([]);
@@ -20,8 +25,8 @@ function Bookarticle({ match }) {
   // console.log(bookid)
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5004/api/userdata?user_email=" + user)
+    apiClient
+      .get("api/userdata?user_email=" + user)
       .then((response) => {
         setUsertype(response.data[0].user_type);
       })
@@ -35,8 +40,8 @@ function Bookarticle({ match }) {
     //   return;
     // }
     // setBookID(location.state.book_id)
-    axios
-      .get(`http://localhost:5004/api/getarticleban/${bookid}`)
+    apiClient
+      .get(`api/getarticleban/${bookid}`)
       .then((response) => {
         setItems(response.data);
       })

@@ -42,6 +42,11 @@ import Notificationcreator from "./creator/notificationcreator";
 import Forapprovebook from "./admin/forapprovebook";
 import Sendrequest from "./creator/sendrequest";
 import Watchedhistory from "./watchedhistory";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "./config"
 
 const App = () => {
   const user_data = localStorage.getItem("access_token");
@@ -52,8 +57,8 @@ const App = () => {
     setIsAuthenticated(null);
 
     if (user_data) {
-      axios
-        .get("http://localhost:5004/api/token_check", {
+      apiClient
+        .get("api/token_check", {
           headers: {
             Authorization: `${user_data}`,
           },

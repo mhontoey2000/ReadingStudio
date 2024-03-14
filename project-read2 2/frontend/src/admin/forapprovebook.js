@@ -5,6 +5,11 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 function Forapprovebook() {
   const [items, setItems] = useState([]);
@@ -28,8 +33,8 @@ function Forapprovebook() {
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5004/api/forapprove")
+    apiClient
+      .get("api/forapprove")
       .then((response) => {
         setItems(response.data);
         console.log("items", items);
@@ -66,8 +71,8 @@ function Forapprovebook() {
         unpublishReason:
           status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
-      axios
-        .post("http://localhost:5004/api/updateStatus", data)
+      apiClient
+        .post("api/updateStatus", data)
         .then((response) => {
           if (response.status === 200) {
             setShowModal(false);

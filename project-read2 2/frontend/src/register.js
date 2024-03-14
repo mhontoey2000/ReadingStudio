@@ -8,11 +8,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useHistory } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
-
-
+import {
+    apiClient,
+    convertSoundToBase64,
+    convertImageToBase64,
+  } from "./config"
 
 function Register() {
-
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
     const [email, setEmail] = useState("");
@@ -46,7 +48,7 @@ function Register() {
             formData.append('password', password);
             formData.append('usertype', usertype);
             formData.append('idcard', idcard);
-            axios.post('http://localhost:5004/api/register',formData)
+            apiClient.post('api/register',formData)
         .then((response) => {
             
             console.log(response);

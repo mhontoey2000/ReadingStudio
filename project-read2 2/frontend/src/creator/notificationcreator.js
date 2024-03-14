@@ -6,6 +6,11 @@ import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import Searchbar from "../searchbar";
 import { Link } from "react-router-dom";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config"
 
 const ITEMS_PER_PAGE = 10;
 
@@ -37,8 +42,8 @@ function Notificationcreator() {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5004/api/notification?user_email=" + user)
+    apiClient
+      .get("api/notification?user_email=" + user)
       .then((response) => {
         console.log(response.data);
         setItems(response.data);

@@ -6,6 +6,11 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Searchbar from "./searchbar";
+import {
+    apiClient,
+    convertSoundToBase64,
+    convertImageToBase64,
+  } from "./config"
 
 function Home() {
     const [items, setItems] = useState([]);
@@ -14,7 +19,7 @@ function Home() {
     const [searchTerm, setSearchTerm] = useState(""); // Add state for search term
 
     useEffect(() => {
-        axios.get('http://localhost:5004/api/userdata?user_email=' + user)
+        apiClient.get('api/userdata?user_email=' + user)
           .then((response) => {
             setUsertype(response.data[0].user_type);
           })
@@ -23,7 +28,7 @@ function Home() {
 
     useEffect(() => {
         // Use the search term to filter items
-        axios.get('http://localhost:5004/api/book')
+        apiClient.get('api/book')
           .then((response) => {
             const publishedBooks = response.data.filter((book) => book.status_book === 'published' || book.status_book === 'finished');
             setItems(publishedBooks);

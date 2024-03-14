@@ -8,10 +8,13 @@ import { useHistory } from 'react-router-dom';
 import { moment } from 'moment';
 import { useEffect } from 'react';
 import loginvalidation from './loginvalidation';
-
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "./config"
 
 const Login = () => {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -40,7 +43,7 @@ const Login = () => {
     if ( email !== '' && password !== '' ){
         const data = { email, password };
         
-    axios.post('http://localhost:5004/api/login', data)
+        apiClient.post('api/login', data)
     .then(response => {
         //console.log("response", response);
         // Handle successful login here

@@ -8,6 +8,11 @@ import { Rss } from 'react-bootstrap-icons';
 import { useHistory } from 'react-router-dom';
 import "./styles/reportbook.css"
 import Modal from 'react-bootstrap/Modal';
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "./config"
 
 function Reportbook() {
 
@@ -29,16 +34,15 @@ function Reportbook() {
     const user = localStorage.getItem('email');
 
     useEffect(() => {
-        axios.get('http://localhost:5004/api/userdata?user_email=' + user)
+      apiClient.get('api/userdata?user_email=' + user)
           .then((response) => {
             setRemail(response.data[0].user_email)
             })
           .catch(error => console.error(error));
       }, [user]);
 
-
     useEffect(() => {
-        axios.get(`http://localhost:5004/api/articledetail/${articleid}`)
+      apiClient.get(`api/articledetail/${articleid}`)
           .then((response) => {
             setAname(response.data[0].article_name);
             setIsLoaded(true);
@@ -49,7 +53,7 @@ function Reportbook() {
     }, [articleid]);
 
     useEffect(() => {
-        axios.get(`http://localhost:5004/api/book`)
+      apiClient.get(`api/book`)
           .then((response) => {
             console.log(response.data);
             for(let i=0;i<response.data.length;i++)
@@ -57,8 +61,7 @@ function Reportbook() {
                 if(response.data[i].book_id === bookid){
                     // console.log("working")
                     // console.log(response.data[i].book_name)
-                    setBname(response.data[i].book_name);
-                    
+                    setBname(response.data[i].book_name);   
                 }
                 // console.log(response.data[i].book_id)
             }
@@ -79,7 +82,7 @@ function Reportbook() {
       const handleConfirmed = () => {
         setShowModal(false); // Close the modal
         // Proceed with sending the report
-        axios.post('http://localhost:5004/api/report', {
+        apiClient.post('api/report', {
           bookid,
           articleid,
           remail,
@@ -123,9 +126,7 @@ function Reportbook() {
       }
   return (
 
-    
     <div>
-
             <Header/>
         <section>
             <h1>รายงานหนังสือ</h1>

@@ -10,6 +10,11 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import formatTime from "../formattime";
 import Modal from "react-bootstrap/Modal";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config"
 
 function Detailedit(match) {
   const [items, setItems] = useState([]);
@@ -41,8 +46,8 @@ function Detailedit(match) {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5004/api/userdata?user_email=" + user)
+    apiClient
+      .get("api/userdata?user_email=" + user)
       .then((response) => {
         //console.log(response.data[0]);
         setRemail(response.data[0].user_email);
@@ -52,8 +57,8 @@ function Detailedit(match) {
   }, [user]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/vocabs/${articleid}`)
+    apiClient
+      .get(`api/vocabs/${articleid}`)
       .then((response) => {
         let tempArr = [];
         for (let i = response.data.length - 1; i >= 0; i--) {
@@ -67,8 +72,8 @@ function Detailedit(match) {
   }, [articleid]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/articledetail/${articleid}`)
+    apiClient
+      .get(`api/articledetail/${articleid}`)
       .then((response) => {
         setItems(response.data);
         setIsLoaded(true);
@@ -98,8 +103,8 @@ function Detailedit(match) {
   }, [text, isLoading]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/exam/${articleid}`)
+    apiClient
+      .get(`api/exam/${articleid}`)
       .then((response) => {
         let tempArr = [];
         for (let i = response.data.length - 1; i >= 0; i--) {
@@ -145,11 +150,11 @@ function Detailedit(match) {
 
   const handleConfirmed = () => {
     if (vocabToDelete) {
-      axios
-        .delete(`http://localhost:5004/api/vocabs/${vocabToDelete}`)
+      apiClient
+        .delete(`api/vocabs/${vocabToDelete}`)
         .then((response) => {
-          axios
-            .get(`http://localhost:5004/api/vocabs/${articleid}`)
+          apiClient
+            .get(`api/vocabs/${articleid}`)
             .then((response) => {
               setVitems(response.data.reverse());
               setShowModal(false);

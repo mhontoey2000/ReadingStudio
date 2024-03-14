@@ -5,6 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import Searchbar from "../searchbar";
 import "../styles/adminpage.css"
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 function Adminpage() {
 
@@ -13,7 +18,7 @@ function Adminpage() {
 
   useEffect(() => {
     // Fetch the count of new notifications from your backend
-    axios.get("http://localhost:5004/api/notificationCount")
+    apiClient.get("api/notificationCount")
       .then((response) => {
         setNotificationCount(response.data.count);
       })
@@ -23,7 +28,7 @@ function Adminpage() {
   }, []); 
 
   useEffect(() => {
-    axios.get("http://localhost:5004/api/userCount")
+    apiClient.get("api/userCount")
         .then((response) => {
           setUserCount(response.data.count);
         })

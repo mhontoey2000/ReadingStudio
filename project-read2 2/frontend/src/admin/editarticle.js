@@ -7,6 +7,11 @@ import Button from "react-bootstrap/Button";
 import { useParams, useHistory, Link } from "react-router-dom";
 import { useDropzone } from "react-dropzone"; // เพิ่มการนำเข้า Dropzone
 import "../styles/editall.css";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 function Editarticle() {
   const history = useHistory();
@@ -52,8 +57,8 @@ function Editarticle() {
     const jsonData = {
       articleid: articleid
       }
-    axios
-      .post(`http://localhost:5004/api/getarticle`,jsonData)
+      apiClient
+      .post(`api/getarticle`,jsonData)
       .then((response) => {
           console.log(response.data)
           setArticleData(response.data);
@@ -64,8 +69,8 @@ function Editarticle() {
       });
   };
   const setArticleData = (article) => {
-    axios
-      .get(`http://localhost:5004/api/book/${article.book_id}`)
+    apiClient
+      .get(`api/book/${article.book_id}`)
       .then((response) => {
         const book = response.data;
         if (book.length > 0) {
@@ -98,8 +103,8 @@ function Editarticle() {
     }
   };
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/vocabs/${articleid}`)
+    apiClient
+      .get(`api/vocabs/${articleid}`)
       .then((response) => {
         let tempArr = response.data.slice().reverse();
         setVitems(tempArr);
@@ -110,8 +115,8 @@ function Editarticle() {
       });
   }, [articleid]);
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/exam/${articleid}`)
+    apiClient
+      .get(`api/exam/${articleid}`)
       .then((response) => {
         let tempArr = response.data.slice().reverse();
         setqItems(tempArr);
@@ -216,12 +221,12 @@ function Editarticle() {
       console.log(pair[0] + ", " + pair[1]);
     }
 
-    axios
-      .post(`http://localhost:5004/api/updatearticle`, formData)
+    apiClient
+      .post(`api/updatearticle`, formData)
       .then((response) => {
         console.log("Article update successful", response.data);
-        axios
-        .post(`http://localhost:5004/api/updatebookstatus`, { bookId: bookid })
+        apiClient
+        .post(`api/updatebookstatus`, { bookId: bookid })
         .then((bookResponse) => {
           console.log("Book status updated to 'published'", bookResponse.data);
           cancelEditArticle();
@@ -237,11 +242,11 @@ function Editarticle() {
 
   const deleteVocab = () => {
     if (vocabToDelete) {
-      axios
-        .delete(`http://localhost:5004/api/vocabs/${vocabToDelete.vocabs_id}`)
+      apiClient
+        .delete(`api/vocabs/${vocabToDelete.vocabs_id}`)
         .then((response) => {
-          axios
-            .get(`http://localhost:5004/api/vocabs/${articleid}`)
+          apiClient
+            .get(`api/vocabs/${articleid}`)
             .then((response) => {
               setVitems(response.data.slice().reverse());
             })

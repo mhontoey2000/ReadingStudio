@@ -7,9 +7,13 @@ import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import "./styles/addvocab.css"
 import Modal from 'react-bootstrap/Modal';
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "./config"
 
 function Addvocab() {
-
     const location = useLocation();
     const articleid = location.state.article_id;
     const bookid = location.state.book_id;
@@ -25,7 +29,7 @@ function Addvocab() {
     const [Vitems, setVitems] = useState([]);
 
     useEffect(() => {
-        axios.get(`http://localhost:5004/api/articledetail/${articleid}`)
+      apiClient.get(`api/articledetail/${articleid}`)
           .then((response) => {
             setAname(response.data[0].article_name);
             setIsLoaded(true);
@@ -36,7 +40,7 @@ function Addvocab() {
     }, [articleid]);
 
     useEffect(() => {
-        axios.get(`http://localhost:5004/api/book`)
+      apiClient.get(`api/book`)
           .then((response) => {
             console.log(response.data);
             for(let i=0;i<response.data.length;i++)
@@ -65,8 +69,8 @@ function Addvocab() {
 
     const handleConfirmed = () => {
       setShowModal(false); 
-      axios
-        .post("http://localhost:5004/api/vocabs", {
+      apiClient
+        .post("api/vocabs", {
           articleid,
           Vname,
           Vdetail,
@@ -94,17 +98,13 @@ function Addvocab() {
         history.goBack(); // Redirect to the previous page
     }
 
-    
     const cancelVocab = () => {
         history.goBack();
     }
 
   return (
     <div>
-
             <Header/>
-
-
         <section>
             <h1>เพิ่มคำศัพท์</h1>
 

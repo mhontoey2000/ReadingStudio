@@ -9,8 +9,6 @@ import { Await, useLocation } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 import { apiClient , convertSoundToBase64,convertImageToBase64 } from './config';
 
-
-
 function Addexam() {
   const location = useLocation();
   const articleid = location.state.article_id;

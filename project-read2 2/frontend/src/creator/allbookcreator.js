@@ -8,6 +8,11 @@ import axios from "axios";
 import "../styles/allbookcreator.css";
 import Searchbar from "../searchbar";
 import Modal from "react-bootstrap/Modal";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "../config";
 
 function Allbookcreator() {
   const [items, setItems] = useState([]);
@@ -28,8 +33,8 @@ function Allbookcreator() {
     init();
   }, [currentPage]);
   function init() {
-    axios
-      .get("http://localhost:5004/api/allbookarticlecreator?user_email=" + user)
+    apiClient
+      .get("api/allbookarticlecreator?user_email=" + user)
       .then((response) => {
         console.log(response.data);
         setItems(response.data);
@@ -46,8 +51,8 @@ function Allbookcreator() {
   };
 
   const deleteBookConfirmed = (bookId) => {
-    axios
-      .delete(`http://localhost:5004/api/deleteallbookcreator/${bookId}`)
+    apiClient
+      .delete(`api/deleteallbookcreator/${bookId}`)
       .then(() => {
         console.log(`บทความ ${bookId} ถูกลบแล้ว.`);
         // Refresh the book list after deletion

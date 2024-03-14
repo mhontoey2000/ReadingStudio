@@ -6,6 +6,11 @@ import { Link, useLocation, useHistory } from "react-router-dom";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Searchbar from "./searchbar";
+import {
+  apiClient,
+  convertSoundToBase64,
+  convertImageToBase64,
+} from "./config"
 
 function Score() {
   const user = localStorage.getItem("email");
@@ -41,8 +46,8 @@ function Score() {
   // }, [user]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5004/api/exam/${articleid}`)
+    apiClient
+      .get(`api/exam/${articleid}`)
       .then((response) => {
         let tempArr = response.data;
         setqItems(tempArr);
