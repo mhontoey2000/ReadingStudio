@@ -29,13 +29,16 @@ const Login = () => {
     event.preventDefault();
     setEmailError(''); // Reset email error message
     setPasswordError(''); // Reset password error message
+    setShowAlert(false);
 
-    if (email === '') {
-      setEmailError('กรุณาใส่อีเมลล์ email@example.com');
+    if (!email.trim()) {
+      setEmailError('กรุณาใส่อีเมลล์');
+      return;
     }
 
-    if (password === '') {
+    if (!password.trim()) {
       setPasswordError('กรุณาใส่รหัสผ่าน');
+      return;
     }
 
     
@@ -77,32 +80,27 @@ const Login = () => {
 
       <img className='logologin' src="../picture/logo1.png"/>
       <h2 className='log'>เข้าสู่ระบบ</h2>
-          <form className="needs-validation" onClick={handleLogin}>
+          <form className="needs-validation" onSubmit={handleLogin}>
 
-          {showAlert && 
-            <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
-              {alertMessage}
-            </Alert>
-          }
-          {showLoginSuccess && 
-            <Alert variant="success" onClose={() => setShowLoginSuccess(false)} dismissible>
-              กำลังเข้าสู่ระบบ
-            </Alert>
-          }
+          {showAlert && (
+              <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
+                {alertMessage}
+              </Alert>
+            )}
 
               <div className="form">
                 <div className="form-group was-validated mb-3">
                   <input 
                     type="email"
-                    id="floatingInput"
+                    id="email"
                     name="email"
                     className="form-control"
                     placeholder="อีเมล์@example.com"
+                    value={email}
                     required
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setEmailError('');
-                    }}
+                    onChange={(e) => 
+                      setEmail(e.target.value)
+                    }
                     />
                     <div className="invalid-feedback">
                       {emailError}
@@ -112,15 +110,15 @@ const Login = () => {
                 <div className="form-group was-validated mb-3">
                   <input 
                     type="password"
-                    id="floatingPassword"
+                    id="password"
                     name="password"
                     className="form-control"
                     placeholder="รหัสผ่าน"
+                    value={password}
                     required
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setPasswordError('');
-                    }}
+                    onChange={(e) => 
+                      setPassword(e.target.value)
+                    }
                     />
                     <div className="invalid-feedback">
                       {passwordError}
@@ -130,8 +128,6 @@ const Login = () => {
             </div>
             
             <Button className="buttonlog" type="submit">เข้าสู่ระบบ</Button>
-            
-            {error && <p>{error}</p>}
 
           </form>
           <p> ยังไม่สมัครสมาชิก? <a href="./register" >สมัครสมาชิก</a> </p>
@@ -139,7 +135,7 @@ const Login = () => {
       </div> 
 
       <footer className="footer">
-        <span>ติดต่อผู้พัฒนา rds_contact@gmail.com</span>
+        <span>ติดต่อผู้พัฒนา readingstudio101@gmail.com</span>
       </footer>
 
     </section>

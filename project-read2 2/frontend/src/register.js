@@ -197,7 +197,7 @@ function Register() {
             </div>
             
             <footer className="footer">
-                <span>ติดต่อผู้พัฒนา rds_contact@gmail.com</span>
+                <span>ติดต่อผู้พัฒนา readingstudio101@gmail.com</span>
             </footer>
     </section>
     );

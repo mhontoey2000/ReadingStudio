@@ -635,7 +635,7 @@ app.post('/api/articledetail/:id/record-history', (req, res) => {
 
  app.get('/api/user', function (req, res) {
   connection.query(
-      `SELECT * FROM user`,
+      `SELECT * FROM user ORDER BY user_id DESC`,
       function(err, results) {
         const user =  results.map((item)=>{
             const img = helper.convertBlobToBase64(item.user_idcard);
