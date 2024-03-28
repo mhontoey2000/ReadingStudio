@@ -4,6 +4,7 @@ const multer = require('multer');
 const bodyParser = require('body-parser')
 const mysql = require('mysql2');
 const dotenv = require("dotenv")
+dotenv.config()
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { json } = require('react-router-dom');
@@ -14,7 +15,7 @@ const connection = mysql.createConnection({
     password: ''
 });
 process.env.ACCESS_TOKEN_SECRET = 'doraemon';
-dotenv.config()
+// dotenv.config()
 const helper = require('./upload');
 const sendMail = require('./sendmail');
 
@@ -36,11 +37,25 @@ function decodedToken(token) {
 }
 
 const app = express();
+
+// const PORT = process.env.PORT || 5000 ;
+let PORT = process.env.PORT || 5000;
+
 app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Ahoy!' });
+  // res.json({ message: 'Ahoy!' });
+
+  connection.connect((err) => {
+    if (!!err) {
+      res.json({ message: err});
+        // console.log(err);
+    } else {
+      res.json({ message: 'Database Connected Success...'});
+    }
+  
+  });
 });
 
 app.get('/api/key', function (req, res) {
@@ -53,8 +68,8 @@ app.use(express.json({limit: '1000mb'}));
 app.use(express.urlencoded({extended: true ,limit: '1000mb'}));
 app.use(bodyParser.raw({ type: 'image/*', limit: '160MB' }));
 
-app.listen(5004, () => {
-  console.log('Application is running on port 5004');
+app.listen(PORT, () => {
+  console.log('Application is running on port 5000');
 });
 
 
@@ -79,6 +94,7 @@ router.get('/tbl',async (req,res,next) => {
                 res.send(err)
             }
             else{
+               res.json({ message: rows });
                 res.send(rows)
             }
         }) 
