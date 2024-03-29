@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import {
+  API_BASE_URL,
   apiClient,
   convertSoundToBase64,
   convertImageToBase64,
@@ -147,7 +148,7 @@ const Notification = () => {
 
   const deleteUser = (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      fetch("http://localhost:5004/api/report/" + id, {
+      fetch(API_BASE_URL+"api/report/" + id, {
         method: "DELETE",
       })
         .then((res) => res)

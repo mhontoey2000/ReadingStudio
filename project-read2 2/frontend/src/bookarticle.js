@@ -51,7 +51,7 @@ function Bookarticle({ match }) {
   }, [bookid]);
 
   const incrementArticleView = (bookId) => {
-    axios.post(`http://localhost:5004/api/articles/view/${bookId}`)
+    apiClient.post(`api/articles/view/${bookId}`)
       .then((response) => {
       })
       .catch((error) => {

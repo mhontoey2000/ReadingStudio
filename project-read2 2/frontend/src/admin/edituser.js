@@ -6,6 +6,7 @@ import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import '../styles/profile.css';
 import {
+    API_BASE_URL,
     apiClient,
     convertSoundToBase64,
     convertImageToBase64,
@@ -43,7 +44,7 @@ function Edituser() {
       const editProfile = (e) => {
         e.preventDefault();
         // send data to api
-        fetch('http://localhost:5004/api/userdata', {
+        fetch(API_BASE_URL+'api/userdata', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

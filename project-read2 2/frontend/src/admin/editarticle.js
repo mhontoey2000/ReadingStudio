@@ -53,7 +53,7 @@ function Editarticle() {
   
 
   const fetchArticleData = () => {
-    console.log(`http://localhost:5004/api/getarticle/${articleid}`)
+    // console.log(`http://localhost:5004/api/getarticle/${articleid}`)
     const jsonData = {
       articleid: articleid
       }

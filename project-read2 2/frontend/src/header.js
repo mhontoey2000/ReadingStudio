@@ -7,6 +7,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Pass } from 'react-bootstrap-icons';
 import {
+  API_BASE_URL,
   apiClient,
   convertSoundToBase64,
   convertImageToBase64,
@@ -23,23 +24,26 @@ function Header() {
   const [showModal, setShowModal] = useState(false);
 
   const fetchData = () => {
-    fetch('http://localhost:5004/api/userdata?user_email=' + user, {
+    fetch(API_BASE_URL+'api/userdata?user_email=' + user, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     })
-      .then(response => response.json())
-      .then(data => {
-        setFirstname(data[0].user_name);
-        setSurname(data[0].user_surname);
-        setStatus(data[0].approval_status);
-        setUsertype(data[0].user_type);
-      })
-      .catch(error => console.error(error));
+  .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      setFirstname(data[0].user_name);
+      setSurname(data[0].user_surname);
+      setStatus(data[0].approval_status);
+      setUsertype(data[0].user_type);
+    })
+    .catch(error => console.error(error));
   }
+
   useEffect(() => {
+    // loadData();
     fetchData(); // Fetch data when the component mounts
   }, [user]);
 

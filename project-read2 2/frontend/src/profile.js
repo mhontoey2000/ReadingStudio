@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import './styles/profile.css';
 import {
+  API_BASE_URL,
   apiClient,
   convertSoundToBase64,
   convertImageToBase64,
@@ -49,7 +50,7 @@ function Profile() {
     }
 
     const handleSaveChangesConfirmed = () => {
-      fetch('http://localhost:5004/api/userdata', {
+      fetch(API_BASE_URL+'api/userdata', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

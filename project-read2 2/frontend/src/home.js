@@ -39,7 +39,7 @@ function Home() {
     }, []); 
     
     const incrementBookView = (bookId) => {
-        axios.post(`http://localhost:5004/api/book/view/${bookId}`)
+        apiClient.post(`/api/book/view/${bookId}`)
           .then((response) => {
           })
           .catch((error) => {
