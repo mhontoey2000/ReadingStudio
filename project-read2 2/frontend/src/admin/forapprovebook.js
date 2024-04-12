@@ -37,7 +37,7 @@ function Forapprovebook() {
       .get("api/forapprove")
       .then((response) => {
         setItems(response.data);
-        console.log("items", items);
+        // console.log("items", items);
         const articleNamesArray = response.data.map((item) => ({
           ...item,
           article_name: item.article_names

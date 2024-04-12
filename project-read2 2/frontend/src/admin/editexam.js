@@ -48,9 +48,9 @@ function Editexam() {
   };
 
   useEffect(() => {
-    console.log("articlename" + articlename);
-    console.log("bookname" + bookname);
-    console.log("article_id" + articleid);
+    // console.log("articlename" + articlename);
+    // console.log("bookname" + bookname);
+    // console.log("article_id" + articleid);
 
     apiClient.get(`api/exam/${articleid}`)
       .then((response) => {
@@ -58,7 +58,7 @@ function Editexam() {
         setqItems(tempArr);
         const tempArrCount = tempArr.length;
         setTempArrCount(tempArrCount);
-        console.log("จำนวนรายการใน tempArr: " + tempArrCount);
+        // console.log("จำนวนรายการใน tempArr: " + tempArrCount);
 
         // แปลงข้อมูลจาก qitems เป็นรูปแบบของ questions
         const initialQuestions = tempArr.map((item) => ({
@@ -73,7 +73,7 @@ function Editexam() {
           ), // หรือตามวิธีที่คุณจัดการคำตอบที่ถูกต้อง
         }));
         setExamid(tempArr[0].exam_id);
-        console.log("exam_id : " + exam_id);
+        // console.log("exam_id : " + exam_id);
 
         setExamid(initialQuestions[0].exam_id);
         setQuestions(initialQuestions);
@@ -97,7 +97,7 @@ function Editexam() {
   };
 
   const removeQuestion = (index, questionid) => {
-    console.log("คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้ : " + questionid);
+    // console.log("คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้ : " + questionid);
 
     const confirmDelete = window.confirm(
       "คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้?"
@@ -115,7 +115,7 @@ function Editexam() {
       apiClient
         .delete(`api/deleteeditexam/${questionId}`)
         .then((response) => {
-          console.log("ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย");
+          // console.log("ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย");
           setTempArrCount(tempArrCount-1);
           // ทำอย่างอื่น ๆ ที่คุณต้องการหลังจากการลบ
         })
@@ -197,7 +197,7 @@ function Editexam() {
         data
       );
       if (response.status === 200) {
-        console.log(response.data);
+        // console.log(response.data);
       } else {
         console.error("ไม่สามารถบันทึกข้อมูลได้");
         alert("ไม่สามารถบันทึกข้อมูลได้");
@@ -220,7 +220,7 @@ function Editexam() {
     }
     // ส่งข้อมูลแต่ละข้อไปยังเซิร์ฟเวอร์
     questions.forEach((question, index) => {
-      console.log( "QuestionText : "+question.text  + "QuestionId : "+question.id);
+      // console.log( "QuestionText : "+question.text  + "QuestionId : "+question.id);
       if (tempArrCount - 1 >= index) submitEditQuestion(question);
       else submitAddQuestion(question);
     });

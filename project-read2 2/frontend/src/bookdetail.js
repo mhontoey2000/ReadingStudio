@@ -80,7 +80,7 @@ function Bookdetail(match) {
       handleShowModal(); // Show the modal
 
     }else {
-      console.log('4');
+      // console.log('4');
       
       // สร้าง FormData object
       const formData = new FormData();
@@ -131,7 +131,7 @@ function Bookdetail(match) {
       .then((response) => {
         let tempArr = response.data.slice().reverse();
         setVitems(tempArr);
-        console.log("tempArr", tempArr);
+        // console.log("tempArr", tempArr);
       })
       .catch((error) => {
         console.error(error);

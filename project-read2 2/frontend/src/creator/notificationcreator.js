@@ -45,7 +45,7 @@ function Notificationcreator() {
     apiClient
       .get("api/notification?user_email=" + user)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setItems(response.data);
       })
       .catch((error) => {

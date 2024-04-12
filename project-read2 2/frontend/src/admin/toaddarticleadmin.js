@@ -25,7 +25,7 @@ function Articlecreator() {
     apiClient
       .get(`api/allbookadmin`)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         setItems(response.data);
       })
       .catch((error) => {

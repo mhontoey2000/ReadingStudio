@@ -55,7 +55,7 @@ function Reportbook() {
     useEffect(() => {
       apiClient.get(`api/book`)
           .then((response) => {
-            console.log(response.data);
+            // console.log(response.data);
             for(let i=0;i<response.data.length;i++)
             {
                 if(response.data[i].book_id === bookid){
@@ -89,20 +89,20 @@ function Reportbook() {
           rdetail,
         })
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           // Check if the status code is 400 (Bad Request)
           if (response.status === 400) {
-            console.log("Error");
+            // console.log("Error");
             setShowSuccessReportedModal(true);
           } else {
             // If not 400, assume success and open the success modal
-            console.log("Success");
+            // console.log("Success");
             setSuccessModal(true);
           }
         })
 
         .catch((error) => {
-            console.log("Error1");
+            // console.log("Error1");
             console.error(error);
             setShowSuccessReportedModal(true);
         });

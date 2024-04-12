@@ -34,7 +34,7 @@ function Sendrequest() {
     apiClient
       .get("api/allbookarticlecreator?user_email=" + user)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setItems(response.data);
       })
       .catch((error) => {

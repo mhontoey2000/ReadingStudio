@@ -112,7 +112,7 @@ function Detailedit(match) {
         }
 
         setqItems(tempArr);
-        console.log(tempArr);
+        // console.log(tempArr);
       })
       .catch((error) => {
         console.error(error);

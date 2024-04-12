@@ -64,7 +64,7 @@ const Notification = () => {
         },
       })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
       })
       .catch((error) => {
         console.error(error);
@@ -78,13 +78,13 @@ const Notification = () => {
   };
 
   const submitStatusChange = (event) => {
-    console.log(status);
+    // console.log(status);
     event.preventDefault();
     const data = {
       report_id: selectitem.report_id,
       report_status: status === "published" ? "published" : "deny",
     };
-    console.log(data);
+    // console.log(data);
 
     if (
       status === "published" ||
@@ -96,7 +96,7 @@ const Notification = () => {
         unpublishReason:
           status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
-      console.log(data1);
+      // console.log(data1);
       apiClient
         .post("api/updateStatus", data1)
         .then((response) => {
@@ -153,7 +153,7 @@ const Notification = () => {
       })
         .then((res) => res)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           if (res.status === 200) {
             alert("Delete user successfully");
             window.location.reload();
@@ -162,7 +162,7 @@ const Notification = () => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
           setError(err);
         });
     }

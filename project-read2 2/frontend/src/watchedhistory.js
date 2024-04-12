@@ -30,7 +30,7 @@ function Watchedhistory() {
     const examDetails = examDetailsMap[exam.article_id];
 
     if (!examDetails || examDetails.length === 0) {
-      console.log("No exam details for exam:", exam);
+      // console.log("No exam details for exam:", exam);
       return 0; // Return 0 if exam details are not available
     }
 
@@ -151,7 +151,7 @@ function Watchedhistory() {
     // Add logic to clear the watched history
     // For example, you can make another Axios request to your server to handle this
     // Make sure to update the state or perform any necessary actions
-    console.log("Clearing history...");
+    // console.log("Clearing history...");
   };
 
   const handleToPage = (articleId) => {

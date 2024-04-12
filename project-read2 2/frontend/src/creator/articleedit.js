@@ -190,7 +190,7 @@ function Articleedit() {
     apiClient
       .post("api/updateLeveltext", data)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         window.location.reload();
       })
       .catch((error) => {

@@ -52,19 +52,12 @@ function Addarticle() {
 
   useEffect(() => {
     apiClient
-      .get(`api/book`)
+      .get(`api/book/${bookid}`)
       .then((response) => {
-        // console.log(response.data);
-        for (let i = 0; i < response.data.length; i++) {
-          if (response.data[i].book_id === bookid) {
-            // console.log("working")
-            console.log(response.data[i].book_name);
-            setBname(response.data[i].book_name);
-            break;
-          }
-          // console.log(response.data[i].book_id)
+        const result = response.data;
+        if (result) {
+          setBname(result[0].book_name);
         }
-        // console.log(bookid)
       })
       .catch((error) => {
         console.error(error);
@@ -193,7 +186,12 @@ function Addarticle() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="uploadpic">รูปภาพของเนื้อหา<cite style={{color:"red"}}>*ขนาดรูปที่แนะนำคือ 500x500</cite></label>
+                <label htmlFor="uploadpic">
+                  รูปภาพของเนื้อหา
+                  <cite style={{ color: "red" }}>
+                    *ขนาดรูปที่แนะนำคือ 500x500
+                  </cite>
+                </label>
                 <input
                   type="file"
                   className="form-control"
@@ -202,12 +200,15 @@ function Addarticle() {
                   accept="image/*"
                   onChange={handleImageUpload}
                 />
-                
               </div>
-              <div className='d-flex justify-content-center align-items-center'>
-              {uploadedImage && (
+              <div className="d-flex justify-content-center align-items-center">
+                {uploadedImage && (
                   <div className="uploaded-image-container">
-                    <img src={uploadedImage} alt="Uploaded Image" style={{ maxWidth: '100%', maxHeight: '200px' }}/>
+                    <img
+                      src={uploadedImage}
+                      alt="Uploaded Image"
+                      style={{ maxWidth: "100%", maxHeight: "200px" }}
+                    />
                   </div>
                 )}
               </div>
@@ -221,19 +222,22 @@ function Addarticle() {
                   accept="audio/*"
                   onChange={handleSoundUpload}
                 />
-                
               </div>
-              <div className='d-flex justify-content-center align-items-center'>
+              <div className="d-flex justify-content-center align-items-center">
                 {uploadedSound && (
-                <div className="uploaded-sound-container">
-                  <audio controls>
-                    <source src={URL.createObjectURL(uploadedSound)} type="audio/mp3" controls/>
-                    Your browser does not support the audio element.
-                  </audio>
-                </div>
-              )}
+                  <div className="uploaded-sound-container">
+                    <audio controls>
+                      <source
+                        src={URL.createObjectURL(uploadedSound)}
+                        type="audio/mp3"
+                        controls
+                      />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                )}
               </div>
-              
+
               <div className="btn-containerr">
                 <div className="btn-group me-2">
                   <Button
@@ -265,7 +269,6 @@ function Addarticle() {
         </Modal.Header>
         <Modal.Body>คุณต้องการสร้างตอนของบทความใช่ไหม?</Modal.Body>
         <Modal.Footer>
-          
           <Button
             variant="warning"
             style={{ color: "white" }}
@@ -273,7 +276,7 @@ function Addarticle() {
           >
             ยกเลิก
           </Button>
-          
+
           <Button variant="primary" onClick={confirmArticle}>
             ตกลง
           </Button>

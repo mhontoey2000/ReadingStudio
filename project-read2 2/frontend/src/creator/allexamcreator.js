@@ -22,7 +22,7 @@ function Allexamcreator() {
     apiClient
       .get("api/allexamcreator?user_email=" + user)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         setItems(response.data);
       })
       .catch((error) => {

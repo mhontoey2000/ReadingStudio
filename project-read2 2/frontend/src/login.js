@@ -51,7 +51,7 @@ const Login = () => {
         //console.log("response", response);
         // Handle successful login here
         const token = response.data;
-        console.log('data', response.data);
+        // console.log('data', response.data);
         localStorage.setItem('email', token.email); // Store user data in localStorage
         localStorage.setItem('access_token', token.accessToken); // Store access token in localStorage
         localStorage.setItem('user_id', token.user_id);

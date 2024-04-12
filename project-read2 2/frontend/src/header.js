@@ -33,7 +33,7 @@ function Header() {
     })
   .then(response => response.json())
     .then(data => {
-      console.log(data);
+      // console.log(data);
       setFirstname(data[0].user_name);
       setSurname(data[0].user_surname);
       setStatus(data[0].approval_status);

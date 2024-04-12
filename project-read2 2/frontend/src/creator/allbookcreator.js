@@ -36,7 +36,7 @@ function Allbookcreator() {
     apiClient
       .get("api/allbookarticlecreator?user_email=" + user)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setItems(response.data);
       })
       .catch((error) => {
@@ -54,7 +54,7 @@ function Allbookcreator() {
     apiClient
       .delete(`api/deleteallbookcreator/${bookId}`)
       .then(() => {
-        console.log(`บทความ ${bookId} ถูกลบแล้ว.`);
+        // console.log(`บทความ ${bookId} ถูกลบแล้ว.`);
         // Refresh the book list after deletion
         init();
         setShowDeleteModal(false);

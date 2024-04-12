@@ -36,7 +36,7 @@ const Allarticleadmin = () => {
     const deleteArticleConfirmed = (articleId) => {
         apiClient.delete(`api/deletearticle/${articleId}`)
             .then(() => {
-                console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
+                // console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
                 // Refresh the article list after deletion
                 apiClient.get('api/article')
                     .then((response) => {

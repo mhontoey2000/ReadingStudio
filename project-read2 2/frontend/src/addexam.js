@@ -130,10 +130,10 @@ const submitExam = async () => {
 
       // Send POST request
       const response = await apiClient.post("api/add-data", data);
-        console.log(index);
-        console.log(response.data);
+        // console.log(index);
+        // console.log(response.data);
         exam_id = response.data.toString();
-        console.log('exam_id :' + exam_id);
+        // console.log('exam_id :' + exam_id);
         if (index === questions.length - 1) {
           setQuestions([
             {

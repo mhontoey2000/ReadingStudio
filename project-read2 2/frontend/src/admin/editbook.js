@@ -30,7 +30,7 @@ function Editbook() {
                     setBname(response.data[i].book_name);
                     setBdetail(response.data[i].book_detail);
                     setBookImage(response.data[i].book_imagedata);
-                    console.log(response.data[i].book_name);
+                    // console.log(response.data[i].book_name);
                     break; // หากเจอหนังสือที่ตรงให้หยุดการวน loop
                 }
             }
@@ -54,13 +54,13 @@ function Editbook() {
 
     const handleImageChange = (event) => {
       const selectedImage = event.target.files[0];
-      console.log("Selected image file:", selectedImage);
+      // console.log("Selected image file:", selectedImage);
       setSelectedImageFile(selectedImage); 
       setBookImage(URL.createObjectURL(selectedImage)); 
     };
 
     const editBook = () => {
-      console.log("Image before sending:", selectedImageFile);
+      // console.log("Image before sending:", selectedImageFile);
       
       const formData = new FormData();
       formData.append('book_id', bookid);

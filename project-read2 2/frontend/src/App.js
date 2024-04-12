@@ -73,7 +73,7 @@ const App = () => {
           }
         })
         .catch((error) => {
-          console.log("Error:", error);
+          // console.log("Error:", error);
           setIsAuthenticated(false); // Set to false if there's an error
         });
     } else {

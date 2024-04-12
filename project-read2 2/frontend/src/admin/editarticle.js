@@ -50,19 +50,15 @@ function Editarticle() {
     fetchArticleData();
   }, [articleid]);
 
-  
-
   const fetchArticleData = () => {
     // console.log(`http://localhost:5004/api/getarticle/${articleid}`)
     const jsonData = {
-      articleid: articleid
-      }
-      apiClient
-      .post(`api/getarticle`,jsonData)
+      articleid: articleid,
+    };
+    apiClient
+      .post(`api/getarticle`, jsonData)
       .then((response) => {
-          // console.log(response.data)
-          setArticleData(response.data);
-        // }
+        setArticleData(response.data);
       })
       .catch((error) => {
         console.error(error);
@@ -158,8 +154,6 @@ function Editarticle() {
     },
   });
 
-  
-
   const handleAudioPlayback = () => {
     if (audioRef) {
       if (isPlaying) {
@@ -222,7 +216,6 @@ function Editarticle() {
     }
 
     // console.log(formData);
-
     // for (const pair of formData.entries()) {
     //   console.log(pair[0] + ", " + pair[1]);
     // }
@@ -230,22 +223,21 @@ function Editarticle() {
     apiClient
       .post(`api/updatearticle`, formData)
       .then((response) => {
+        // console.log("Article update successful", response.data);
 
-        console.log("Article update successful", response.data);
-        
         apiClient
-        .post(`api/updatebookstatus`, { bookId: bookid })
-        .then((bookResponse) => {
-          console.log("Book status updated to 'published'", bookResponse.data);
-          cancelEditArticle();
-        })
-        .catch((bookError) => {
-          console.error("Error updating book status:", bookError);
-        });
-
-    }).catch((error) => {
-      console.error(error);
-    });
+          .post(`api/updatebookstatus`, { bookId: bookid })
+          .then((bookResponse) => {
+            // console.log("Book status updated to 'published'", bookResponse.data);
+            cancelEditArticle();
+          })
+          .catch((bookError) => {
+            console.error("Error updating book status:", bookError);
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const deleteVocab = () => {

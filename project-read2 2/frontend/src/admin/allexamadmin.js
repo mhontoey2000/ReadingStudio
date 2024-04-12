@@ -23,7 +23,7 @@ const Allexamadmin = () => {
       apiClient
         .get("api/allexamadmin")
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           setItems(response.data);
         })
         .catch((error) => {
