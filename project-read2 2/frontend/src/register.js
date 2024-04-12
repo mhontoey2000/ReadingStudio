@@ -1,5 +1,5 @@
-import React from 'react';
-import './styles/register.css';
+import React from "react";
+import "./styles/register.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
