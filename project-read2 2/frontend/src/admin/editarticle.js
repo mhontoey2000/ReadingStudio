@@ -60,7 +60,7 @@ function Editarticle() {
       apiClient
       .post(`api/getarticle`,jsonData)
       .then((response) => {
-          console.log(response.data)
+          // console.log(response.data)
           setArticleData(response.data);
         // }
       })
@@ -68,6 +68,7 @@ function Editarticle() {
         console.error(error);
       });
   };
+
   const setArticleData = (article) => {
     apiClient
       .get(`api/book/${article.book_id}`)
@@ -97,23 +98,25 @@ function Editarticle() {
       ); // กำหนด MIME type ตามรูปแบบของไฟล์เสียงของคุณ
       const blobUrl = URL.createObjectURL(audioBlob);
       setAudioUrl(blobUrl);
-      console.log(article.article_sounddata);
+      // console.log(article.article_sounddata);
     } else {
       setAudioUrl(article.article_sounddata);
     }
   };
+
   useEffect(() => {
     apiClient
       .get(`api/vocabs/${articleid}`)
       .then((response) => {
         let tempArr = response.data.slice().reverse();
         setVitems(tempArr);
-        console.log("tempArr", tempArr);
+        // console.log("tempArr", tempArr);
       })
       .catch((error) => {
         console.error(error);
       });
   }, [articleid]);
+
   useEffect(() => {
     apiClient
       .get(`api/exam/${articleid}`)
@@ -129,6 +132,7 @@ function Editarticle() {
   useEffect(() => {
     handleAudioPlayback();
   }, [isPlaying, audioRef]);
+
   useEffect(() => {
     // Simulate data retrieval delay
     setTimeout(() => {
@@ -217,14 +221,18 @@ function Editarticle() {
       formData.append("sound", audioFile);
     }
 
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
-    }
+    // console.log(formData);
+
+    // for (const pair of formData.entries()) {
+    //   console.log(pair[0] + ", " + pair[1]);
+    // }
 
     apiClient
       .post(`api/updatearticle`, formData)
       .then((response) => {
+
         console.log("Article update successful", response.data);
+        
         apiClient
         .post(`api/updatebookstatus`, { bookId: bookid })
         .then((bookResponse) => {
@@ -234,8 +242,8 @@ function Editarticle() {
         .catch((bookError) => {
           console.error("Error updating book status:", bookError);
         });
-    })
-    .catch((error) => {
+
+    }).catch((error) => {
       console.error(error);
     });
   };
