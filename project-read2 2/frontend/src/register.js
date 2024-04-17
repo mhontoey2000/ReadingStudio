@@ -46,8 +46,8 @@ function Register() {
       usertype !== ""
     ) {
       const formData = new FormData();
-      // formData.append('book_name', bookName);
-      // formData.append('book_detail', bookDetail);
+      // formData.append('article_name', bookName);
+      // formData.append('article_detail', bookDetail);
       formData.append("name", name);
       formData.append("surname", surname);
       formData.append("email", email);

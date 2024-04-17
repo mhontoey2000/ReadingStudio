@@ -27,7 +27,7 @@ function Watchedhistory() {
   const totalQuestions = examDetails.length;
 
   const calculateExamScore = (exam, examDetailsMap) => {
-    const examDetails = examDetailsMap[exam.article_id];
+    const examDetails = examDetailsMap[exam.section_id];
 
     if (!examDetails || examDetails.length === 0) {
       // console.log("No exam details for exam:", exam);
@@ -63,9 +63,9 @@ function Watchedhistory() {
         setExamHistory(examsByDay);
         setFilteredExamHistory(examsByDay);
 
-        // Extracting unique article IDs from the exams
+        // Extracting unique article_section IDs from the exams
         const uniqueArticleIds = [
-          ...new Set(response.data.map((exam) => exam.article_id)),
+          ...new Set(response.data.map((exam) => exam.section_id)),
         ];
 
         // Fetch all exam details
@@ -80,7 +80,7 @@ function Watchedhistory() {
 
             const examDetailsMap = {};
 
-            // Create a map of article_id to exam details for quick access
+            // Create a map of section_id to exam details for quick access
             examDetailsResponses.forEach((examDetailsResponse, index) => {
               const articleId = uniqueArticleIds[index];
               examDetailsMap[articleId] = examDetailsResponse.data;
@@ -121,8 +121,8 @@ function Watchedhistory() {
   }, [user_id]);
 
   const groupByDay = (articles) => {
-    return articles.reduce((result, article) => {
-      const date = new Date(article.watched_at);
+    return articles.reduce((result, article_section) => {
+      const date = new Date(article_section.watched_at);
       const today = new Date();
       const yesterday = new Date(today);
       yesterday.setDate(today.getDate() - 1);
@@ -141,7 +141,7 @@ function Watchedhistory() {
         result[dayKey] = [];
       }
 
-      result[dayKey].push(article);
+      result[dayKey].push(article_section);
 
       return result;
     }, {});
@@ -157,12 +157,12 @@ function Watchedhistory() {
   const handleToPage = (articleId) => {
     history.push({
       pathname: "/Page/bookdetail",
-      state: { article_id: articleId },
+      state: { section_id: articleId },
     });
   };
   const handleToPageExam = (exam) => {
     apiClient
-      .get(`api/exam/${exam.article_id}`)
+      .get(`api/exam/${exam.section_id}`)
       .then((response) => {
         let tempArr = response.data;
         history.push({
@@ -170,7 +170,7 @@ function Watchedhistory() {
           state: {
             submittedAnswers: exam.submittedAnswers.split(",").map(Number),
             examDetails: tempArr,
-            articleid: exam.article_id,
+            articleid: exam.section_id,
           },
         });
       })
@@ -188,9 +188,9 @@ function Watchedhistory() {
     const filteredArticles = Object.entries(watchedArticles).reduce(
       (result, [day, articles]) => {
         const filteredArticles = articles.filter(
-          (article) =>
-            article.book_name.toLowerCase().includes(term.toLowerCase()) ||
-            article.article_name.toLowerCase().includes(term.toLowerCase()) ||
+          (article_section) =>
+            article_section.article_name.toLowerCase().includes(term.toLowerCase()) ||
+            article_section.section_name.toLowerCase().includes(term.toLowerCase()) ||
             day.toLowerCase().includes(term.toLowerCase())
         );
 
@@ -248,11 +248,11 @@ function Watchedhistory() {
                   <h4 style={{ padding: "20px" }}>{day}</h4>
                 </div>
                 <ul>
-                  {articles.map((article, index) => (
+                  {articles.map((article_section, index) => (
                     <li
-                      key={`${article.article_id}-${index}`}
+                      key={`${article_section.section_id}-${index}`}
                       className="boxoflist"
-                      onClick={() => handleToPage(article.article_id)}
+                      onClick={() => handleToPage(article_section.section_id)}
                     >
                       <div className="flex-container">
                         <div className="left-content">
@@ -262,7 +262,7 @@ function Watchedhistory() {
                             >
                               ชื่อบทความ:
                             </p>
-                            <p>{article.book_name}</p>
+                            <p>{article_section.article_name}</p>
                           </div>
                           <div style={{ display: "flex" }}>
                             <p
@@ -270,15 +270,15 @@ function Watchedhistory() {
                             >
                               ชื่อตอน:
                             </p>
-                            <p>{article.article_name}</p>
+                            <p>{article_section.section_name}</p>
                           </div>
                         </div>
                         <div className="text-center right-content">
                           <img
                             className="imgsize"
                             src={
-                              article.article_imagedata ||
-                              article.article_images
+                              article_section.section_imagedata ||
+                              article_section.section_images
                             }
                             alt="Article"
                           />
@@ -310,12 +310,12 @@ function Watchedhistory() {
                 <ul>
                   {exams.map((exam, index) => {
                     const totalQuestions =
-                      examDetails[exam.article_id]?.length || 0;
+                      examDetails[exam.section_id]?.length || 0;
                     const scoreText = `${examScores[index]}/${totalQuestions}`;
 
                     return (
                       <li
-                        key={`${exam.article_id}-${index}`}
+                        key={`${exam.section_id}-${index}`}
                         className="boxoflist"
                         onClick={() => handleToPageExam(exam)}
                       >
@@ -330,7 +330,7 @@ function Watchedhistory() {
                               >
                                 ชื่อบทความ:
                               </p>
-                              <p>{exam.book_name}</p>
+                              <p>{exam.article_name}</p>
                             </div>
                             <div style={{ display: "flex" }}>
                               <p
@@ -341,7 +341,7 @@ function Watchedhistory() {
                               >
                                 ชื่อข้อสอบ:
                               </p>
-                              <p>{exam.article_name}</p>
+                              <p>{exam.section_name}</p>
                             </div>
                             <div style={{ display: "flex" }}>
                               <p
@@ -365,7 +365,7 @@ function Watchedhistory() {
                             <img
                               className="imgsize"
                               src={
-                                exam.article_imagedata || exam.article_images
+                                exam.section_imagedata || exam.section_images
                               }
                               alt="Exam"
                             />

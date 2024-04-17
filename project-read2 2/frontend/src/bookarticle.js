@@ -18,7 +18,7 @@ function Bookarticle({ match }) {
   const location = useLocation();
   const history = useHistory();
   // const [bookid, setBookID] = useState("");
-  const bookid = location.state.book_id;
+  const bookid = location.state.article_id;
   const user = localStorage.getItem("email");
   const [usertype, setUsertype] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,12 +34,12 @@ function Bookarticle({ match }) {
   }, [user]);
 
   useEffect(() => {
-    // if (!location.state || location.state.book_id === undefined) {
-    //   // Redirect to the home page if book_id is not defined
+    // if (!location.state || location.state.article_id === undefined) {
+    //   // Redirect to the home page if article_id is not defined
     //   history.push('/Page/home');
     //   return;
     // }
-    // setBookID(location.state.book_id)
+    // setBookID(location.state.article_id)
     apiClient
       .get(`api/getarticleban/${bookid}`)
       .then((response) => {
@@ -61,7 +61,7 @@ function Bookarticle({ match }) {
 
   // Function to filter items based on the search term
   const filteredItems = items.filter((item) => {
-    return item.article_name.includes(searchTerm);
+    return item.section_name.includes(searchTerm);
   });
 
   return (
@@ -81,19 +81,19 @@ function Bookarticle({ match }) {
                 <p>ไม่มีรายการตอนที่คุณค้นหา หรือคุณเขียนชื่อตอนผิด.</p>
               </div>
             ) : (
-              filteredItems.map((article) => (
-                <div className="col-6 col-md-3" key={article.article_id}>
+              filteredItems.map((article_section) => (
+                <div className="col-6 col-md-3" key={article_section.section_id}>
                   <div
                     className="grid-item-wrapper"
                     style={{ padding: "10px" }}
                   >
                     <div className="card cardhover">
-                      {article.article_imagedata || article.article_images ? (
+                      {article_section.section_imagedata || article_section.section_images ? (
                         <img
                           className="card-img-top img-fluid simg"
                           src={
-                            article.article_imagedata ||
-                            article.article_images ||
+                            article_section.section_imagedata ||
+                            article_section.section_images ||
                             "url_to_default_image"
                           }
                         />
@@ -103,16 +103,16 @@ function Bookarticle({ match }) {
                           className="card-title text-center"
                           style={{ fontWeight: "bold" }}
                         >
-                          {article.article_name}
+                          {article_section.section_name}
                         </h4>
                         <div className="text-center" style={{ margin: "10px" }}>
                           <Link
                             to={{
                               pathname: "/Page/bookdetail",
-                              state: { article_id: article.article_id },
+                              state: { section_id: article_section.section_id },
                             }}
                             className="btn btn-primary btn-lg"
-                            onClick={() => incrementArticleView(article.article_id)}
+                            onClick={() => incrementArticleView(article_section.section_id)}
                           >
                             อ่าน
                           </Link>
@@ -120,7 +120,7 @@ function Bookarticle({ match }) {
                         <div className="card-footer">
                           <span style={{ fontStyle: "italic" }}>
                             <i className="bi bi-eye"></i>
-                            {article.article_view} ผู้เข้าชม
+                            {article_section.section_view} ผู้เข้าชม
                           </span>
                         </div>
                       </div>

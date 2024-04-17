@@ -54,7 +54,7 @@ function Notificationcreator() {
   }, [user]);
 
   const filteredItems = items.filter((items) => {
-    return items.book_name.includes(searchTerm);
+    return items.article_name.includes(searchTerm);
   });
 
   return (
@@ -106,17 +106,17 @@ function Notificationcreator() {
                 ) : (
                   currentItems.map((items, index) => (
                     <tr key={items.request_id}>
-                      <td className="col-sm-1" key={`book${index + 1}`}>
+                      <td className="col-sm-1" key={`article${index + 1}`}>
                       {startIndex + index + 1}
                       </td>
-                      <td className="col-sm-2">{items.book_name}</td>
                       <td className="col-sm-2">{items.article_name}</td>
+                      <td className="col-sm-2">{items.section_name}</td>
                       <td className="col-sm-1">
                         <img
-                          src={items.article_imagedata || items.article_image}
+                          src={items.section_imagedata || items.article_image}
                           width="100"
                           height="100"
-                          alt={items.article_name}
+                          alt={items.section_name}
                         />
                       </td>
                       <td className="col-sm-1">
@@ -157,7 +157,7 @@ function Notificationcreator() {
                         <Link
                           to={{
                             pathname: "/Page/bookdetail",
-                            state: { article_id: items.article_id },
+                            state: { section_id: items.section_id },
                           }}
                           className="btn btn-success"
                         >

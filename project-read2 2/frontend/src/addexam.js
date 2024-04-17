@@ -11,8 +11,8 @@ import { apiClient , convertSoundToBase64,convertImageToBase64 } from './config'
 
 function Addexam() {
   const location = useLocation();
-  const articleid = location.state.article_id;
-  const bookid = location.state.book_id;
+  const articleid = location.state.section_id;
+  const bookid = location.state.article_id;
   const [isLoaded, setIsLoaded] = useState(false);
   const [totalQuestions, setTotalQuestions] = useState(0); // Initialize with the desired default value
   const history = useHistory();
@@ -23,7 +23,7 @@ function Addexam() {
   useEffect(() => {
     apiClient.get(`api/articledetail/${articleid}`)
       .then((response) => {
-        setAname(response.data[0].article_name);
+        setAname(response.data[0].section_name);
         setIsLoaded(true);
       })
       .catch((error) => {
@@ -32,16 +32,16 @@ function Addexam() {
   }, [articleid]);
 
   useEffect(() => {
-    apiClient.get(`api/book`)
+    apiClient.get(`api/article`)
       .then((response) => {
         //console.log(response.data);
         for (let i = 0; i < response.data.length; i++) {
-          if (response.data[i].book_id === bookid) {
+          if (response.data[i].article_id === bookid) {
             // console.log("working")
-            // console.log(response.data[i].book_name)
-            setBname(response.data[i].book_name);
+            // console.log(response.data[i].article_name)
+            setBname(response.data[i].article_name);
           }
-          // console.log(response.data[i].book_id)
+          // console.log(response.data[i].article_id)
         }
         // console.log(bookid)
       })
@@ -120,8 +120,8 @@ const submitExam = async () => {
 
       const data = new FormData();
       data.append('exam_id', exam_id);
-      data.append('book_id', bookid);
-      data.append('article_id', articleid);
+      data.append('article_id', bookid);
+      data.append('section_id', articleid);
       data.append('total_questions', questions.length);
       data.append(`questionstext`, question.text);
       data.append(`questionsImage`, question.image);
@@ -149,7 +149,7 @@ const submitExam = async () => {
     cancelExam();
   } catch (error) {
     // Handle errors here (e.g., show an error message)
-    console.error('Error adding book:', error);
+    console.error('Error adding article:', error);
     alert(error);
   }
 };

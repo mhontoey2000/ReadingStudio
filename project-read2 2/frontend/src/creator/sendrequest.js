@@ -46,18 +46,18 @@ function Sendrequest() {
     setShowConfirmationModal(false);
     apiClient
       .post(`api/updateStatusBook/${selectedBookId}`, {
-        status_book: "pending",
+        status_article: "pending",
       })
       .then((response) => {
         setShowSuccessModal(true);
       })
       .catch((error) => {
-        console.error("Error updating status_book:", error);
+        console.error("Error updating status_article:", error);
       });
   };
 
-  const filteredItems = items.filter((book) => {
-    return book.book_name.includes(searchTerm);
+  const filteredItems = items.filter((article) => {
+    return article.article_name.includes(searchTerm);
   });
 
   return (
@@ -103,62 +103,62 @@ function Sendrequest() {
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((book, index) => (
-                  <tr key={book.book_id}>
-                    <td key={`book${index + 1}`}>{index + 1}</td>
-                    <td>{book.book_name}</td>
+                filteredItems.map((article, index) => (
+                  <tr key={article.article_id}>
+                    <td key={`article${index + 1}`}>{index + 1}</td>
+                    <td>{article.article_name}</td>
 
                     <td>
-                      {book.article_name.map((article, index) => (
+                      {article.section_name.map((article_section, index) => (
                         <span key={index}>
-                          {article}
-                          {index < book.article_name.length - 1 && ", "}{" "}
-                          {/* Add a comma if not the last article */}
+                          {article_section}
+                          {index < article.section_name.length - 1 && ", "}{" "}
+                          {/* Add a comma if not the last article_section */}
                         </span>
                       ))}
                     </td>
                     <td>
-                      {book.book_imagedata ? (
+                      {article.article_imagedata ? (
                         <img
-                          src={book.book_imagedata || book.book_image}
+                          src={article.article_imagedata || article.article_image}
                           width="100"
                           height="100"
-                          alt={book.book_name}
+                          alt={article.article_name}
                         />
                       ) : null}
                     </td>
                     <td>
-                      {book.status_book === "pending" && (
+                      {article.status_article === "pending" && (
                         <span style={{ color: "#FFC436", fontWeight: "bold" }}>
                           รออนุมัติ
                         </span>
                       )}
-                      {book.status_book === "creating" && (
+                      {article.status_article === "creating" && (
                         <span style={{ color: "#192655", fontWeight: "bold" }}>
                           สร้างยังไม่เสร็จ
                         </span>
                       )}
-                      {book.status_book === "finished" && (
+                      {article.status_article === "finished" && (
                         <span style={{ color: "#3876BF", fontWeight: "bold" }}>
                           สร้างเสร็จแล้ว
                         </span>
                       )}
-                      {book.status_book === "deny" && (
+                      {article.status_article === "deny" && (
                         <span style={{ color: "red", fontWeight: "bold" }}>
                           ถูกปฏิเสธ
                         </span>
                       )}
-                      {book.status_book === "published" && (
+                      {article.status_article === "published" && (
                         <span style={{ color: "green", fontWeight: "bold" }}>
                           เผยแพร่แล้ว
                         </span>
                       )}
                     </td>
                     <td>
-                      {book.status_book === "finished" ? (
+                      {article.status_article === "finished" ? (
                         <Button
                           className="btn btn-success"
-                          onClick={() => sendPublishRequest(book.book_id)}
+                          onClick={() => sendPublishRequest(article.article_id)}
                         >
                           ส่งคำขอ
                         </Button>

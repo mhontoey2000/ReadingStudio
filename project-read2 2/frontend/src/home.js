@@ -28,9 +28,9 @@ function Home() {
 
     useEffect(() => {
         // Use the search term to filter items
-        apiClient.get('api/book')
+        apiClient.get('api/article')
           .then((response) => {
-            const publishedBooks = response.data.filter((book) => book.status_book === 'published' || book.status_book === 'finished');
+            const publishedBooks = response.data.filter((article) => article.status_article === 'published' || article.status_article === 'finished');
             setItems(publishedBooks);
           })
           .catch((error) => {
@@ -39,7 +39,7 @@ function Home() {
     }, []); 
     
     const incrementBookView = (bookId) => {
-        apiClient.post(`/api/book/view/${bookId}`)
+        apiClient.post(`/api/article/view/${bookId}`)
           .then((response) => {
           })
           .catch((error) => {
@@ -49,7 +49,7 @@ function Home() {
 
     // Function to filter items based on the search term
     const filteredItems = items.filter((item) => {
-        return item.book_name.includes(searchTerm);
+        return item.article_name.includes(searchTerm);
     });
 
     return (
@@ -70,30 +70,30 @@ function Home() {
                                 <p>ไม่มีรายการหนังสือที่คุณค้นหา หรือคุณเขียนชื่อหนังสือผิด.</p>
                             </div>
                         ) : (
-                            filteredItems.map((book) => (
-                                <div className="col-6 col-md-3" key={book.book_id}>
+                            filteredItems.map((article) => (
+                                <div className="col-6 col-md-3" key={article.article_id}>
                                     <div className="grid-item-wrapper" style={{ padding: "10px" }}>
                                         <div className="card cardhover">
-                                            {book.book_imagedata || book.book_image ? (
-                                                <img className="card-img-top img-fluid simg" src={book.book_imagedata || book.book_image} alt={book.book_name} />
+                                            {article.article_imagedata || article.article_image ? (
+                                                <img className="card-img-top img-fluid simg" src={article.article_imagedata || article.article_image} alt={article.article_name} />
                                             ) : null}
                                             <div className="card-body">
-                                                <h4 className="card-title" style={{ fontWeight: "bold" }}>{book.book_name}</h4>
-                                                <h5 className="card-text">{book.book_detail}</h5>
-                                                <span className="card-text" style={{ fontStyle: "italic",marginTop: "10px" }}>ผู้อัปโหลด: {book.book_creator}</span>
+                                                <h4 className="card-title" style={{ fontWeight: "bold" }}>{article.article_name}</h4>
+                                                <h5 className="card-text">{article.article_detail}</h5>
+                                                <span className="card-text" style={{ fontStyle: "italic",marginTop: "10px" }}>ผู้อัปโหลด: {article.article_creator}</span>
                                                 {/* <span className="card-text"><i class="bi bi-eye"></i></span> */}
                                                 <div className="text-center" style={{ margin: "10px" }}>
                                                     <Link
-                                                        to={{ pathname: "/Page/bookarticle", state: { book_id: book.book_id } }}
+                                                        to={{ pathname: "/Page/bookarticle", state: { article_id: article.article_id } }}
                                                         className="btn btn-primary btn-lg"
-                                                        onClick={() => incrementBookView(book.book_id)}
+                                                        onClick={() => incrementBookView(article.article_id)}
                                                     >
                                                         อ่าน
                                                     </Link>
                                                 </div>
                                             </div>
                                                 <div className="card-footer">
-                                                    <span style={{ fontStyle: "italic" }}><i className="bi bi-eye"></i>{book.book_view} ผู้เข้าชม</span>
+                                                    <span style={{ fontStyle: "italic" }}><i className="bi bi-eye"></i>{article.article_view} ผู้เข้าชม</span>
                                                 </div>
                                         </div>
                                     </div>

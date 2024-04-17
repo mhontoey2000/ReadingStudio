@@ -70,12 +70,12 @@ function Addbook() {
     setShowModal(false);
 
     const formData = new FormData();
-    formData.append("book_name", bookName);
-    formData.append("book_detail", bookDetail);
-    formData.append("book_image", bookImage);
-    formData.append("book_creator", user);
+    formData.append("article_name", bookName);
+    formData.append("article_detail", bookDetail);
+    formData.append("article_image", bookImage);
+    formData.append("article_creator", user);
 
-    // Send a POST request to the backend API to add the book
+    // Send a POST request to the backend API to add the article
     apiClient
       .post("api/addbook", formData) // Replace '/api/addbook' with your actual API endpoint
       .then((response) => {
@@ -86,7 +86,7 @@ function Addbook() {
       })
       .catch((error) => {
         // Handle errors here (e.g., show an error message)
-        console.error("Error adding book:", error);
+        console.error("Error adding article:", error);
       });
   };
 
@@ -158,11 +158,11 @@ function Addbook() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="article_detail">เนื้อหาของบทความ</label>
+                <label htmlFor="section_detail">เนื้อหาของบทความ</label>
                 <textarea
                   type="text"
                   className="form-control"
-                  id="article_detail"
+                  id="section_detail"
                   placeholder="กรุณากรอกเนื้อหา"
                   required
                   onChange={(event) => {

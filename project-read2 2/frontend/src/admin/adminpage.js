@@ -89,7 +89,7 @@ function Adminpage() {
                   className="btn btn-primary btn-lg mx-2 custom-button"
                   href="./allbookadmin"
                 >
-                  <i className="bi bi-book-fill custom-icon"></i> จัดการบทความ
+                  <i className="bi bi-article-fill custom-icon"></i> จัดการบทความ
                 </Button>
 
                 <Button

@@ -17,8 +17,8 @@ import {
 function Reportbook() {
 
     const location = useLocation();
-    const articleid = location.state.article_id;
-    const bookid = location.state.book_id;
+    const articleid = location.state.section_id;
+    const bookid = location.state.article_id;
     const [isLoaded, setIsLoaded] = useState(false);
     const history = useHistory();
     const [bname, setBname] = useState("");
@@ -44,7 +44,7 @@ function Reportbook() {
     useEffect(() => {
       apiClient.get(`api/articledetail/${articleid}`)
           .then((response) => {
-            setAname(response.data[0].article_name);
+            setAname(response.data[0].section_name);
             setIsLoaded(true);
           })
           .catch((error) => {
@@ -53,17 +53,18 @@ function Reportbook() {
     }, [articleid]);
 
     useEffect(() => {
-      apiClient.get(`api/book`)
+      apiClient.get(`api/article`)
           .then((response) => {
             // console.log(response.data);
+            // console.log(bookid);
             for(let i=0;i<response.data.length;i++)
             {
-                if(response.data[i].book_id === bookid){
+                if(response.data[i].article_id === bookid){
                     // console.log("working")
-                    // console.log(response.data[i].book_name)
-                    setBname(response.data[i].book_name);   
+                    // console.log(response.data[i].article_name)
+                    setBname(response.data[i].article_name);   
                 }
-                // console.log(response.data[i].book_id)
+                // console.log(response.data[i].article_id)
             }
             // console.log(bookid)
             

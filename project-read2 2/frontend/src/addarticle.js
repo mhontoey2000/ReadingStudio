@@ -52,11 +52,11 @@ function Addarticle() {
 
   useEffect(() => {
     apiClient
-      .get(`api/book/${bookid}`)
+      .get(`api/article/${bookid}`)
       .then((response) => {
         const result = response.data;
         if (result) {
-          setBname(result[0].book_name);
+          setBname(result[0].article_name);
         }
       })
       .catch((error) => {
@@ -75,7 +75,7 @@ function Addarticle() {
 
     try {
       // const data = {
-      //     book_id: bookid,
+      //     article_id: bookid,
       //     chapter: chapter,
       //     level: chapter,
       //     description: description,
@@ -96,7 +96,7 @@ function Addarticle() {
       //     console.error(error);
       // });
       const data = new FormData();
-      data.append("book_id", bookid);
+      data.append("article_id", bookid);
       data.append("chapter", chapter);
       data.append("level", level);
       data.append("description", description);
@@ -171,11 +171,11 @@ function Addarticle() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="article_detail">เนื้อหาของบทความ</label>
+                <label htmlFor="section_detail">เนื้อหาของบทความ</label>
                 <textarea
                   type="text"
                   className="form-control"
-                  id="article_detail"
+                  id="section_detail"
                   placeholder="กรุณากรอกเนื้อหา"
                   value={description}
                   required

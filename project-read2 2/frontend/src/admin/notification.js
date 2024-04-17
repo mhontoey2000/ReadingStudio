@@ -213,7 +213,7 @@ const Notification = () => {
                     return (
                       <tr key={item.report_id}>
                         <td className="col-sm-1">{startIndex + index + 1}</td>
-                        <td className="col-sm-1">{item.book_id}</td>
+                        <td className="col-sm-1">{item.article_id}</td>
                         <td className="col-sm-1">{item.report_articlename}</td>
                         <td className="col-sm-3">{item.report_detail}</td>
                         <td className="col-sm-2">{item.reporter}</td>
@@ -250,7 +250,7 @@ const Notification = () => {
                           <Link
                             to={{
                               pathname: "/Page/bookdetail",
-                              state: { article_id: item.article_id },
+                              state: { section_id: item.section_id },
                             }}
                             className="btn btn-success"
                             onClick={() => handleClick(item)}
@@ -309,7 +309,7 @@ const Notification = () => {
             <div className="table-approve">
               <form
                 className="form-control"
-                //onSubmit={(e) => submitStatusChange(e, selectitem.book_id,selectitem.article_id)}
+                //onSubmit={(e) => submitStatusChange(e, selectitem.article_id,selectitem.section_id)}
                 onSubmit={submitStatusChange}
               >
                 <p style={{ textAlign: "center", margin: "10px" }}>
@@ -326,7 +326,7 @@ const Notification = () => {
                       className="form-control-plaintext"
                       disabled
                       id="bookname"
-                      value={selectitem.book_id}
+                      value={selectitem.article_id}
                     />
                   </div>
                 </div>

@@ -33,8 +33,8 @@ function Articlecreator() {
       });
   }, []);
 
-  const filteredItems = items.filter((book) => {
-    return book.book_name.includes(searchTerm);
+  const filteredItems = items.filter((article) => {
+    return article.article_name.includes(searchTerm);
   });
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -83,26 +83,26 @@ function Articlecreator() {
                   </td>
                 </tr>
               ) : (
-                currentItems.map((book, index) => (
-                  <tr key={book.book_id}>
-                    <td key={`book${index + 1}`}>{startIndex + index + 1}</td>
-                    <td>{book.book_name}</td>
-                    <td>{book.book_detail}</td>
+                currentItems.map((article, index) => (
+                  <tr key={article.article_id}>
+                    <td key={`article${index + 1}`}>{startIndex + index + 1}</td>
+                    <td>{article.article_name}</td>
+                    <td>{article.article_detail}</td>
                     <td>
                       <img
-                        src={book.book_imagedata || book.book_image}
+                        src={article.article_imagedata || article.article_image}
                         width="100"
                         height="100"
-                        alt={book.book_name}
+                        alt={article.article_name}
                       />
                     </td>
                     <td>
-                      {user === book.book_creator ? (
+                      {user === article.article_creator ? (
                         <Link
                           className="btn btn-success amt3"
                           to={{
                             pathname: "/Page/toaddarticle",
-                            state: { book_id: book.book_id },
+                            state: { article_id: article.article_id },
                           }}
                         >
                           เพิ่มตอน

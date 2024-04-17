@@ -16,10 +16,10 @@ import {
 function Editexam() {
   const location = useLocation();
   const history = useHistory();
-  const articleid = location.state.article_id;
-  const articlename = location.state.article_name;
-  const bookname = location.state.book_name;
-  const bookid = location.state.book_id;
+  const articleid = location.state.section_id;
+  const articlename = location.state.section_name;
+  const bookname = location.state.article_name;
+  const bookid = location.state.article_id;
   const [qitems, setqItems] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [tempArrCount, setTempArrCount] = useState(0);
@@ -50,7 +50,7 @@ function Editexam() {
   useEffect(() => {
     // console.log("articlename" + articlename);
     // console.log("bookname" + bookname);
-    // console.log("article_id" + articleid);
+    // console.log("section_id" + articleid);
 
     apiClient.get(`api/exam/${articleid}`)
       .then((response) => {
@@ -161,8 +161,8 @@ function Editexam() {
     const formData = new FormData();
     formData.append("exam_id", exam_id);
     formData.append("question_id", question.id);
-    formData.append("book_id", bookid);
-    formData.append("article_id", articleid);
+    formData.append("article_id", bookid);
+    formData.append("section_id", articleid);
     formData.append("total_questions", questions.length);
     formData.append("questionstext", question.text);
     if (question.image != null)
@@ -184,8 +184,8 @@ function Editexam() {
     try {
       const data = new FormData();
       data.append("exam_id", exam_id);
-      data.append("book_id", bookid);
-      data.append("article_id", articleid);
+      data.append("article_id", bookid);
+      data.append("section_id", articleid);
       data.append("total_questions", questions.length);
       data.append(`questionstext`, question.text);
       data.append(`questionsImage`, question.image);
@@ -204,7 +204,7 @@ function Editexam() {
       }
     } catch (error) {
       // Handle errors here (e.g., show an error message)
-      console.error("Error adding book:", error);
+      console.error("Error adding article:", error);
       alert(error);
     }
   };

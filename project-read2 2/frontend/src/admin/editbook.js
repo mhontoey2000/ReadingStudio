@@ -22,15 +22,15 @@ function Editbook() {
 
     useEffect(() => {
 
-      apiClient.get(`api/book`)
+      apiClient.get(`api/article`)
           .then((response) => {
             for(let i=0; i<response.data.length; i++) {
-                if(response.data[i].book_id === bookid)
+                if(response.data[i].article_id === bookid)
                 {
-                    setBname(response.data[i].book_name);
-                    setBdetail(response.data[i].book_detail);
-                    setBookImage(response.data[i].book_imagedata);
-                    // console.log(response.data[i].book_name);
+                    setBname(response.data[i].article_name);
+                    setBdetail(response.data[i].article_detail);
+                    setBookImage(response.data[i].article_imagedata);
+                    // console.log(response.data[i].article_name);
                     break; // หากเจอหนังสือที่ตรงให้หยุดการวน loop
                 }
             }
@@ -63,11 +63,11 @@ function Editbook() {
       // console.log("Image before sending:", selectedImageFile);
       
       const formData = new FormData();
-      formData.append('book_id', bookid);
-      formData.append('book_name', bname);
-      formData.append('book_detail', bdetail);
+      formData.append('article_id', bookid);
+      formData.append('article_name', bname);
+      formData.append('article_detail', bdetail);
       if (selectedImageFile) {
-        formData.append('book_image', selectedImageFile);
+        formData.append('article_image', selectedImageFile);
       }
     
       apiClient.post('api/updatebook', formData)

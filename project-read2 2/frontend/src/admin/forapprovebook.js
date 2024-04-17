@@ -40,7 +40,7 @@ function Forapprovebook() {
         // console.log("items", items);
         const articleNamesArray = response.data.map((item) => ({
           ...item,
-          article_name: item.article_names
+          section_name: item.article_names
             .split(",")
             .map((articleName) => articleName.trim()),
         }));
@@ -65,9 +65,9 @@ function Forapprovebook() {
       (status === "deny" && unpublishReason !== "-")
     ) {
       const data = {
-        bookId: selectitem.book_id,
+        bookId: selectitem.article_id,
         newStatus: status,
-        bookCreator: selectitem.book_creator,
+        bookCreator: selectitem.article_creator,
         unpublishReason:
           status === "deny" ? unpublishReason : "ได้รับการเผยแพร่แล้ว",
       };
@@ -147,62 +147,62 @@ function Forapprovebook() {
                   </tr>
                 ) : (
                   currentItems.map((item, index) => (
-                    <tr key={item.book_id}>
-                      <td className="col-sm-1" key={`book${index + 1}`}>
+                    <tr key={item.article_id}>
+                      <td className="col-sm-1" key={`article${index + 1}`}>
                         {startIndex + index + 1}
                       </td>
-                      <td className="col-sm-2">{item.book_name}</td>
+                      <td className="col-sm-2">{item.article_name}</td>
                       <td className="col-sm-2">
-                        {Array.isArray(item.article_name)
-                          ? item.article_name.map((article, index) => (
+                        {Array.isArray(item.section_name)
+                          ? item.section_name.map((article_section, index) => (
                               <span key={index}>
-                                {article}
-                                {index < item.article_name.length - 1 && ", "}
+                                {article_section}
+                                {index < item.section_name.length - 1 && ", "}
                               </span>
                             ))
                           : "ไม่มีตอนของบทความ"}
                       </td>
                       <td className="col-sm-2">
                         <img
-                          src={item.book_imagedata || "url_to_default_image"}
+                          src={item.article_imagedata || "url_to_default_image"}
                           width="100"
                           height="100"
-                          alt={item.book_name}
+                          alt={item.article_name}
                         />
                       </td>
-                      <td className="col-sm-1">{item.book_creator}</td>
+                      <td className="col-sm-1">{item.article_creator}</td>
                       <td className="col-sm-2">
                         <Button
                           className={`btn ${
-                            item.status_book === "pending"
+                            item.status_article === "pending"
                               ? "btn-info"
-                              : item.status_book === "creating"
+                              : item.status_article === "creating"
                               ? "btn-secondary"
-                              : item.status_book === "finished"
+                              : item.status_article === "finished"
                               ? "btn-secondary"
-                              : item.status_book === "deny"
+                              : item.status_article === "deny"
                               ? "btn-danger"
-                              : item.status_book === "published"
+                              : item.status_article === "published"
                               ? "btn-success"
                               : "btn-secondary"
                           }`}
                           style={{ color: "white" }}
                           onClick={() => openStatusModal(item)}
                         >
-                          {item.status_book === "pending" && "รออนุมัติ"}
-                          {item.status_book === "creating" &&
+                          {item.status_article === "pending" && "รออนุมัติ"}
+                          {item.status_article === "creating" &&
                             "สร้างยังไม่เสร็จ"}
-                          {item.status_book === "finished" && "สร้างเสร็จแล้ว"}
-                          {item.status_book === "deny" && "ถูกระงับ"}
-                          {item.status_book === "published" && "เผยแพร่แล้ว"}
+                          {item.status_article === "finished" && "สร้างเสร็จแล้ว"}
+                          {item.status_article === "deny" && "ถูกระงับ"}
+                          {item.status_article === "published" && "เผยแพร่แล้ว"}
                         </Button>
                       </td>
-                      <td className="col-sm-1">{item.book_view}</td>
+                      <td className="col-sm-1">{item.article_view}</td>
                       <td className="col-sm-1">
                         <Link
                           to={{
                             pathname: "/Page/bookarticle",
-                            state: { book_id: item.book_id },
+                            state: { article_id: item.article_id },
                           }}
                           className="btn btn-primary"
                         >
@@ -256,7 +256,7 @@ function Forapprovebook() {
             <div className="table-approve">
               <form
                 className="form-control"
-                //onSubmit={(e) => submitStatusChange(e, selectitem.book_id,selectitem.article_id)}
+                //onSubmit={(e) => submitStatusChange(e, selectitem.article_id,selectitem.section_id)}
                 onSubmit={submitStatusChange}
               >
                 <p style={{ textAlign: "center", margin: "10px" }}>
@@ -273,7 +273,7 @@ function Forapprovebook() {
                       className="form-control-plaintext"
                       disabled
                       id="bookname"
-                      value={selectitem.book_name}
+                      value={selectitem.article_name}
                     />
                   </div>
                 </div>
@@ -292,7 +292,7 @@ function Forapprovebook() {
                       className="form-control-plaintext"
                       disabled
                       id="articlename"
-                      value={selectitem.article_name}
+                      value={selectitem.section_name}
                     />
                   </div>
                 </div>
@@ -311,7 +311,7 @@ function Forapprovebook() {
                       className="form-control-plaintext"
                       disabled
                       id="bookCreator"
-                      value={selectitem.book_creator}
+                      value={selectitem.article_creator}
                     />
                   </div>
                 </div>
@@ -326,11 +326,11 @@ function Forapprovebook() {
                     }}
                   >
                     <option value="default" hidden>
-                      {selectitem.status_book === "pending" && "รออนุมัติ"}
-                      {selectitem.status_book === "finished" &&
+                      {selectitem.status_article === "pending" && "รออนุมัติ"}
+                      {selectitem.status_article === "finished" &&
                         "สร้างเสร็จแล้ว"}
-                      {selectitem.status_book === "deny" && "ถูกระงับ"}
-                      {selectitem.status_book === "published" && "เผยแพร่แล้ว"}
+                      {selectitem.status_article === "deny" && "ถูกระงับ"}
+                      {selectitem.status_article === "published" && "เผยแพร่แล้ว"}
                     </option>
          <option value="published">อนุมัติ</option>
                     <option value="deny">ระงับบทความ</option>
