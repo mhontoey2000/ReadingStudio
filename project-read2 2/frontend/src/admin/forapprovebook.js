@@ -65,7 +65,7 @@ function Forapprovebook() {
       (status === "deny" && unpublishReason !== "-")
     ) {
       const data = {
-        bookId: selectitem.book_id,
+        bookId: selectitem.article_id,
         newStatus: status,
         bookCreator: selectitem.book_creator,
         unpublishReason:
@@ -147,16 +147,16 @@ function Forapprovebook() {
                   </tr>
                 ) : (
                   currentItems.map((item, index) => (
-                    <tr key={item.book_id}>
-                      <td className="col-sm-1" key={`book${index + 1}`}>
+                    <tr key={item.article_id}>
+                      <td className="col-sm-1" key={`article${index + 1}`}>
                         {startIndex + index + 1}
                       </td>
                       <td className="col-sm-2">{item.book_name}</td>
                       <td className="col-sm-2">
                         {Array.isArray(item.article_name)
-                          ? item.article_name.map((article, index) => (
+                          ? item.article_name.map((article_section, index) => (
                               <span key={index}>
-                                {article}
+                                {article_section}
                                 {index < item.article_name.length - 1 && ", "}
                               </span>
                             ))
@@ -202,7 +202,7 @@ function Forapprovebook() {
                         <Link
                           to={{
                             pathname: "/Page/bookarticle",
-                            state: { book_id: item.book_id },
+                            state: { article_id: item.article_id },
                           }}
                           className="btn btn-primary"
                         >
@@ -256,7 +256,7 @@ function Forapprovebook() {
             <div className="table-approve">
               <form
                 className="form-control"
-                //onSubmit={(e) => submitStatusChange(e, selectitem.book_id,selectitem.article_id)}
+                //onSubmit={(e) => submitStatusChange(e, selectitem.book_id,selectitem.section_id)}
                 onSubmit={submitStatusChange}
               >
                 <p style={{ textAlign: "center", margin: "10px" }}>

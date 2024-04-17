@@ -31,8 +31,8 @@ const Allexamadmin = () => {
         });
     }, []);
   
-    const filteredItems = items.filter((book) => {
-      return book.book_name.includes(searchTerm);
+    const filteredItems = items.filter((article) => {
+      return article.article_name.includes(searchTerm);
     });
 
   return (
@@ -78,26 +78,26 @@ const Allexamadmin = () => {
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((book, index) => (
-                  <tr key={book.book_id}>
-                        <td key={`book${index + 1}`}>{index + 1}</td>
-                        <td>{book.book_name}</td>
-                        <td>{book.article_name}</td>
+                filteredItems.map((article, index) => (
+                  <tr key={article.article_id}>
+                        <td key={`article${index + 1}`}>{index + 1}</td>
+                        <td>{article.article_name}</td>
+                        <td>{article.article_name}</td>
                         <td>
                         <img
-                            src={book.article_imagedata || book.article_image}
+                            src={article.article_imagedata || article.article_image}
                             width="100"
                             height="100"
                         />
                         </td>
                     <td>
-                      {/* <a href={'/admin/book/edit/' + book.book_id} className="btn btn-primary">Edit</a> */}
+                      {/* <a href={'/admin/article/edit/' + article.article_id} className="btn btn-primary">Edit</a> */}
                       <Link
                         className="btn btn-warning amt1"
                         to={{
-                          pathname: `/Page/editexam_${ book.book_id }`,
-                          state: { book_id: book.book_id },
-                        //   to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
+                          pathname: `/Page/editexam_${ article.article_id }`,
+                          state: { article_id: article.article_id },
+                        //   to={{ pathname: `/Page/editbook_${ article.book_id }`, state: { book_id: article.book_id } }}
                         }}
                       >
                         แก้ไขข้อสอบ
@@ -106,7 +106,7 @@ const Allexamadmin = () => {
                     <td>
                       <Button
                         className="btn btn-danger amt2"
-                        //onClick={() => deleteBook(book.book_id)}
+                        //onClick={() => deleteBook(article.book_id)}
                       >
                         ลบข้อสอบ
                       </Button>

@@ -65,13 +65,13 @@ function Editarticle() {
       });
   };
 
-  const setArticleData = (article) => {
+  const setArticleData = (article_section) => {
     apiClient
-      .get(`api/book/${article.book_id}`)
+      .get(`api/article/${article_section.section_id}`)
       .then((response) => {
-        const book = response.data;
-        if (book.length > 0) {
-          setBookName(book[0].book_name);
+        const article = response.data;
+        if (article.length > 0) {
+          setBookName(article[0].article_name);
         } else {
           console.log("ไม่พบข้อมูลหนังสือสำหรับบทความนี้");
         }
@@ -79,24 +79,24 @@ function Editarticle() {
       .catch((error) => {
         console.error(error);
       });
-    setArticleID(article.article_id);
-    setArticleName(article.article_name);
-    setBookid(article.book_id);
-    setArticleDetail(article.article_detail);
-    setImage(article.article_imagedata);
+    setArticleID(article_section.section_id);
+    setArticleName(article_section.section_name);
+    setBookid(article_section.section_id);
+    setArticleDetail(article_section.section_detail);
+    setImage(article_section.section_imagedata);
     if (
-      article.article_sounddata &&
-      article.article_sounddata.type === "Buffer"
+      article_section.section_sounddata &&
+      article_section.section_sounddata.type === "Buffer"
     ) {
       const audioBlob = new Blob(
-        [new Uint8Array(article.article_sounddata.data)],
+        [new Uint8Array(article_section.section_sounddata.data)],
         { type: "audio/mpeg" }
       ); // กำหนด MIME type ตามรูปแบบของไฟล์เสียงของคุณ
       const blobUrl = URL.createObjectURL(audioBlob);
       setAudioUrl(blobUrl);
-      // console.log(article.article_sounddata);
+      // console.log(article_section.article_sounddata);
     } else {
-      setAudioUrl(article.article_sounddata);
+      setAudioUrl(article_section.section_sounddata);
     }
   };
 
@@ -197,7 +197,7 @@ function Editarticle() {
 
   const cancelEditArticle = () => {
     // history.replace(`/Page/articleedit_${bookid}`)
-    history.replace(`/Page/articleedit_${bookid}`, { book_id: bookid });
+    history.replace(`/Page/articleedit_${bookid}`, { article_id: bookid });
   };
 
   const editArticle = () => {
@@ -232,7 +232,7 @@ function Editarticle() {
             cancelEditArticle();
           })
           .catch((bookError) => {
-            console.error("Error updating book status:", bookError);
+            console.error("Error updating article status:", bookError);
           });
       })
       .catch((error) => {
@@ -420,7 +420,7 @@ function Editarticle() {
                       className="btn btn-warning tc"
                       to={{
                         pathname: "/Page/addvocab",
-                        state: { book_id: bookid, article_id: articleid },
+                        state: { article_id: bookid, section_id: articleid },
                       }}
                     >
                       เพิ่มคำศัพท์
@@ -441,12 +441,12 @@ function Editarticle() {
                     to={{
                       pathname: `/Page/editexam`,
                       state: {
-                        book_id: bookid,
+                        article_id: bookid,
                         book_name: bookName,
                         article_name: articleName,
-                        article_id: articleid,
+                        section_id: articleid,
                       },
-                      //   to={{ pathname: `/Page/editbook_${ book.book_id }`, state: { book_id: book.book_id } }}
+                      //   to={{ pathname: `/Page/editbook_${ article.book_id }`, state: { article_id: article.book_id } }}
                     }}
                   >
                     แก้ไขข้อสอบ
@@ -458,7 +458,7 @@ function Editarticle() {
                       style={{ color: "white" }}
                       to={{
                         pathname: "/Page/addexam",
-                        state: { book_id: bookid, article_id: articleid },
+                        state: { article_id: bookid, section_id: articleid },
                       }}
                     >
                       เพิ่มข้อสอบ

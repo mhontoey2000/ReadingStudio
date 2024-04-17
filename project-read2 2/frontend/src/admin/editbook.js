@@ -22,10 +22,10 @@ function Editbook() {
 
     useEffect(() => {
 
-      apiClient.get(`api/book`)
+      apiClient.get(`api/article`)
           .then((response) => {
             for(let i=0; i<response.data.length; i++) {
-                if(response.data[i].book_id === bookid)
+                if(response.data[i].article_id === bookid)
                 {
                     setBname(response.data[i].book_name);
                     setBdetail(response.data[i].book_detail);
@@ -63,7 +63,7 @@ function Editbook() {
       // console.log("Image before sending:", selectedImageFile);
       
       const formData = new FormData();
-      formData.append('book_id', bookid);
+      formData.append('article_id', bookid);
       formData.append('book_name', bname);
       formData.append('book_detail', bdetail);
       if (selectedImageFile) {

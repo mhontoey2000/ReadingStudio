@@ -19,7 +19,7 @@ function Bookdetail(match) {
   const [items, setItems] = useState([]);
   const location = useLocation();
   const [historyRecorded, setHistoryRecorded] = useState(false); 
-  const articleid = location.state.article_id;
+  const articleid = location.state.section_id;
   const user = localStorage.getItem("email");
   const userId = localStorage.getItem("user_id");
   const [Vitems, setVitems] = useState([]);
@@ -167,7 +167,7 @@ function Bookdetail(match) {
       apiClient
         .post(`api/articledetail/${articleid}/record-history`, {
           user_id: userId,
-          book_id: bookid,
+          article_id: bookid,
         })
         .then((response) => {
           setHistoryRecorded(true);
@@ -280,7 +280,7 @@ function Bookdetail(match) {
 
       setHighlightedArticleDetail(
         <div
-          className="parsed-article"
+          className="parsed-article_section"
           dangerouslySetInnerHTML={{ __html: highlightedDetail }}
         />
       );
@@ -298,7 +298,7 @@ function Bookdetail(match) {
           <Searchbar />
         </div>
 
-        <div className="book">
+        <div className="article">
           <div
             className="d-flex justify-content-center"
             style={{ margin: "20px" }}
@@ -341,16 +341,16 @@ function Bookdetail(match) {
             id="myDIV1"
             style={{ display: visibleDiv === "เนื้อหา" ? "block" : "none" }}
           >
-            {items.map((article) => (
-              <div className="grid-item badt" key={article.article_id}>
+            {items.map((article_section) => (
+              <div className="grid-item badt" key={article_section.section_id}>
                 <h2 className="articlename text-center">
-                  {article.article_name}
+                  {article_section.section_name}
                 </h2>
 
                 <div className="text-center">
                   <img
                     className="bigimg"
-                    src={article.article_imagedata || article.article_images}
+                    src={article_section.section_imagedata || article_section.section_images}
                     alt="Article"
                   />
                 </div>
@@ -375,7 +375,7 @@ function Bookdetail(match) {
                     <h5 className="leveltext " style={{ textAlign: "center" }}>
                       บทความฝึกอ่านสำหรับ:{" "}
                       <span style={{ color: "green" }}>
-                        {article.article_level}
+                        {article_section.section_level}
                       </span>
                     </h5>
                     
@@ -390,7 +390,7 @@ function Bookdetail(match) {
                     )}
                     </div>
 
-                  <div className="detailtext parsed-article">
+                  <div className="detailtext parsed-article_section">
                     {highlighted
                       ? highlightedArticleDetail
                       : items.length > 0 && items[0].article_detail}
@@ -402,7 +402,7 @@ function Bookdetail(match) {
                       style={{ color: "white" }}
                       to={{
                         pathname: "/Page/reportbook",
-                        state: { book_id: bookid, article_id: articleid },
+                        state: { article_id: bookid, section_id: articleid },
                       }}
                     >
                       รายงานเนื้อหา

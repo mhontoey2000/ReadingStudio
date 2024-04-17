@@ -17,8 +17,8 @@ import {
 function Reportbook() {
 
     const location = useLocation();
-    const articleid = location.state.article_id;
-    const bookid = location.state.book_id;
+    const articleid = location.state.section_id;
+    const bookid = location.state.article_id;
     const [isLoaded, setIsLoaded] = useState(false);
     const history = useHistory();
     const [bname, setBname] = useState("");
@@ -53,15 +53,15 @@ function Reportbook() {
     }, [articleid]);
 
     useEffect(() => {
-      apiClient.get(`api/book`)
+      apiClient.get(`api/article`)
           .then((response) => {
             // console.log(response.data);
             for(let i=0;i<response.data.length;i++)
             {
-                if(response.data[i].book_id === bookid){
+                if(response.data[i].article_id === bookid){
                     // console.log("working")
                     // console.log(response.data[i].book_name)
-                    setBname(response.data[i].book_name);   
+                    setBname(response.data[i].article_name);   
                 }
                 // console.log(response.data[i].book_id)
             }

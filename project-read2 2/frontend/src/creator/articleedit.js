@@ -18,7 +18,7 @@ import {
 function Articleedit() {
   const [items, setItems] = useState([]);
   const location = useLocation();
-  const bookid = location.state.book_id;
+  const bookid = location.state.article_id;
   const user = localStorage.getItem("email");
   const [usertype, setUsertype] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -116,7 +116,7 @@ function Articleedit() {
     // โหลดข้อมูลบทความเมื่อมีความจำเป็นเท่าที่จำเป็น (ในตัวอย่างนี้เมื่อ bookid เปลี่ยน)
     if (bookid) {
       apiClient
-        .get(`api/article/${bookid}`)
+        .get(`api/article_section/${bookid}`)
         .then((response) => {
           setItems(response.data);
           setLoading(false);
@@ -130,8 +130,8 @@ function Articleedit() {
     }
   }, [bookid, currentPage]);
 
-  const filteredItems = items.filter((article) => {
-    return article.article_name.includes(searchTerm);
+  const filteredItems = items.filter((article_section) => {
+    return article_section.section_name.includes(searchTerm);
   });
 
   const analyzeArticleLevel = (articleDetail) => {
@@ -160,11 +160,11 @@ function Articleedit() {
     }
   };
 
-  const handleAnalyzeClick = (article) => {
+  const handleAnalyzeClick = (article_section) => {
     setLoadingVisible(true);
-    setSelectarticle(article);
+    setSelectarticle(article_section);
 
-    const result = analyzeArticleLevel(article.article_detail);
+    const result = analyzeArticleLevel(article_section.section_detail);
     if (result === "N/A") {
       setAnalysisResult("ไม่สามารถวัดระดับได้");
     } else {
@@ -202,7 +202,7 @@ function Articleedit() {
 
   const deleteArticle = (articleId) => {
     const articleToDelete = items.find(
-      (article) => article.article_id === articleId
+      (article_section) => article_section.section_id === articleId
     );
     setArticleToDelete(articleToDelete);
     setShowDeleteModal(true);
@@ -214,7 +214,7 @@ function Articleedit() {
       .then(() => {
         //console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
         apiClient
-          .get(`api/article/${bookid}`)
+          .get(`api/article_section/${bookid}`)
           .then((response) => {
             setItems(response.data);
             setShowSuccessModal(true);
@@ -282,25 +282,25 @@ function Articleedit() {
                   </td>
                 </tr>
               ) : (
-                currentItems.map((article, index) => (
-                  <tr key={article.article_id}>
-                    <td className="col-sm-1" key={`article${index + 1}`}>{startIndex + index + 1}</td>
-                    <td className="col-sm-3">{article.article_name}</td>
+                currentItems.map((article_section, index) => (
+                  <tr key={article_section.section_id}>
+                    <td className="col-sm-1" key={`article_section${index + 1}`}>{startIndex + index + 1}</td>
+                    <td className="col-sm-3">{article_section.section_name}</td>
                     <td className="col-sm-2">
-                      {article.article_imagedata ? (
+                      {article_section.section_imagedata ? (
                         <img
-                          src={article.article_imagedata}
+                          src={article_section.section_imagedata}
                           width="100"
                           height="100"
-                          alt={article.article_name}
+                          alt={article_section.section_name}
                         />
                       ) : null}
                     </td>
-                    <td className="col-sm-2">{article.article_level}</td>
+                    <td className="col-sm-2">{article_section.section_level}</td>
                     <td className="col-sm-2">
                       <Button
                         className="btn btn-success amt2"
-                        onClick={() => handleAnalyzeClick(article)}
+                        onClick={() => handleAnalyzeClick(article_section)}
                       >
                         วิเคราะห์
                       </Button>
@@ -309,8 +309,8 @@ function Articleedit() {
                       <Link
                         className="btn btn-warning amt2"
                         to={{
-                          pathname: `/Page/editarticle_${article.article_id}`,
-                          state: { article_id: article.article_id },
+                          pathname: `/Page/editarticle_${article_section.section_id}`,
+                          state: { section_id: article_section.section_id },
                         }}
                       >
                         แก้ไข
@@ -319,7 +319,7 @@ function Articleedit() {
                     <td className="col-sm-1">
                       <Button
                         className="btn btn-danger amt2"
-                        onClick={() => deleteArticle(article.article_id)}
+                        onClick={() => deleteArticle(article_section.section_id)}
                       >
                         ลบ
                       </Button>
@@ -377,7 +377,7 @@ function Articleedit() {
           <Button
             variant="danger"
             onClick={() => {
-              deleteArticleConfirmed(articleToDelete.article_id);
+              deleteArticleConfirmed(articleToDelete.section_id);
               setShowDeleteModal(false);
             }}
           >
@@ -406,7 +406,7 @@ function Articleedit() {
                 <div>
                   <form
                     className="form-control form-control-lg"
-                    onSubmit={(e) => sendLeveltext(e, selectarticle.article_id)}
+                    onSubmit={(e) => sendLeveltext(e, selectarticle.section_id)}
                   >
                     <div className="mb-3">
                       <label htmlFor="leveltext" className="form-label">

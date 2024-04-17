@@ -18,7 +18,7 @@ const Allarticleadmin = () => {
     const [articleToDelete, setArticleToDelete] = useState(null);
 
     useEffect(() => {
-        apiClient.get('api/article')
+        apiClient.get('api/article_section')
             .then((response) => {
                 setArticles(response.data);
             })
@@ -28,7 +28,7 @@ const Allarticleadmin = () => {
     }, []);
 
     const deleteArticle = (articleId) => {
-        const articleToDelete = articles.find((article) => article.article_id === articleId);
+        const articleToDelete = articles.find((article_section) => article_section.section_id === articleId);
         setArticleToDelete(articleToDelete);
         setShowDeleteModal(true);
     };
@@ -37,8 +37,8 @@ const Allarticleadmin = () => {
         apiClient.delete(`api/deletearticle/${articleId}`)
             .then(() => {
                 // console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
-                // Refresh the article list after deletion
-                apiClient.get('api/article')
+                // Refresh the article_section list after deletion
+                apiClient.get('api/article_section')
                     .then((response) => {
                         setArticles(response.data);
                     })
@@ -68,18 +68,18 @@ const Allarticleadmin = () => {
                             </tr>
                         </thead>
                         <tbody className="table-group-divider">
-                            {articles.map((article) => (
-                                <tr key={article.article_id}>
-                                    <td>{article.article_id}</td>
-                                    <td>{article.article_name}</td>
+                            {articles.map((article_section) => (
+                                <tr key={article_section.section_id}>
+                                    <td>{article_section.section_id}</td>
+                                    <td>{article_section.section_name}</td>
                                     <td>
-                                        <img src={article.article_imagedata || article.article_images} 
+                                        <img src={article_section.section_imagedata || article_section.section_images} 
                                         alt="article_image" width="120" height="100" />
                                     </td>
                                     <td>
                                         <Link 
                                             className="btn btn-warning amt1"
-                                            to={{ pathname: `/Page/editarticle_${article.article_id}`, state: { article_id: article.article_id } }}
+                                            to={{ pathname: `/Page/editarticle_${article_section.section_id}`, state: { section_id: article_section.section_id } }}
                                         >
                                             แก้ไข
                                         </Link>
@@ -87,7 +87,7 @@ const Allarticleadmin = () => {
                                     <td>
                                         <Button
                                             className="btn btn-danger amt2"
-                                            onClick={() => deleteArticle(article.article_id)}
+                                            onClick={() => deleteArticle(article_section.section_id)}
                                         >
                                             Delete
                                         </Button>
@@ -116,7 +116,7 @@ const Allarticleadmin = () => {
                     <Button
                         variant="danger"
                         onClick={() => {
-                            deleteArticleConfirmed(articleToDelete.article_id);
+                            deleteArticleConfirmed(articleToDelete.section_id);
                             setShowDeleteModal(false);
                         }}
                     >

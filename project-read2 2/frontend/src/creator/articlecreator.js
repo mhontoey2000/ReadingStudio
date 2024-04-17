@@ -45,12 +45,12 @@ function Articlecreator() {
       });
   }
 
-  const filteredItems = items.filter((book) => {
-    return book.book_name.includes(searchTerm);
+  const filteredItems = items.filter((article) => {
+    return article.article_name.includes(searchTerm);
   });
 
   const deleteBook = (bookId) => {
-    const bookToDelete = items.find((book) => book.book_id === bookId);
+    const bookToDelete = items.find((article) => article.article_id === bookId);
     setBookToDelete(bookToDelete);
     setShowDeleteModal(true);
   };
@@ -60,7 +60,7 @@ function Articlecreator() {
       .delete(`api/deletebook/${bookId}`)
       .then(() => {
         // console.log(`บทความที่มี ID ${bookId} ถูกลบแล้ว.`);
-        // Refresh the book list after deletion
+        // Refresh the article list after deletion
         setShowSuccessModal(true);
         init();
       })
@@ -116,28 +116,28 @@ function Articlecreator() {
                   </td>
                 </tr>
               ) : (
-                currentItems.map((book, index) => (
-                  <tr key={book.book_id}>
-                    <td className="col-sm-1" key={`book${index + 1}`}>
+                currentItems.map((article, index) => (
+                  <tr key={article.article_id}>
+                    <td className="col-sm-1" key={`article${index + 1}`}>
                     {startIndex + index + 1}
                     </td>
-                    <td className="col-sm-2">{book.book_name}</td>
-                    <td className="col-sm-2">{book.book_detail}</td>
+                    <td className="col-sm-2">{article.article_name}</td>
+                    <td className="col-sm-2">{article.article_detail}</td>
                     <td className="col-sm-2">
-                      {book.article_name.map((article, index) => (
+                      {article.article_name.map((article_section, index) => (
                         <span key={index}>
-                          {article}
-                          {index < book.article_name.length - 1 && ", "}{" "}
-                          {/* Add a comma if not the last article */}
+                          {article_section}
+                          {index < article.article_name.length - 1 && ", "}{" "}
+                          {/* Add a comma if not the last article_section */}
                         </span>
                       ))}
                     </td>
                     <td className="col-sm-2">
                       <img
-                        src={book.book_imagedata || book.book_image}
+                        src={article.article_imagedata || article.article_image}
                         width="100"
                         height="100"
-                        alt={book.book_name}
+                        alt={article.article_name}
                       />
                     </td>
                     <td className="col-sm-2">
@@ -145,7 +145,7 @@ function Articlecreator() {
                         className="btn btn-success"
                         to={{
                           pathname: "/Page/toaddarticle",
-                          state: { book_id: book.book_id },
+                          state: { article_id: article.article_id },
                         }}
                       >
                         เพิ่มตอน
@@ -154,7 +154,7 @@ function Articlecreator() {
                     <td className="col-sm-1">
                       <Button
                         className="btn btn-danger"
-                        onClick={() => deleteBook(book.book_id)}
+                        onClick={() => deleteBook(article.article_id)}
                       >
                         ลบ
                       </Button>
@@ -210,7 +210,7 @@ function Articlecreator() {
           <Button
             variant="danger"
             onClick={() => {
-              deleteBookConfirmed(bookToDelete.book_id);
+              deleteBookConfirmed(bookToDelete.article_id);
               setShowDeleteModal(false);
             }}
           >
