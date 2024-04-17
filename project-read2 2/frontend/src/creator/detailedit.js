@@ -19,7 +19,7 @@ import {
 function Detailedit(match) {
   const [items, setItems] = useState([]);
   const location = useLocation();
-  const articleid = location.state.section_id;
+  const articleid = location.state.article_id;
   const user = localStorage.getItem("email");
   // console.log(articleid)
   const [Vitems, setVitems] = useState([]);
@@ -77,7 +77,7 @@ function Detailedit(match) {
       .then((response) => {
         setItems(response.data);
         setIsLoaded(true);
-        setBookid(response.data[0].article_id);
+        setBookid(response.data[0].book_id);
       })
       .catch((error) => {
         console.error(error);
@@ -228,7 +228,7 @@ function Detailedit(match) {
       <section>
         <h1>เนื้อหา</h1>
 
-        <div className="article">
+        <div className="book">
           <div
             className="d-flex justify-content-center"
             style={{ margin: "20px" }}
@@ -271,41 +271,41 @@ function Detailedit(match) {
             id="myDIV1"
             style={{ display: visibleDiv === "เนื้อหา" ? "block" : "none" }}
           >
-            {items.map((article_section) => (
-              <div className="grid-item" key={article_section.section_id}>
+            {items.map((article) => (
+              <div className="grid-item" key={article.article_id}>
                 <h2
                   style={{ fontWeight: "bold" }}
                   contentEditable
-                  //onInput={(e) => handleH2Change(article_section.article_id, e.currentTarget.textContent)}
+                  //onInput={(e) => handleH2Change(article.article_id, e.currentTarget.textContent)}
                 >
-                  {article_section.section_name}
+                  {article.article_name}
                 </h2>
                 <div>
                   <h5
                     className="leveltext"
                     contentEditable
-                    //onInput={(e) => handleH5Change(article_section.article_id, e.currentTarget.textContent)}
+                    //onInput={(e) => handleH5Change(article.article_id, e.currentTarget.textContent)}
                   >
-                    {article_section.section_level}
+                    {article.article_level}
                   </h5>
                 </div>
                 <div>
                   <img
                     style={{ maxWidth: "300px", maxHeight: "300px" }}
-                    src={article_section.section_imagedata || article_section.section_images}
+                    src={article.article_imagedata || article.article_images}
                   />
                 </div>
 
                 <div style={{ padding: "20px" }}>
                   <input
                     type="text"
-                    value={article_section.audioUrl}
-                    //onChange={(e) => handleAudioChange(article_section.article_id, e.target.value)}
+                    value={article.audioUrl}
+                    //onChange={(e) => handleAudioChange(article.article_id, e.target.value)}
                   />
                   <input
                     type="text"
-                    value={article_section.audioProgress}
-                    //onChange={(e) => handleAudioProgressChange(article_section.article_id, e.target.value)}
+                    value={article.audioProgress}
+                    //onChange={(e) => handleAudioProgressChange(article.article_id, e.target.value)}
                   />
                   <div>
                     {audioUrl && (
@@ -344,7 +344,7 @@ function Detailedit(match) {
                         max={duration}
                         value={currentTime}
                         step="0.1"
-                        onClick={() => playAudio(article_section.section_sounds)}
+                        onClick={() => playAudio(article.article_sounds)}
                       >
                         {isPlaying ? "Pause" : "Play"}
                       </Button>
@@ -360,7 +360,7 @@ function Detailedit(match) {
                       resize: "none",
                     }}
                     value={text}
-                    //onChange={(e) => handleTextChange(article_section.article_id, e.target.value)}
+                    //onChange={(e) => handleTextChange(article.article_id, e.target.value)}
                   ></textarea>
                 </div>
 
@@ -386,7 +386,7 @@ function Detailedit(match) {
                     className="btn btn-warning tc"
                     to={{
                       pathname: "/Page/addvocab",
-                      state: { article_id: bookid, section_id: articleid },
+                      state: { book_id: bookid, article_id: articleid },
                     }}
                   >
                     เพิ่มคำศัพท์
@@ -433,7 +433,7 @@ function Detailedit(match) {
                     className="btn btn-warning tc"
                     to={{
                       pathname: "/Page/addexam",
-                      state: { article_id: bookid, section_id: articleid },
+                      state: { book_id: bookid, article_id: articleid },
                     }}
                   >
                     เพิ่มข้อสอบ
@@ -490,7 +490,7 @@ function Detailedit(match) {
                   className="btn btn-warning tc"
                   to={{
                     pathname: "/Page/score",
-                    state: { article_id: bookid, section_id: articleid },
+                    state: { book_id: bookid, article_id: articleid },
                   }}
                 >
                   ส่งคำตอบ

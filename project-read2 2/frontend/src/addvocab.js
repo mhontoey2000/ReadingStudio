@@ -15,8 +15,8 @@ import {
 
 function Addvocab() {
   const location = useLocation();
-  const articleid = location.state.section_id;
-  const bookid = location.state.article_id;
+  const articleid = location.state.article_id;
+  const bookid = location.state.book_id;
   const [isLoaded, setIsLoaded] = useState(false);
   const history = useHistory();
   const [bname, setBname] = useState("");
@@ -42,11 +42,11 @@ function Addvocab() {
 
   useEffect(() => {
     apiClient
-      .get(`api/article/${bookid}`)
+      .get(`api/book/${bookid}`)
       .then((response) => {
         const result = response.data;
         if (result) {
-          setBname(result[0].article_name);
+          setBname(result[0].book_name);
         }
       })
       .catch((error) => {

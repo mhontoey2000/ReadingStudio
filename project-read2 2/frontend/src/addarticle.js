@@ -52,11 +52,11 @@ function Addarticle() {
 
   useEffect(() => {
     apiClient
-      .get(`api/article/${bookid}`)
+      .get(`api/book/${bookid}`)
       .then((response) => {
         const result = response.data;
         if (result) {
-          setBname(result[0].article_name);
+          setBname(result[0].book_name);
         }
       })
       .catch((error) => {
@@ -96,7 +96,7 @@ function Addarticle() {
       //     console.error(error);
       // });
       const data = new FormData();
-      data.append("article_id", bookid);
+      data.append("book_id", bookid);
       data.append("chapter", chapter);
       data.append("level", level);
       data.append("description", description);

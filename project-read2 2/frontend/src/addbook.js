@@ -70,12 +70,12 @@ function Addbook() {
     setShowModal(false);
 
     const formData = new FormData();
-    formData.append("article_name", bookName);
+    formData.append("book_name", bookName);
     formData.append("book_detail", bookDetail);
     formData.append("book_image", bookImage);
     formData.append("book_creator", user);
 
-    // Send a POST request to the backend API to add the article
+    // Send a POST request to the backend API to add the book
     apiClient
       .post("api/addbook", formData) // Replace '/api/addbook' with your actual API endpoint
       .then((response) => {
@@ -86,7 +86,7 @@ function Addbook() {
       })
       .catch((error) => {
         // Handle errors here (e.g., show an error message)
-        console.error("Error adding article:", error);
+        console.error("Error adding book:", error);
       });
   };
 

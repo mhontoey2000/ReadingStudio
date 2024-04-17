@@ -18,7 +18,7 @@ function Bookarticle({ match }) {
   const location = useLocation();
   const history = useHistory();
   // const [bookid, setBookID] = useState("");
-  const bookid = location.state.article_id;
+  const bookid = location.state.book_id;
   const user = localStorage.getItem("email");
   const [usertype, setUsertype] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -81,19 +81,19 @@ function Bookarticle({ match }) {
                 <p>ไม่มีรายการตอนที่คุณค้นหา หรือคุณเขียนชื่อตอนผิด.</p>
               </div>
             ) : (
-              filteredItems.map((article_section) => (
-                <div className="col-6 col-md-3" key={article_section.section_id}>
+              filteredItems.map((article) => (
+                <div className="col-6 col-md-3" key={article.article_id}>
                   <div
                     className="grid-item-wrapper"
                     style={{ padding: "10px" }}
                   >
                     <div className="card cardhover">
-                      {article_section.section_imagedata || article_section.section_images ? (
+                      {article.article_imagedata || article.article_images ? (
                         <img
                           className="card-img-top img-fluid simg"
                           src={
-                            article_section.section_imagedata ||
-                            article_section.section_images ||
+                            article.article_imagedata ||
+                            article.article_images ||
                             "url_to_default_image"
                           }
                         />
@@ -103,16 +103,16 @@ function Bookarticle({ match }) {
                           className="card-title text-center"
                           style={{ fontWeight: "bold" }}
                         >
-                          {article_section.section_name}
+                          {article.article_name}
                         </h4>
                         <div className="text-center" style={{ margin: "10px" }}>
                           <Link
                             to={{
                               pathname: "/Page/bookdetail",
-                              state: { section_id: article_section.section_id },
+                              state: { article_id: article.article_id },
                             }}
                             className="btn btn-primary btn-lg"
-                            onClick={() => incrementArticleView(article_section.section_id)}
+                            onClick={() => incrementArticleView(article.article_id)}
                           >
                             อ่าน
                           </Link>
@@ -120,7 +120,7 @@ function Bookarticle({ match }) {
                         <div className="card-footer">
                           <span style={{ fontStyle: "italic" }}>
                             <i className="bi bi-eye"></i>
-                            {article_section.section_view} ผู้เข้าชม
+                            {article.article_view} ผู้เข้าชม
                           </span>
                         </div>
                       </div>

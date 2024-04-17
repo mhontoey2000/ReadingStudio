@@ -56,8 +56,8 @@ function Sendrequest() {
       });
   };
 
-  const filteredItems = items.filter((article) => {
-    return article.article_name.includes(searchTerm);
+  const filteredItems = items.filter((book) => {
+    return book.book_name.includes(searchTerm);
   });
 
   return (
@@ -103,62 +103,62 @@ function Sendrequest() {
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((article, index) => (
-                  <tr key={article.article_id}>
-                    <td key={`article${index + 1}`}>{index + 1}</td>
-                    <td>{article.article_name}</td>
+                filteredItems.map((book, index) => (
+                  <tr key={book.book_id}>
+                    <td key={`book${index + 1}`}>{index + 1}</td>
+                    <td>{book.book_name}</td>
 
                     <td>
-                      {article.article_name.map((article_section, index) => (
+                      {book.article_name.map((article, index) => (
                         <span key={index}>
-                          {article_section}
-                          {index < article.article_name.length - 1 && ", "}{" "}
-                          {/* Add a comma if not the last article_section */}
+                          {article}
+                          {index < book.article_name.length - 1 && ", "}{" "}
+                          {/* Add a comma if not the last article */}
                         </span>
                       ))}
                     </td>
                     <td>
-                      {article.article_imagedata ? (
+                      {book.book_imagedata ? (
                         <img
-                          src={article.article_imagedata || article.article_image}
+                          src={book.book_imagedata || book.book_image}
                           width="100"
                           height="100"
-                          alt={article.article_name}
+                          alt={book.book_name}
                         />
                       ) : null}
                     </td>
                     <td>
-                      {article.status_article === "pending" && (
+                      {book.status_book === "pending" && (
                         <span style={{ color: "#FFC436", fontWeight: "bold" }}>
                           รออนุมัติ
                         </span>
                       )}
-                      {article.status_article === "creating" && (
+                      {book.status_book === "creating" && (
                         <span style={{ color: "#192655", fontWeight: "bold" }}>
                           สร้างยังไม่เสร็จ
                         </span>
                       )}
-                      {article.status_article === "finished" && (
+                      {book.status_book === "finished" && (
                         <span style={{ color: "#3876BF", fontWeight: "bold" }}>
                           สร้างเสร็จแล้ว
                         </span>
                       )}
-                      {article.status_article === "deny" && (
+                      {book.status_book === "deny" && (
                         <span style={{ color: "red", fontWeight: "bold" }}>
                           ถูกปฏิเสธ
                         </span>
                       )}
-                      {article.status_article === "published" && (
+                      {book.status_book === "published" && (
                         <span style={{ color: "green", fontWeight: "bold" }}>
                           เผยแพร่แล้ว
                         </span>
                       )}
                     </td>
                     <td>
-                      {article.status_article === "finished" ? (
+                      {book.status_book === "finished" ? (
                         <Button
                           className="btn btn-success"
-                          onClick={() => sendPublishRequest(article.article_id)}
+                          onClick={() => sendPublishRequest(book.book_id)}
                         >
                           ส่งคำขอ
                         </Button>

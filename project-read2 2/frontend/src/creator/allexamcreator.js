@@ -30,8 +30,8 @@ function Allexamcreator() {
       });
   }, []);
 
-  const filteredItems = items.filter((article) => {
-    return article.article_name.includes(searchTerm);
+  const filteredItems = items.filter((book) => {
+    return book.book_name.includes(searchTerm);
   });
 
   return (
@@ -77,25 +77,25 @@ function Allexamcreator() {
                   </td>
                 </tr>
               ) : (
-                filteredItems.map((article, index) => (
-                  <tr key={article.article_id}>
-                        <td className="col-sm-2" key={`article${index + 1}`}>{index + 1}</td>
-                        <td className="col-sm-2">{article.article_name}</td>
-                        <td className="col-sm-2">{article.article_name}</td>
+                filteredItems.map((book, index) => (
+                  <tr key={book.book_id}>
+                        <td className="col-sm-2" key={`book${index + 1}`}>{index + 1}</td>
+                        <td className="col-sm-2">{book.book_name}</td>
+                        <td className="col-sm-2">{book.article_name}</td>
                         <td className="col-sm-2">
                         <img
-                            src={article.article_imagedata || article.article_image}
+                            src={book.article_imagedata || book.article_image}
                             width="100"
                             height="100"
                         />
                         </td>
                     <td className="col-sm-2">
-                      {/* <a href={'/admin/article/edit/' + article.article_id} className="btn btn-primary">Edit</a> */}
+                      {/* <a href={'/admin/book/edit/' + book.book_id} className="btn btn-primary">Edit</a> */}
                       <Link
                         className="btn btn-warning amt1"
                         to={{
                           pathname: "/Page/editexam",
-                          state: { article_id: article.article_id },
+                          state: { book_id: book.book_id },
                         }}
                       >
                         แก้ไขข้อสอบ
@@ -104,7 +104,7 @@ function Allexamcreator() {
                     <td className="col-sm-2">
                       <Button
                         className="btn btn-danger amt2"
-                        //onClick={() => deleteBook(article.book_id)}
+                        //onClick={() => deleteBook(book.book_id)}
                       >
                         ลบข้อสอบ
                       </Button>

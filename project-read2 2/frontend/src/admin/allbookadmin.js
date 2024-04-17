@@ -65,7 +65,7 @@ const Allbookadmin = () => {
   }
 
   const deleteBook = (bookId) => {
-    const bookToDelete = items.find((article) => article.article_id === bookId);
+    const bookToDelete = items.find((book) => book.book_id === bookId);
     setBookToDelete(bookToDelete);
     setShowDeleteModal(true);
   };
@@ -75,7 +75,7 @@ const Allbookadmin = () => {
       .delete(`api/deletebook/${bookId}`)
       .then(() => {
         //console.log(`บทความที่มี ID ${bookId} ถูกลบแล้ว.`);
-        // Refresh the article list after deletion
+        // Refresh the book list after deletion
         init();
       })
       .catch((error) => {
@@ -85,8 +85,8 @@ const Allbookadmin = () => {
       });
   };
 
-  const filteredItems = items.filter((article) => {
-    return article.article_name.includes(searchTerm);
+  const filteredItems = items.filter((book) => {
+    return book.book_name.includes(searchTerm);
   });
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -149,63 +149,63 @@ const Allbookadmin = () => {
                   </td>
                 </tr>
               ) : (
-                currentItems.map((article, index) => (
-                  <tr key={article.article_id}>
-                    <td className="col-sm-1" key={`article${index}`}>
+                currentItems.map((book, index) => (
+                  <tr key={book.book_id}>
+                    <td className="col-sm-1" key={`book${index}`}>
                     {startIndex + index + 1}
                     </td>
-                    <td className="col-sm-2">{article.article_name}</td>
-                    {/* <td className='col-sm-4'>{article.book_detail}</td> */}
+                    <td className="col-sm-2">{book.book_name}</td>
+                    {/* <td className='col-sm-4'>{book.book_detail}</td> */}
                     <td className="col-sm-3">
-                      {article.article_name.map((article_section, index) => (
+                      {book.article_name.map((article, index) => (
                         <span key={index}>
-                          {article_section}
-                          {index < article.article_name.length - 1 && ", "}{" "}
-                          {/* Add a comma if not the last article_section */}
+                          {article}
+                          {index < book.article_name.length - 1 && ", "}{" "}
+                          {/* Add a comma if not the last article */}
                         </span>
                       ))}
                     </td>
                     <td className="col-sm-1">
                       <img
-                        src={article.article_imagedata || article.article_image}
+                        src={book.book_imagedata || book.book_image}
                         width="100"
                         height="100"
                       />
                     </td>
                     <td className="col-sm-2">
-                      {article.status_article === "pending" && (
+                      {book.status_book === "pending" && (
                         <span style={{ color: "#FFC436", fontWeight: "bold" }}>
                           รออนุมัติ
                         </span>
                       )}
-                      {article.status_article === "creating" && (
+                      {book.status_book === "creating" && (
                         <span style={{ color: "#192655", fontWeight: "bold" }}>
                           สร้างยังไม่เสร็จ
                         </span>
                       )}
-                      {article.status_article === "finished" && (
+                      {book.status_book === "finished" && (
                         <span style={{ color: "#3876BF", fontWeight: "bold" }}>
                           สร้างเสร็จแล้ว
                         </span>
                       )}
-                      {article.status_article === "deny" && (
+                      {book.status_book === "deny" && (
                         <span style={{ color: "red", fontWeight: "bold" }}>
                           ถูกปฏิเสธ
                         </span>
                       )}
-                      {article.status_article === "published" && (
+                      {book.status_book === "published" && (
                         <span style={{ color: "green", fontWeight: "bold" }}>
                           เผยแพร่แล้ว
                         </span>
                       )}
                     </td>
                     <td className="col-sm-1">
-                      {canUserEditChapter(article.article_creator) && (
+                      {canUserEditChapter(book.book_creator) && (
                         <Link
                           className="btn btn-warning amt1"
                           to={{
-                            pathname: `/Page/editbook_${article.article_id}`,
-                            state: { article_id: article.article_id },
+                            pathname: `/Page/editbook_${book.book_id}`,
+                            state: { book_id: book.book_id },
                           }}
                         >
                           แก้ไขบทความ
@@ -213,12 +213,12 @@ const Allbookadmin = () => {
                       )}
                     </td>
                     <td className="col-sm-1">
-                      {canUserEditChapter(article.article_creator) && (
+                      {canUserEditChapter(book.book_creator) && (
                         <Link
                           className="btn btn-warning amt1"
                           to={{
-                            pathname: `/Page/articleedit_${article.article_id}`,
-                            state: { article_id: article.article_id },
+                            pathname: `/Page/articleedit_${book.book_id}`,
+                            state: { book_id: book.book_id },
                           }}
                         >
                           แก้ไขตอน
@@ -226,10 +226,10 @@ const Allbookadmin = () => {
                       )}
                     </td>
                     <td className="col-sm-1">
-                      {canUserEditChapter(article.article_creator) && (
+                      {canUserEditChapter(book.book_creator) && (
                         <Button
                           className="btn btn-danger amt2"
-                          onClick={() => deleteBook(article.article_id)}
+                          onClick={() => deleteBook(book.book_id)}
                         >
                           ลบบทความ
                         </Button>
@@ -288,7 +288,7 @@ const Allbookadmin = () => {
           <Button
             variant="danger"
             onClick={() => {
-              deleteBookConfirmed(bookToDelete.article_id);
+              deleteBookConfirmed(bookToDelete.book_id);
               setShowDeleteModal(false);
             }}
           >

@@ -106,7 +106,7 @@ function Notificationcreator() {
                 ) : (
                   currentItems.map((items, index) => (
                     <tr key={items.request_id}>
-                      <td className="col-sm-1" key={`article${index + 1}`}>
+                      <td className="col-sm-1" key={`book${index + 1}`}>
                       {startIndex + index + 1}
                       </td>
                       <td className="col-sm-2">{items.book_name}</td>

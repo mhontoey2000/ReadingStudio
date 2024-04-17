@@ -18,7 +18,7 @@ import {
 function Toaddarticle() {
   const [items, setItems] = useState([]);
   const location = useLocation();
-  const bookid = location.state.article_id;
+  const bookid = location.state.book_id;
   const user = localStorage.getItem("email");
   const [usertype, setUsertype] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -106,7 +106,7 @@ function Toaddarticle() {
     // โหลดข้อมูลบทความเมื่อมีความจำเป็นเท่าที่จำเป็น (ในตัวอย่างนี้เมื่อ bookid เปลี่ยน)
     if (bookid) {
       apiClient
-        .get(`api/article_section/${bookid}`)
+        .get(`api/article/${bookid}`)
         .then((response) => {
           setItems(response.data);
           setLoading(false);
@@ -120,8 +120,8 @@ function Toaddarticle() {
     }
   }, [bookid]);
 
-  const filteredItems = items.filter((article_section) => {
-    return article_section.section_name.includes(searchTerm);
+  const filteredItems = items.filter((article) => {
+    return article.article_name.includes(searchTerm);
   });
 
   const analyzeArticleLevel = (articleDetail) => {
@@ -150,11 +150,11 @@ function Toaddarticle() {
     }
   };
 
-  const handleAnalyzeClick = (article_section) => {
+  const handleAnalyzeClick = (article) => {
     setLoadingVisible(true);
-    setSelectarticle(article_section);
+    setSelectarticle(article);
 
-    const result = analyzeArticleLevel(article_section.section_detail);
+    const result = analyzeArticleLevel(article.article_detail);
     if (result === "N/A") {
       setAnalysisResult("ไม่สามารถวัดระดับได้");
     } else {
@@ -192,7 +192,7 @@ function Toaddarticle() {
 
   const deleteArticle = (articleId) => {
     const articleToDelete = items.find(
-      (article_section) => article_section.section_id === articleId
+      (article) => article.article_id === articleId
     );
     setArticleToDelete(articleToDelete);
     setShowDeleteModal(true);
@@ -205,7 +205,7 @@ function Toaddarticle() {
         //console.log(`ตอนที่มี ID ${articleId} ถูกลบแล้ว.`);
         setShowSuccessModal(true);
         apiClient
-          .get(`api/article_section/${bookid}`)
+          .get(`api/article/${bookid}`)
           .then((response) => {
             setItems(response.data);
           })
@@ -245,7 +245,7 @@ function Toaddarticle() {
                     type="button"
                     to={{
                       pathname: `/Page/addarticle_${bookid}`,
-                      state: { article_id: bookid },
+                      state: { book_id: bookid },
                     }}
                     className="btn btn-success btnt"
                   >
@@ -292,25 +292,25 @@ function Toaddarticle() {
                     </td>
                   </tr>
                 ) : (
-                  currentItems.map((article_section, index) => (
-                    <tr key={article_section.section_id}>
-                      <td className="col-sm-2" key={`article_section${index + 1}`}>{startIndex + index + 1}</td>
-                      <td className="col-sm-2">{article_section.section_name}</td>
+                  currentItems.map((article, index) => (
+                    <tr key={article.article_id}>
+                      <td className="col-sm-2" key={`article${index + 1}`}>{startIndex + index + 1}</td>
+                      <td className="col-sm-2">{article.article_name}</td>
                       <td className="col-sm-2">
-                        {article_section.section_imagedata ? (
+                        {article.article_imagedata ? (
                           <img
-                            src={article_section.section_imagedata}
+                            src={article.article_imagedata}
                             width="100"
                             height="100"
-                            alt={article_section.section_name}
+                            alt={article.article_name}
                           />
                         ) : null}
                       </td>
-                      <td className="col-sm-2">{article_section.section_level}</td>
+                      <td className="col-sm-2">{article.article_level}</td>
                       <td className="col-sm-2">
                         <Button
                           className="btn btn-success"
-                          onClick={() => handleAnalyzeClick(article_section)}
+                          onClick={() => handleAnalyzeClick(article)}
                         >
                           วิเคราะห์
                         </Button>
@@ -319,8 +319,8 @@ function Toaddarticle() {
                       <Link
                         className="btn btn-warning amt2"
                         to={{
-                          pathname: `/Page/editarticle_${article_section.article_id}`,
-                          state: { section_id: article_section.article_id },
+                          pathname: `/Page/editarticle_${article.article_id}`,
+                          state: { article_id: article.article_id },
                         }}
                       >
                         แก้ไข
@@ -329,7 +329,7 @@ function Toaddarticle() {
                       <td className="col-sm-2">
                         <Button
                           className="btn btn-danger"
-                          onClick={() => deleteArticle(article_section.section_id)}
+                          onClick={() => deleteArticle(article.article_id)}
                         >
                           ลบ
                         </Button>
