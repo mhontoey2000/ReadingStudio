@@ -4,11 +4,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
   convertImageToBase64,
-} from "../config"
+} from "../config";
 
 const Alluseradmin = () => {
   const [user, setUser] = useState([]);
@@ -18,6 +19,7 @@ const Alluseradmin = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isFiltering, setIsFiltering] = useState(false);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
@@ -34,9 +36,11 @@ const Alluseradmin = () => {
       .get("api/user")
       .then((response) => {
         setUser(response.data);
-        if (!isFiltering) { 
+        if (!isFiltering) {
           setFilteredUsers(response.data);
         }
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         setError(error);
@@ -50,10 +54,7 @@ const Alluseradmin = () => {
     const data = { status, email };
 
     apiClient
-      .post(
-        `api/updateuser/${selectedUser.user_id}`,
-        data
-      )
+      .post(`api/updateuser/${selectedUser.user_id}`, data)
       .then((response) => {
         //console.log(`User with ID ${selectedUser.user_id} has been ${status}.`);
         // Refresh the user list after deletion
@@ -97,8 +98,7 @@ const Alluseradmin = () => {
   const deleteUser = () => {
     if (!selectedUser) return;
     setShowModal(false);
-    setShowDeleteConfirmation(true); 
-    
+    setShowDeleteConfirmation(true);
   };
 
   const handleEditClick = (user) => {
@@ -106,7 +106,7 @@ const Alluseradmin = () => {
     setShowModal(true);
   };
 
-   const handlePageClick = (selectedPage) => {
+  const handlePageClick = (selectedPage) => {
     setCurrentPage(selectedPage.selected + 1);
   };
 
@@ -127,7 +127,7 @@ const Alluseradmin = () => {
     } else if (minutes > 0) {
       return `${minutes} นาทีที่แล้ว`;
     } else {
-      return 'เมื่อสักครู่';
+      return "เมื่อสักครู่";
     }
   };
 
@@ -154,15 +154,21 @@ const Alluseradmin = () => {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
       <section>
         <div className="grid-containerr">
           <div className="row">
             <div className="col-12">
               <h1 className="text-center">บัญชีผู้ใช้ทั้งหมด</h1>
-              <Button  
-                onClick={isFiltering ? () => setIsFiltering(false) : handleFilter90DaysAgo}
-                style={{marginBottom:"10px"}}
+              <Button
+                onClick={
+                  isFiltering
+                    ? () => setIsFiltering(false)
+                    : handleFilter90DaysAgo
+                }
+                style={{ marginBottom: "10px" }}
               >
                 {isFiltering ? "ย้อนกลับ" : "บัญชีที่ไม่มีการเคลื่อนไหว"}
               </Button>
@@ -174,20 +180,38 @@ const Alluseradmin = () => {
               <table className="table table-bordered">
                 <thead>
                   <tr>
-                    <th scope="col" className="col-sm-1">ลำดับ</th>
-                    <th scope="col" className="col-sm-2">ชื่อ</th>
-                    <th scope="col" className="col-sm-2">นามสกุล</th>
-                    <th scope="col" className="col-sm-2">อีเมล์</th>
-                    <th scope="col" className="col-sm-1">ประเภทบัญชี</th>
-                    <th scope="col" className="col-sm-1">สถานะ</th>
-                    <th scope="col" className="col-sm-2">การเข้าสู่ระบบ</th>
-                    <th scope="col" className="col-sm-1">จัดการ</th>
+                    <th scope="col" className="col-sm-1">
+                      ลำดับ
+                    </th>
+                    <th scope="col" className="col-sm-2">
+                      ชื่อ
+                    </th>
+                    <th scope="col" className="col-sm-2">
+                      นามสกุล
+                    </th>
+                    <th scope="col" className="col-sm-2">
+                      อีเมล์
+                    </th>
+                    <th scope="col" className="col-sm-1">
+                      ประเภทบัญชี
+                    </th>
+                    <th scope="col" className="col-sm-1">
+                      สถานะ
+                    </th>
+                    <th scope="col" className="col-sm-2">
+                      การเข้าสู่ระบบ
+                    </th>
+                    <th scope="col" className="col-sm-1">
+                      จัดการ
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentUsers.map((item, index) => (
                     <tr key={item.user_id}>
-                      <td className="col-sm-1" key={`item${index + 1}`}>{startIndex + index + 1}</td>
+                      <td className="col-sm-1" key={`item${index + 1}`}>
+                        {startIndex + index + 1}
+                      </td>
                       <td className="col-sm-2">{item.user_name}</td>
                       <td className="col-sm-2">{item.user_surname}</td>
                       <td className="col-sm-2">{item.user_email}</td>
@@ -201,7 +225,7 @@ const Alluseradmin = () => {
                               : item.approval_status === "pending"
                               ? "#ffb74d"
                               : "#f36c60",
-                              fontWeight: "bold",
+                          fontWeight: "bold",
                         }}
                         className="col-sm-1"
                       >
@@ -213,7 +237,9 @@ const Alluseradmin = () => {
                           ? "อนุมัติ"
                           : item.approval_status}
                       </td>
-                      <td className="col-sm-2">{formatLastLogin(item.last_login)}</td>
+                      <td className="col-sm-2">
+                        {formatLastLogin(item.last_login)}
+                      </td>
                       <td className="col-sm-1">
                         <Button
                           className="btn btn-warning"
@@ -226,29 +252,42 @@ const Alluseradmin = () => {
                   ))}
                 </tbody>
                 <tfoot>
-              <tr>
-                <td colSpan="8" style={{ textAlign: "center" }}>
-                  <Button
-                   onClick={() => setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))}
-                   disabled={currentPage === 1}
-                   className="btn btn-primary"
-                  >
-                    ย้อนกลับ
-                  </Button>
-                  <span style={{ margin: "0 10px" }}>
-                    {`${currentPage} จาก ${Math.ceil(filteredUsers.length / ITEMS_PER_PAGE)}`}
-                  </span>
-                  <Button
-                    onClick={() => setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))}
-                    disabled={currentPage === totalPages || filteredUsers.length === 0 || filteredUsers.length < ITEMS_PER_PAGE}
-                    className="btn btn-primary"
-                  >
-                    ถัดไป
-                  </Button>
-
-                </td>
-              </tr>
-            </tfoot>
+                  <tr>
+                    <td colSpan="8" style={{ textAlign: "center" }}>
+                      <Button
+                        onClick={() =>
+                          setCurrentPage((prevPage) =>
+                            Math.max(prevPage - 1, 1)
+                          )
+                        }
+                        disabled={currentPage === 1}
+                        className="btn btn-primary"
+                      >
+                        ย้อนกลับ
+                      </Button>
+                      <span style={{ margin: "0 10px" }}>
+                        {`${currentPage} จาก ${Math.ceil(
+                          filteredUsers.length / ITEMS_PER_PAGE
+                        )}`}
+                      </span>
+                      <Button
+                        onClick={() =>
+                          setCurrentPage((prevPage) =>
+                            Math.min(prevPage + 1, totalPages)
+                          )
+                        }
+                        disabled={
+                          currentPage === totalPages ||
+                          filteredUsers.length === 0 ||
+                          filteredUsers.length < ITEMS_PER_PAGE
+                        }
+                        className="btn btn-primary"
+                      >
+                        ถัดไป
+                      </Button>
+                    </td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>
@@ -306,8 +345,13 @@ const Alluseradmin = () => {
                   height="200"
                 />
               ) : null}
-              <div className="d-flex align-items-center" style={{marginTop:"20px"}}>
-                <p className="mr-3" style={{ marginRight: "10px" }}>สถานะของบัญชี</p>
+              <div
+                className="d-flex align-items-center"
+                style={{ marginTop: "20px" }}
+              >
+                <p className="mr-3" style={{ marginRight: "10px" }}>
+                  สถานะของบัญชี
+                </p>
                 <Button
                   variant="btn btn-outline-success"
                   style={{ marginRight: "10px" }}
@@ -326,17 +370,20 @@ const Alluseradmin = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-        <div className="d-flex justify-content-between w-100">
-          <Button variant="btn btn-danger" onClick={deleteUser}>
-            ลบบัญชี
-          </Button>
-          <Button variant="btn btn-primary" onClick={() => setShowModal(false)}>
-            ยกเลิก
-          </Button>
-        </div>
+          <div className="d-flex justify-content-between w-100">
+            <Button variant="btn btn-danger" onClick={deleteUser}>
+              ลบบัญชี
+            </Button>
+            <Button
+              variant="btn btn-primary"
+              onClick={() => setShowModal(false)}
+            >
+              ยกเลิก
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
-      
+
       <Modal
         show={showDeleteConfirmation}
         onHide={handleCloseDeleteConfirmation}
@@ -351,7 +398,10 @@ const Alluseradmin = () => {
           <Button variant="btn btn-danger" onClick={handleDeleteConfirmation}>
             ลบบัญชี
           </Button>
-          <Button variant="btn btn-primary" onClick={handleCloseDeleteConfirmation}>
+          <Button
+            variant="btn btn-primary"
+            onClick={handleCloseDeleteConfirmation}
+          >
             ยกเลิก
           </Button>
         </Modal.Footer>

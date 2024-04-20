@@ -9,11 +9,12 @@ import Searchbar from "../searchbar";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Loading from "../LoadingIndicator";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
   convertImageToBase64,
-} from "../config"
+} from "../config";
 
 function Toaddarticle() {
   const [items, setItems] = useState([]);
@@ -41,6 +42,8 @@ function Toaddarticle() {
   const currentItems = items.slice(startIndex, endIndex);
 
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   useEffect(() => {
     setLoading(true);
@@ -111,6 +114,8 @@ function Toaddarticle() {
           setItems(response.data);
           setLoading(false);
           setScreenLoaded(true);
+          // open click btn
+        setIsLoadedBtn(false);
         })
         .catch((error) => {
           console.error(error);
@@ -123,6 +128,15 @@ function Toaddarticle() {
   const filteredItems = items.filter((article_section) => {
     return article_section.section_name.includes(searchTerm);
   });
+
+  const levelMapping = [
+    "ประถมศึกษาปีที่ 1",
+    "ประถมศึกษาปีที่ 2",
+    "ประถมศึกษาปีที่ 3",
+    "ประถมศึกษาปีที่ 4",
+    "ประถมศึกษาปีที่ 5",
+    "ประถมศึกษาปีที่ 6",
+  ];
 
   const analyzeArticleLevel = (articleDetail) => {
     if (articleDetail) {
@@ -154,6 +168,7 @@ function Toaddarticle() {
     setLoadingVisible(true);
     setSelectarticle(article_section);
 
+    // console.log(article_section);
     const result = analyzeArticleLevel(article_section.section_detail);
     if (result === "N/A") {
       setAnalysisResult("ไม่สามารถวัดระดับได้");
@@ -222,6 +237,8 @@ function Toaddarticle() {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <section>
@@ -287,15 +304,21 @@ function Toaddarticle() {
                 {filteredItems.length === 0 ? (
                   <tr>
                     <td colSpan="6">
-                      ไม่มีรายการบทความที่คุณค้นหา
-                      หรือคุณเขียนชื่อบทความผิด.
+                      ไม่มีรายการบทความที่คุณค้นหา หรือคุณเขียนชื่อบทความผิด.
                     </td>
                   </tr>
                 ) : (
                   currentItems.map((article_section, index) => (
                     <tr key={article_section.section_id}>
-                      <td className="col-sm-2" key={`article_section${index + 1}`}>{startIndex + index + 1}</td>
-                      <td className="col-sm-2">{article_section.section_name}</td>
+                      <td
+                        className="col-sm-2"
+                        key={`article_section${index + 1}`}
+                      >
+                        {startIndex + index + 1}
+                      </td>
+                      <td className="col-sm-2">
+                        {article_section.section_name}
+                      </td>
                       <td className="col-sm-2">
                         {article_section.section_imagedata ? (
                           <img
@@ -306,7 +329,9 @@ function Toaddarticle() {
                           />
                         ) : null}
                       </td>
-                      <td className="col-sm-2">{article_section.section_level}</td>
+                      <td className="col-sm-2">
+                        {article_section.section_level}
+                      </td>
                       <td className="col-sm-2">
                         <Button
                           className="btn btn-success"
@@ -329,7 +354,9 @@ function Toaddarticle() {
                       <td className="col-sm-2">
                         <Button
                           className="btn btn-danger"
-                          onClick={() => deleteArticle(article_section.section_id)}
+                          onClick={() =>
+                            deleteArticle(article_section.section_id)
+                          }
                         >
                           ลบ
                         </Button>
@@ -339,35 +366,34 @@ function Toaddarticle() {
                 )}
               </tbody>
               <tfoot>
-              <tr>
-                <td colSpan="8" style={{ textAlign: "center" }}>
-                  <Button
-                    onClick={() =>
-                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
-                    }
-                    disabled={currentPage === 1}
-                  >
-                    ย้อนกลับ
-                  </Button>
-                  <span style={{ margin: "0 10px" }}>
-                    {currentPage} จาก {totalPages}
-                  </span>
-                  <Button
-                    onClick={() =>
-                      setCurrentPage((prevPage) =>
-                        Math.min(prevPage + 1, totalPages)
-                      )
-                    }
-                    disabled={currentPage === totalPages}
-                  >
-                    ถัดไป
-                  </Button>
-                </td>
-              </tr>
-            </tfoot>
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center" }}>
+                    <Button
+                      onClick={() =>
+                        setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                    >
+                      ย้อนกลับ
+                    </Button>
+                    <span style={{ margin: "0 10px" }}>
+                      {currentPage} จาก {totalPages}
+                    </span>
+                    <Button
+                      onClick={() =>
+                        setCurrentPage((prevPage) =>
+                          Math.min(prevPage + 1, totalPages)
+                        )
+                      }
+                      disabled={currentPage === totalPages}
+                    >
+                      ถัดไป
+                    </Button>
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
-          
         </div>
       </section>
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
@@ -424,14 +450,29 @@ function Toaddarticle() {
                         ระดับของบทความ:
                       </label>
 
-                      <input
+                      {/* <input
                         type="text"
                         id="leveltext"
                         className="form-control"
                         value={leveltext}
                         onChange={(event) => setLeveltext(event.target.value)}
                         placeholder="กรุณากรอกระดับของบทความ"
-                      />
+                      /> */}
+                      <select
+                        id="leveltext"
+                        className="form-control"
+                        value={leveltext}
+                        onChange={(event) => setLeveltext(event.target.value)}
+                      >
+                        <option value="" disabled>
+                          กรุณาเลือกระดับของบทความ
+                        </option>
+                        {levelMapping.map((level, index) => (
+                          <option key={index} value={level}>
+                            {level}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <div className="d-flex justify-content-between">

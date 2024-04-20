@@ -5,6 +5,7 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Searchbar from "../searchbar";
 import "../styles/creator.css";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -14,18 +15,23 @@ import {
 function Creator() {
   const user = localStorage.getItem("email");
   const [status, setStatus] = useState("");
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   useEffect(() => {
     apiClient
       .get("api/userdata?user_email=" + user)
       .then((response) => {
         setStatus(response.data[0].approval_status);
+         // open click btn
+         setIsLoadedBtn(false);
       })
       .catch((error) => console.error(error));
   }, [user]);
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <section>

@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -23,6 +24,7 @@ function Forapprovebook() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const user = localStorage.getItem("email");
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
@@ -46,6 +48,8 @@ function Forapprovebook() {
         }));
 
         setItems(articleNamesArray);
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -104,6 +108,8 @@ function Forapprovebook() {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
       <section>
         <div className="grid-containerr">
@@ -125,13 +131,13 @@ function Forapprovebook() {
                     รูปหน้าปกตอน
                   </th>
                   <th scope="col" className="col-sm-1">
-                  ผู้สร้าง
+                    ผู้สร้าง
                   </th>
                   <th scope="col" className="col-sm-2">
-                  สถานะ
+                    สถานะ
                   </th>
                   <th scope="col" className="col-sm-1">
-                  จำนวนเข้าชม
+                    จำนวนเข้าชม
                   </th>
                   <th scope="col" className="col-sm-1">
                     ดูเนื้อหา
@@ -192,7 +198,8 @@ function Forapprovebook() {
                           {item.status_article === "pending" && "รออนุมัติ"}
                           {item.status_article === "creating" &&
                             "สร้างยังไม่เสร็จ"}
-                          {item.status_article === "finished" && "สร้างเสร็จแล้ว"}
+                          {item.status_article === "finished" &&
+                            "สร้างเสร็จแล้ว"}
                           {item.status_article === "deny" && "ถูกระงับ"}
                           {item.status_article === "published" && "เผยแพร่แล้ว"}
                         </Button>
@@ -330,9 +337,10 @@ function Forapprovebook() {
                       {selectitem.status_article === "finished" &&
                         "สร้างเสร็จแล้ว"}
                       {selectitem.status_article === "deny" && "ถูกระงับ"}
-                      {selectitem.status_article === "published" && "เผยแพร่แล้ว"}
+                      {selectitem.status_article === "published" &&
+                        "เผยแพร่แล้ว"}
                     </option>
-         <option value="published">อนุมัติ</option>
+                    <option value="published">อนุมัติ</option>
                     <option value="deny">ระงับบทความ</option>
                   </select>
                   <label htmlFor="status">เลือกสถานะ:</label>

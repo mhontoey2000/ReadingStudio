@@ -8,6 +8,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Searchbar from "./searchbar";
+import LoadingPage from "./LoadingPage";
 import formatTime from "./formattime";
 import {
   apiClient,
@@ -39,6 +40,7 @@ function Bookdetail(match) {
   const [showModal, setShowModal] = useState(false);
   const [unansweredQuestions, setUnansweredQuestions] = useState([]);
   const [highlightedArticleDetail, setHighlightedArticleDetail] = useState([]);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
   
   const history = useHistory();
   const [submittedAnswers, setSubmittedAnswers] = useState([]);
@@ -156,6 +158,8 @@ function Bookdetail(match) {
           const audioUrl = URL.createObjectURL(audioBlob);
           setAudioUrl(audioUrl);
         }
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -289,6 +293,8 @@ function Bookdetail(match) {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <section>

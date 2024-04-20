@@ -8,6 +8,7 @@ import "./styles/addexam.css";
 import { Await, useLocation } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 import { apiClient , convertSoundToBase64,convertImageToBase64 } from './config';
+import LoadingPage from "./LoadingPage";
 
 function Addexam() {
   const location = useLocation();
@@ -19,6 +20,7 @@ function Addexam() {
   const [bname, setBname] = useState("");
   const [aname, setAname] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   useEffect(() => {
     apiClient.get(`api/articledetail/${articleid}`)
@@ -44,6 +46,8 @@ function Addexam() {
           // console.log(response.data[i].article_id)
         }
         // console.log(bookid)
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -163,9 +167,10 @@ const handleCloseModal = () => {
     history.goBack();
 }
 
-
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <section>

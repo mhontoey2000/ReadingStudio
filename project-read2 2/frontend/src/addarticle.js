@@ -10,6 +10,7 @@ import Button from "react-bootstrap/Button";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
+import LoadingPage from "./LoadingPage";
 
 import {
   apiClient,
@@ -32,6 +33,8 @@ function Addarticle() {
 
   const [uploadedImage, setUploadedImage] = useState(null);
   const [uploadedSound, setUploadedSound] = useState(null);
+
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   const handleImageUpload = (event) => {
     const aimageFile = event.target.files[0];
@@ -58,6 +61,8 @@ function Addarticle() {
         if (result) {
           setBname(result[0].article_name);
         }
+         // open click btn
+         setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -134,6 +139,8 @@ function Addarticle() {
 
   return (
     <div className="addbook">
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <section>

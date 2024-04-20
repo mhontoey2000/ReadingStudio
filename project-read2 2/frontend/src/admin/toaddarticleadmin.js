@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import "../styles/allbookcreator.css";
 import Searchbar from "../searchbar";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -17,9 +18,10 @@ function Articlecreator() {
   const [items, setItems] = useState([]);
   const user = localStorage.getItem("email");
   const [searchTerm, setSearchTerm] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
   const ITEMS_PER_PAGE = 10;
+
 
   useEffect(() => {
     apiClient
@@ -27,6 +29,8 @@ function Articlecreator() {
       .then((response) => {
         // console.log(response);
         setItems(response.data);
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -45,6 +49,8 @@ function Articlecreator() {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
       <section>
         <div className="grid-containerr">

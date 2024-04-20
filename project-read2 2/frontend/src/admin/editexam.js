@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import "../styles/addexam.css";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -26,6 +27,7 @@ function Editexam() {
   const [exam_id, setExamid] = useState(-1);
   const [showModal, setShowModal] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   // Function to show the alert modal
   const showAlert = () => {
@@ -77,6 +79,8 @@ function Editexam() {
 
         setExamid(initialQuestions[0].exam_id);
         setQuestions(initialQuestions);
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -173,11 +177,11 @@ function Editexam() {
     apiClient
       .post(`api/editexam/`, formData)
       .then((response) => {
-        console.error("บันทึกข้อมูลเรียบร้อย");
+        console.log("บันทึกข้อมูลเรียบร้อย");
       })
       .catch((error) => {
         console.error(error);
-        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+        // alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
       });
   };
   const submitAddQuestion = async (question) => {
@@ -231,6 +235,8 @@ function Editexam() {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <section>

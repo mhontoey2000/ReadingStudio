@@ -7,11 +7,12 @@ import axios from "axios";
 import { useLocation, useHistory } from "react-router-dom";
 import Searchbar from "./searchbar";
 import Button from "react-bootstrap/Button";
+import LoadingPage from "./LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
   convertImageToBase64,
-} from "./config"
+} from "./config";
 
 function Bookarticle({ match }) {
   const [items, setItems] = useState([]);
@@ -22,6 +23,7 @@ function Bookarticle({ match }) {
   const user = localStorage.getItem("email");
   const [usertype, setUsertype] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
   // console.log(bookid)
 
   useEffect(() => {
@@ -44,6 +46,8 @@ function Bookarticle({ match }) {
       .get(`api/getarticleban/${bookid}`)
       .then((response) => {
         setItems(response.data);
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -51,9 +55,9 @@ function Bookarticle({ match }) {
   }, [bookid]);
 
   const incrementArticleView = (bookId) => {
-    apiClient.post(`api/articles/view/${bookId}`)
-      .then((response) => {
-      })
+    apiClient
+      .post(`api/articles/view/${bookId}`)
+      .then((response) => {})
       .catch((error) => {
         console.error(error);
       });
@@ -66,6 +70,8 @@ function Bookarticle({ match }) {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
       <section>
         <h1>ตอนของบทความ</h1>
@@ -82,13 +88,17 @@ function Bookarticle({ match }) {
               </div>
             ) : (
               filteredItems.map((article_section) => (
-                <div className="col-6 col-md-3" key={article_section.section_id}>
+                <div
+                  className="col-6 col-md-3"
+                  key={article_section.section_id}
+                >
                   <div
                     className="grid-item-wrapper"
                     style={{ padding: "10px" }}
                   >
                     <div className="card cardhover">
-                      {article_section.section_imagedata || article_section.section_images ? (
+                      {article_section.section_imagedata ||
+                      article_section.section_images ? (
                         <img
                           className="card-img-top img-fluid simg"
                           src={
@@ -112,7 +122,9 @@ function Bookarticle({ match }) {
                               state: { section_id: article_section.section_id },
                             }}
                             className="btn btn-primary btn-lg"
-                            onClick={() => incrementArticleView(article_section.section_id)}
+                            onClick={() =>
+                              incrementArticleView(article_section.section_id)
+                            }
                           >
                             อ่าน
                           </Link>

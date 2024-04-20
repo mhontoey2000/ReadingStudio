@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
+import LoadingPage from "../LoadingPage";
 import {
   API_BASE_URL,
   apiClient,
@@ -28,6 +29,7 @@ const Notification = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
@@ -43,6 +45,8 @@ const Notification = () => {
       .get(`api/reportnotification`)
       .then((response) => {
         setReport(response.data);
+         // open click btn
+         setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -106,7 +110,7 @@ const Notification = () => {
         .catch((error) => {
           console.error(error);
         });
-        apiClient
+      apiClient
         .post("api/updatereport", data, {
           headers: {
             "Content-Type": "application/json",
@@ -147,29 +151,29 @@ const Notification = () => {
   };
 
   const deleteUser = (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      fetch(API_BASE_URL+"api/report/" + id, {
-        method: "DELETE",
+    fetch(API_BASE_URL + "api/report/" + id, {
+      method: "DELETE",
+    })
+      .then((res) => res)
+      .then((res) => {
+        // console.log(res);
+        if (res.status === 200) {
+          // alert("Delete user successfully");
+          window.location.reload();
+        } else {
+          alert("Delete user failed");
+        }
       })
-        .then((res) => res)
-        .then((res) => {
-          // console.log(res);
-          if (res.status === 200) {
-            alert("Delete user successfully");
-            window.location.reload();
-          } else {
-            alert("Delete user failed");
-          }
-        })
-        .catch((err) => {
-          // console.log(err);
-          setError(err);
-        });
-    }
+      .catch((err) => {
+        // console.log(err);
+        setError(err);
+      });
   };
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <section>
@@ -203,6 +207,9 @@ const Notification = () => {
                     </th>
                     <th scope="col" className="col-sm-1">
                       ดูเนื้อหา
+                    </th>
+                    <th scope="col" className="col-sm-1">
+                      ลบ
                     </th>
                     {/* <th scope="col" className="col-sm-1">จัดการ</th> */}
                   </tr>
@@ -242,8 +249,7 @@ const Notification = () => {
                             {/* {item.report_status === "creating" && "สร้างยังไม่เสร็จ"} */}
                             {/* {item.report_status === "finished" && "สร้างเสร็จแล้ว"} */}
                             {item.report_status === "deny" && "ถูกระงับ"}
-                            {item.report_status === "published" &&
-                              "เผยแพร่"}
+                            {item.report_status === "published" && "เผยแพร่"}
                           </Button>
                         </td>
                         <td className="col-sm-1">
@@ -258,6 +264,14 @@ const Notification = () => {
                             ดู
                           </Link>
                         </td>
+                        <td className="col-sm-2">
+                          <Button
+                            className="btn btn-danger amt2"
+                            onClick={() => deleteUser(item.report_id)}
+                          >
+                            ลบ
+                          </Button>
+                        </td>
                         {/* <td className="col-sm-1">
                                                     <Button onClick={() => openModal(item)}>จัดการ</Button>
                                                 </td> */}
@@ -267,7 +281,7 @@ const Notification = () => {
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan="8" style={{ textAlign: "center" }}>
+                    <td colSpan="9" style={{ textAlign: "center" }}>
                       <Button
                         onClick={() =>
                           setCurrentPage((prevPage) =>

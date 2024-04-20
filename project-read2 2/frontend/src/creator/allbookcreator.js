@@ -8,6 +8,7 @@ import axios from "axios";
 import "../styles/allbookcreator.css";
 import Searchbar from "../searchbar";
 import Modal from "react-bootstrap/Modal";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -26,6 +27,7 @@ function Allbookcreator() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = items.slice(startIndex, endIndex);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
@@ -38,6 +40,8 @@ function Allbookcreator() {
       .then((response) => {
         // console.log(response.data);
         setItems(response.data);
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -71,6 +75,9 @@ function Allbookcreator() {
 
   return (
     <div>
+      {" "}
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
       <section>
         <div className="grid-containerr">
@@ -128,7 +135,7 @@ function Allbookcreator() {
                 currentItems.map((article, index) => (
                   <tr key={article.article_id}>
                     <td className="col-sm-1" key={`article${index + 1}`}>
-                    {startIndex + index + 1}
+                      {startIndex + index + 1}
                     </td>
                     <td className="col-sm-2">{article.article_name}</td>
                     <td className="col-sm-2">
@@ -143,7 +150,9 @@ function Allbookcreator() {
                     <td className="col-sm-1">
                       {article.article_imagedata ? (
                         <img
-                          src={article.article_imagedata || article.article_image}
+                          src={
+                            article.article_imagedata || article.article_image
+                          }
                           width="100"
                           height="100"
                           alt={article.article_name}
@@ -250,7 +259,9 @@ function Allbookcreator() {
         </Modal.Header>
         <Modal.Body>
           {bookToDelete && (
-            <p>คุณแน่ใจหรือไม่ที่ต้องการลบบทความ: {bookToDelete.article_name}?</p>
+            <p>
+              คุณแน่ใจหรือไม่ที่ต้องการลบบทความ: {bookToDelete.article_name}?
+            </p>
           )}
         </Modal.Body>
         <Modal.Footer>

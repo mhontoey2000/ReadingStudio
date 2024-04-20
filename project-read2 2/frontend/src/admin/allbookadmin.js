@@ -8,6 +8,7 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Searchbar from "../searchbar";
 import "../styles/alladmin.css";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -21,6 +22,7 @@ const Allbookadmin = () => {
   const [bookToDelete, setBookToDelete] = useState(null);
   const [statusUser, setStatusUser] = useState("");
   const user = localStorage.getItem("email");
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
@@ -49,6 +51,8 @@ const Allbookadmin = () => {
             });
             setItems(filteredData);
             //console.log(items);
+            // open click btn
+         setIsLoadedBtn(false);
           })
           .catch((error) => {
             console.error(error);
@@ -96,6 +100,8 @@ const Allbookadmin = () => {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
       <section>
         <div className="grid-containerr">

@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import formatTime from "../formattime";
 import Modal from "react-bootstrap/Modal";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -40,6 +41,7 @@ function Detailedit(match) {
   const textareaRef = useRef(null);
   const [vocabToDelete, setVocabToDelete] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   const handleButtonClick = (divToShow) => {
     setVisibleDiv(divToShow);
@@ -78,6 +80,8 @@ function Detailedit(match) {
         setItems(response.data);
         setIsLoaded(true);
         setBookid(response.data[0].article_id);
+         // open click btn
+         setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -223,6 +227,8 @@ function Detailedit(match) {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <section>

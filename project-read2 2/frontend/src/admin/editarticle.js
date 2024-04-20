@@ -7,6 +7,9 @@ import Button from "react-bootstrap/Button";
 import { useParams, useHistory, Link } from "react-router-dom";
 import { useDropzone } from "react-dropzone"; // เพิ่มการนำเข้า Dropzone
 import "../styles/editall.css";
+// import Loading from "../LoadingIndicator";
+import LoadingPage from "../LoadingPage";
+
 import {
   apiClient,
   convertSoundToBase64,
@@ -18,7 +21,7 @@ function Editarticle() {
   const { articleid } = useParams();
   const [bookid, setBookid] = useState(false);
   const textareaRef = useRef(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
   const [isLoading, setIsLoading] = useState(true);
   const [qitems, setqItems] = useState([]);
 
@@ -75,10 +78,14 @@ function Editarticle() {
         } else {
           console.log("ไม่พบข้อมูลหนังสือสำหรับบทความนี้");
         }
+
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
       });
+
     setArticleID(article_section.section_id);
     setArticleName(article_section.section_name);
     setBookid(article_section.article_id);
@@ -265,6 +272,9 @@ function Editarticle() {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
+
       <Header />
 
       <section>
@@ -484,6 +494,7 @@ function Editarticle() {
                     // type="submit"
                     className="btn btn-primary"
                     onClick={editArticle}
+                    disabled={isLoadedBtn}
                   >
                     ยืนยัน
                   </Button>
@@ -504,7 +515,7 @@ function Editarticle() {
           <Modal.Title>ยืนยันการลบ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          คุณต้องการลบคำศัพท์{" "}
+          คุณต้องการลบคำศัพท์{}
           {vocabToDelete ? `"${vocabToDelete.vocabs_name}"` : "this vocabulary"}
           ใช่ไหม?
         </Modal.Body>

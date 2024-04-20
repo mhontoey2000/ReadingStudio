@@ -9,11 +9,12 @@ import Searchbar from "../searchbar";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Loading from "../LoadingIndicator";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
   convertImageToBase64,
-} from "../config"
+} from "../config";
 
 function Articleedit() {
   const [items, setItems] = useState([]);
@@ -33,6 +34,7 @@ function Articleedit() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
@@ -63,52 +65,50 @@ function Articleedit() {
         setScreenLoaded(true);
       });
 
-
     fetchLevelData();
   }, [user]);
 
-  
-    // โหลดระดับคำศัพท์ (level files) ในระหว่างโหลดข้อมูลของผู้ใช้และข้อมูลบทความ
-    const levelFiles = [
-      "level1.json",
-      "level2.json",
-      "level3.json",
-      "level4.json",
-      "level5.json",
-      "level6.json",
-    ];
+  // โหลดระดับคำศัพท์ (level files) ในระหว่างโหลดข้อมูลของผู้ใช้และข้อมูลบทความ
+  const levelFiles = [
+    "level1.json",
+    "level2.json",
+    "level3.json",
+    "level4.json",
+    "level5.json",
+    "level6.json",
+  ];
 
-    const fetchLevelData = async () => {
-      const newWordLevels = {};
-    
-      for (const file of levelFiles) {
-        try {
-          const response = await axios.get(`/analysis/${file}`);
-          const levelData = response.data;
-    
-          levelData.forEach((wordData) => {
-            const word = wordData.word;
-            if (wordData.p1 !== "0") {
-              newWordLevels[word] = 1;
-            } else if (wordData.p2 !== "0") {
-              newWordLevels[word] = 2;
-            } else if (wordData.p3 !== "0") {
-              newWordLevels[word] = 3;
-            } else if (wordData.p4 !== "0") {
-              newWordLevels[word] = 4;
-            } else if (wordData.p5 !== "0") {
-              newWordLevels[word] = 5;
-            } else if (wordData.p6 !== "0") {
-              newWordLevels[word] = 6;
-            }
-          });
-        } catch (error) {
-          console.error(`Error fetching ${file}:`, error);
-        }
+  const fetchLevelData = async () => {
+    const newWordLevels = {};
+
+    for (const file of levelFiles) {
+      try {
+        const response = await axios.get(`/analysis/${file}`);
+        const levelData = response.data;
+
+        levelData.forEach((wordData) => {
+          const word = wordData.word;
+          if (wordData.p1 !== "0") {
+            newWordLevels[word] = 1;
+          } else if (wordData.p2 !== "0") {
+            newWordLevels[word] = 2;
+          } else if (wordData.p3 !== "0") {
+            newWordLevels[word] = 3;
+          } else if (wordData.p4 !== "0") {
+            newWordLevels[word] = 4;
+          } else if (wordData.p5 !== "0") {
+            newWordLevels[word] = 5;
+          } else if (wordData.p6 !== "0") {
+            newWordLevels[word] = 6;
+          }
+        });
+      } catch (error) {
+        console.error(`Error fetching ${file}:`, error);
       }
-    
-      setWordLevels(newWordLevels);
-    };
+    }
+
+    setWordLevels(newWordLevels);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -121,6 +121,8 @@ function Articleedit() {
           setItems(response.data);
           setLoading(false);
           setScreenLoaded(true);
+          // open click btn
+          setIsLoadedBtn(false);
         })
         .catch((error) => {
           console.error(error);
@@ -237,6 +239,8 @@ function Articleedit() {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <section>
@@ -284,7 +288,12 @@ function Articleedit() {
               ) : (
                 currentItems.map((article_section, index) => (
                   <tr key={article_section.section_id}>
-                    <td className="col-sm-1" key={`article_section${index + 1}`}>{startIndex + index + 1}</td>
+                    <td
+                      className="col-sm-1"
+                      key={`article_section${index + 1}`}
+                    >
+                      {startIndex + index + 1}
+                    </td>
                     <td className="col-sm-3">{article_section.section_name}</td>
                     <td className="col-sm-2">
                       {article_section.section_imagedata ? (
@@ -296,7 +305,9 @@ function Articleedit() {
                         />
                       ) : null}
                     </td>
-                    <td className="col-sm-2">{article_section.section_level}</td>
+                    <td className="col-sm-2">
+                      {article_section.section_level}
+                    </td>
                     <td className="col-sm-2">
                       <Button
                         className="btn btn-success amt2"
@@ -319,7 +330,9 @@ function Articleedit() {
                     <td className="col-sm-1">
                       <Button
                         className="btn btn-danger amt2"
-                        onClick={() => deleteArticle(article_section.section_id)}
+                        onClick={() =>
+                          deleteArticle(article_section.section_id)
+                        }
                       >
                         ลบ
                       </Button>
@@ -427,10 +440,14 @@ function Articleedit() {
                         value={leveltext}
                         onChange={(event) => setLeveltext(event.target.value)}
                       >
-                        <option value="" disabled>กรุณาเลือกระดับของบทความ</option>
-                          {levels.map((level, index) => (
-                            <option key={index} value={level}>{level}</option>
-                          ))}
+                        <option value="" disabled>
+                          กรุณาเลือกระดับของบทความ
+                        </option>
+                        {levels.map((level, index) => (
+                          <option key={index} value={level}>
+                            {level}
+                          </option>
+                        ))}
                       </select>
                     </div>
 

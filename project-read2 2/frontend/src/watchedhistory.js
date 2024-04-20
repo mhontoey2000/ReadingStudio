@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useHistory } from "react-router-dom";
 import Searchbar from "./searchbar";
 import Button from "react-bootstrap/Button";
+import LoadingPage from "./LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -21,6 +22,7 @@ function Watchedhistory() {
   const [filteredWatchedArticles, setFilteredWatchedArticles] = useState([]);
   const [filteredExamHistory, setFilteredExamHistory] = useState([]); // เพิ่ม state สำหรับประวัติการทำข้อสอบ
   const [activeMenu, setActiveMenu] = useState("watched");
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   const [examScores, setExamScores] = useState(0);
   const [examDetails, setExamDetails] = useState([]);
@@ -98,6 +100,8 @@ function Watchedhistory() {
             //console.log('scores', scores);
 
             setExamScores(scores);
+             // open click btn
+            setIsLoadedBtn(false);
           })
           .catch((error) => {
             console.error(error);
@@ -212,6 +216,8 @@ function Watchedhistory() {
 
   return (
     <div>
+       {/* waite... data */}
+       <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <div className="boxhistory">

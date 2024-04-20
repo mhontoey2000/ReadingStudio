@@ -206,7 +206,7 @@ function Addvocab() {
         <Modal.Body>เพิ่มคำศัพท์เรียบร้อย</Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleSuccessModalOK}>
-            OK
+            ตกลง
           </Button>
         </Modal.Footer>
       </Modal>

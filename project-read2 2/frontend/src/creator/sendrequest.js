@@ -8,6 +8,7 @@ import axios from "axios";
 import "../styles/allbookcreator.css";
 import Searchbar from "../searchbar";
 import Modal from "react-bootstrap/Modal";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -21,6 +22,7 @@ function Sendrequest() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [selectedBookId, setSelectedBookId] = useState(null);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   const sendPublishRequest = (bookId) => {
     setSelectedBookId(bookId);
@@ -50,6 +52,8 @@ function Sendrequest() {
       })
       .then((response) => {
         setShowSuccessModal(true);
+         // open click btn
+         setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error("Error updating status_article:", error);
@@ -62,6 +66,8 @@ function Sendrequest() {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
       <section>
         <div className="grid-containerr">

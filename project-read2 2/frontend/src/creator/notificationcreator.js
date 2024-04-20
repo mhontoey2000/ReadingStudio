@@ -6,6 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import Searchbar from "../searchbar";
 import { Link } from "react-router-dom";
+import LoadingPage from "../LoadingPage";
 import {
   apiClient,
   convertSoundToBase64,
@@ -30,6 +31,7 @@ function Notificationcreator() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = items.slice(startIndex, endIndex);
+  const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
@@ -47,6 +49,8 @@ function Notificationcreator() {
       .then((response) => {
         // console.log(response.data);
         setItems(response.data);
+         // open click btn
+         setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -59,6 +63,8 @@ function Notificationcreator() {
 
   return (
     <div>
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
       <section>
         <div className="grid-containerr">
