@@ -6,7 +6,7 @@ function LoadingPage({ open }) {
   return (
     <>
       <Modal show={open}>
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>กำลังโหลดข้อมูล.....</Modal.Title>
         </Modal.Header>
         <Modal.Body>

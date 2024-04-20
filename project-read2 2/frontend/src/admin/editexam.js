@@ -29,6 +29,11 @@ function Editexam() {
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
+  // data value modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [dataDeleteInModal, setDataDeleteInModal] = useState(null);
+  const [indexModal, setIndexModal] = useState(null);
+
   // Function to show the alert modal
   const showAlert = () => {
     setShowAlertModal(true);
@@ -54,7 +59,8 @@ function Editexam() {
     // console.log("bookname" + bookname);
     // console.log("section_id" + articleid);
 
-    apiClient.get(`api/exam/${articleid}`)
+    apiClient
+      .get(`api/exam/${articleid}`)
       .then((response) => {
         let tempArr = response.data.slice();
         setqItems(tempArr);
@@ -101,18 +107,15 @@ function Editexam() {
   };
 
   const removeQuestion = (index, questionid) => {
-    // console.log("คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้ : " + questionid);
+    const updatedQuestions = [...questions];
+    updatedQuestions.splice(index, 1);
+    removeQuestionFromServer(questionid);
+    setQuestions(updatedQuestions);
 
-    const confirmDelete = window.confirm(
-      "คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้?"
-    );
-    if (confirmDelete) {
-      const updatedQuestions = [...questions];
-      updatedQuestions.splice(index, 1);
-      removeQuestionFromServer(questionid);
-      setQuestions(updatedQuestions);
-    }
+    // close show modal
+    setShowDeleteModal(false);
   };
+
   const removeQuestionFromServer = (questionId) => {
     // สร้างคำขอ HTTP DELETE โดยระบุ URL ของ API และ ID ของคำถามที่ต้องการลบ
     if (questionId !== -1) {
@@ -120,7 +123,7 @@ function Editexam() {
         .delete(`api/deleteeditexam/${questionId}`)
         .then((response) => {
           // console.log("ลบข้อมูลในเซิร์ฟเวอร์เรียบร้อย");
-          setTempArrCount(tempArrCount-1);
+          setTempArrCount(tempArrCount - 1);
           // ทำอย่างอื่น ๆ ที่คุณต้องการหลังจากการลบ
         })
         .catch((error) => {
@@ -196,10 +199,7 @@ function Editexam() {
       data.append(`questionsoptions`, JSON.stringify(question.options));
       data.append(`questionscorrectOption`, question.correctOption);
 
-      const response = await apiClient.post(
-        "api/add-data",
-        data
-      );
+      const response = await apiClient.post("api/add-data", data);
       if (response.status === 200) {
         // console.log(response.data);
       } else {
@@ -231,6 +231,19 @@ function Editexam() {
     //alert("Success");
     showSuccessModal();
     //history.goBack();
+  };
+
+  const deleteModal = (item) => {
+    const index = questions.findIndex((q) => q.id === item.id);
+
+    // set data to modal
+    setDataDeleteInModal(item);
+
+    // set index select
+    setIndexModal(index);
+
+    // set open modal
+    setShowDeleteModal(true);
   };
 
   return (
@@ -292,7 +305,10 @@ function Editexam() {
                         className="form-label"
                         htmlFor={`imageUpload${index}`}
                       >
-                        อัปโหลดรูปภาพ (ถ้ามี)<cite style={{color:"red"}}>*ขนาดรูปที่แนะนำคือ 300x300</cite>
+                        อัปโหลดรูปภาพ (ถ้ามี)
+                        <cite style={{ color: "red" }}>
+                          *ขนาดรูปที่แนะนำคือ 300x300
+                        </cite>
                       </label>
                       <input
                         type="file"
@@ -304,14 +320,14 @@ function Editexam() {
                       />
                       {
                         <div className="d-flex justify-content-center align-items-center">
-                        <img
-                          src={
-                            question.imageURL != null
-                              ? question.imageURL
-                              : question.image
-                          }
-                          style={{ maxWidth: "100%", maxHeight: "200px" }}
-                        />
+                          <img
+                            src={
+                              question.imageURL != null
+                                ? question.imageURL
+                                : question.image
+                            }
+                            style={{ maxWidth: "100%", maxHeight: "200px" }}
+                          />
                         </div>
                       }
                     </div>
@@ -369,7 +385,8 @@ function Editexam() {
                       <Button
                         className="btn btn-warning"
                         style={{ color: "white" }}
-                        onClick={() => removeQuestion(index, question.id)}
+                        // onClick={() => removeQuestion(index, question.id)}
+                        onClick={() => deleteModal(question)}
                       >
                         ลบคำถาม
                       </Button>
@@ -388,7 +405,11 @@ function Editexam() {
                 className="d-flex justify-content-between"
                 style={{ margin: "20px" }}
               >
-                <Button type="button" className="btn btn-danger btn-lg" onClick={hideSuccessModal}>
+                <Button
+                  type="button"
+                  className="btn btn-danger btn-lg"
+                  onClick={hideSuccessModal}
+                >
                   ยกเลิก
                 </Button>
 
@@ -423,6 +444,29 @@ function Editexam() {
         <Modal.Footer>
           <Button variant="primary" onClick={hideAlert}>
             ตกลง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal ยืนยันการลบ */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยันการลบ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {dataDeleteInModal && <p>คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้?</p>}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            ยกเลิก
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              removeQuestion(indexModal, dataDeleteInModal.id);
+            }}
+          >
+            ลบ
           </Button>
         </Modal.Footer>
       </Modal>

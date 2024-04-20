@@ -100,8 +100,7 @@ function Watchedhistory() {
             //console.log('scores', scores);
 
             setExamScores(scores);
-             // open click btn
-            setIsLoadedBtn(false);
+             
           })
           .catch((error) => {
             console.error(error);
@@ -118,6 +117,8 @@ function Watchedhistory() {
         const articlesByDay = groupByDay(response.data);
         setWatchedArticles(articlesByDay);
         setFilteredWatchedArticles(articlesByDay);
+        // open click btn
+            setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);

@@ -57,20 +57,15 @@ function Reportbook() {
 
   useEffect(() => {
     apiClient
-      .get(`api/article`)
+      .get(`api/article/${bookid}`)
       .then((response) => {
-        // console.log(response.data);
-        // console.log(bookid);
-        for (let i = 0; i < response.data.length; i++) {
-          if (response.data[i].article_id === bookid) {
-            // console.log("working")
-            // console.log(response.data[i].article_name)
-            setBname(response.data[i].article_name);
-          }
-          // console.log(response.data[i].article_id)
-        }
-        // console.log(bookid)
-        
+        setBname(response.data[0].article_name);
+        // for (let i = 0; i < response.data.length; i++) {
+        //   if (response.data[i].article_id === bookid) {
+        //     setBname(response.data[i].article_name);
+        //   }
+        // }
+
         // open click btn
         setIsLoadedBtn(false);
       })

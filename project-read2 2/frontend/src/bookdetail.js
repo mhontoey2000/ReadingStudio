@@ -14,12 +14,12 @@ import {
   apiClient,
   convertSoundToBase64,
   convertImageToBase64,
-} from "./config"
+} from "./config";
 
 function Bookdetail(match) {
   const [items, setItems] = useState([]);
   const location = useLocation();
-  const [historyRecorded, setHistoryRecorded] = useState(false); 
+  const [historyRecorded, setHistoryRecorded] = useState(false);
   const articleid = location.state.section_id;
   const user = localStorage.getItem("email");
   const userId = localStorage.getItem("user_id");
@@ -41,7 +41,7 @@ function Bookdetail(match) {
   const [unansweredQuestions, setUnansweredQuestions] = useState([]);
   const [highlightedArticleDetail, setHighlightedArticleDetail] = useState([]);
   const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
-  
+
   const history = useHistory();
   const [submittedAnswers, setSubmittedAnswers] = useState([]);
 
@@ -80,23 +80,23 @@ function Bookdetail(match) {
 
     if (unansweredQuestions.length > 0) {
       handleShowModal(); // Show the modal
-
-    }else {
+    } else {
       // console.log('4');
-      
+
       // สร้าง FormData object
       const formData = new FormData();
-      formData.append('submittedAnswers', submittedAnswers);
+      formData.append("submittedAnswers", submittedAnswers);
       // formData.append('examDetails', JSON.stringify(qitems)); // แปลง qitems เป็น JSON string
-      formData.append('bookid', bookid);
-      formData.append('articleid', articleid);
-      formData.append('userId', userId );
-    
+      formData.append("bookid", bookid);
+      formData.append("articleid", articleid);
+      formData.append("userId", userId);
+
       // ทำการ HTTP POST ด้วย FormData
-      apiClient.post(`api/examhistory`, formData)
+      apiClient
+        .post(`api/examhistory`, formData)
         .then((response) => {
           // setHistoryRecorded(true);
-    
+
           // All questions have been answered, navigate to the score page
           history.push({
             pathname: "/Page/score",
@@ -111,7 +111,6 @@ function Bookdetail(match) {
           console.error("Error recording history:", error);
         });
     }
-    
   };
   const handleButtonClick = (divToShow) => {
     setVisibleDiv(divToShow);
@@ -148,9 +147,9 @@ function Bookdetail(match) {
         setIsLoaded(true);
         const fetchedBookId = response.data[0].article_id;
         setBookid(fetchedBookId);
-  
+
         const audioData = response.data[0].section_sounddata;
-  
+
         if (audioData) {
           const audioBlob = new Blob([new Uint8Array(audioData.data)], {
             type: "audio/mpeg",
@@ -165,7 +164,7 @@ function Bookdetail(match) {
         console.error(error);
       });
   }, [articleid, userId]);
-  
+
   useEffect(() => {
     if (isLoaded) {
       apiClient
@@ -299,11 +298,6 @@ function Bookdetail(match) {
 
       <section>
         <h1>เนื้อหา</h1>
-
-        <div className="searchbar">
-          <Searchbar />
-        </div>
-
         <div className="article_section">
           <div
             className="d-flex justify-content-center"
@@ -356,7 +350,10 @@ function Bookdetail(match) {
                 <div className="text-center">
                   <img
                     className="bigimg"
-                    src={article_section.section_imagedata || article_section.section_images}
+                    src={
+                      article_section.section_imagedata ||
+                      article_section.section_images
+                    }
                     alt="Article"
                   />
                 </div>
@@ -384,17 +381,17 @@ function Bookdetail(match) {
                         {article_section.section_level}
                       </span>
                     </h5>
-                    
+
                     {Vitems.length > 0 && (
-                    <Button
-                      className="btn btn-success btn-lg"
-                      style={{ color: "white" }}
-                      onClick={() => setHighlighted(!highlighted)}
-                    >
-                      {highlighted ? "ซ่อน" : "แสดงคำศัพท์"}
-                    </Button>
+                      <Button
+                        className="btn btn-success btn-lg"
+                        style={{ color: "white" }}
+                        onClick={() => setHighlighted(!highlighted)}
+                      >
+                        {highlighted ? "ซ่อน" : "แสดงคำศัพท์"}
+                      </Button>
                     )}
-                    </div>
+                  </div>
 
                   <div className="detailtext parsed-article_section">
                     {highlighted

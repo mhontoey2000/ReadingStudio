@@ -41,6 +41,8 @@ function Editarticle() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [vocabToDelete, setVocabToDelete] = useState(null);
 
+  const [showDeleteModalQuestion, setShowDeleteModalQuestion] = useState(false);
+
   const openDeleteModal = (vocabs) => {
     setVocabToDelete(vocabs);
     setShowDeleteModal(true);
@@ -270,6 +272,41 @@ function Editarticle() {
     }
   };
 
+  const confirmDeleteQuestions = () => {
+    setShowDeleteModalQuestion(true);
+  };
+
+  const deleteQuestions = () => {
+    // find examId
+    const examId = qitems[0].exam_id;
+
+    // find optionId
+    const optionIds = qitems
+      .flatMap((q) => q.question_options.map((o) => o.option_id))
+      .join(",");
+
+    console.log(examId);
+    console.log(optionIds);
+
+    apiClient
+      .delete(`api/exam/${examId}`)
+      .then((result) => { })
+      .catch((err) => {
+        console.err(err);
+      });
+
+    apiClient
+      .post(`api/options-delete`, { optionIds: optionIds })
+      .then((result) => {
+        setShowDeleteModalQuestion(false);
+        setqItems([]);
+      })
+      .catch((error) => {
+        console.err(error);
+      });
+
+  };
+
   return (
     <div>
       {/* waite... data */}
@@ -475,6 +512,21 @@ function Editarticle() {
                     </Link>
                   </div>
                 )}
+
+                {Array.isArray(qitems) && qitems.length > 0 ? (
+                  <>
+                    <Button
+                      style={{ marginLeft: "10px" }}
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => confirmDeleteQuestions()}
+                    >
+                      ลบ
+                    </Button>
+                  </>
+                ) : (
+                  ""
+                )}
               </div>
 
               <hr className="line1" />
@@ -515,7 +567,7 @@ function Editarticle() {
           <Modal.Title>ยืนยันการลบ</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          คุณต้องการลบคำศัพท์{}
+          คุณต้องการลบคำศัพท์{ }
           {vocabToDelete ? `"${vocabToDelete.vocabs_name}"` : "this vocabulary"}
           ใช่ไหม?
         </Modal.Body>
@@ -524,6 +576,30 @@ function Editarticle() {
             ยกเลิก
           </Button>
           <Button variant="danger" onClick={deleteVocab}>
+            ลบ
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal ยืนยันการลบ คำถาม */}
+      <Modal
+        show={showDeleteModalQuestion}
+        onHide={() => setShowDeleteModalQuestion(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยันการลบ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>คุณแน่ใจหรือไม่ที่ต้องการลบคำถามนี้?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowDeleteModalQuestion(false)}
+          >
+            ยกเลิก
+          </Button>
+          <Button variant="danger" onClick={() => deleteQuestions()}>
             ลบ
           </Button>
         </Modal.Footer>

@@ -34,6 +34,7 @@ function Allbookcreator() {
   useEffect(() => {
     init();
   }, [currentPage]);
+  
   function init() {
     apiClient
       .get("api/allbookarticlecreator?user_email=" + user)
