@@ -22,6 +22,9 @@ const Alluseradmin = () => {
   const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [currentImage, setCurrentImage] = useState("");
+
 
   useEffect(() => {
     fetchUsers();
@@ -152,6 +155,12 @@ const Alluseradmin = () => {
     setIsFiltering(!isFiltering); // Toggle filtering state
   };
 
+  const handleImageClick = (imageUrl) => {
+    setCurrentImage(imageUrl);
+    setShowImageModal(true);
+  };
+
+  
   return (
     <div>
       {/* waite... data */}
@@ -338,12 +347,24 @@ const Alluseradmin = () => {
                 </span>
               </p> */}
               {selectedUser.user_idcard ? (
+                <>
+                 <style>
+                    {`
+                        .custom-border:hover {
+                          border: 3px solid #0b5ed7;
+                      }
+                    `}
+                </style>
                 <img
                   src={selectedUser && selectedUser.user_idcard}
                   alt="รูปภาพ"
                   width="300"
                   height="200"
+                  className="custom-border"
+                  onClick={() => handleImageClick(selectedUser.user_idcard)}
+                  style={{ cursor: 'pointer', transition: 'border ease-in-out' }}
                 />
+                </>
               ) : null}
               <div
                 className="d-flex align-items-center"
@@ -406,6 +427,22 @@ const Alluseradmin = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Modal show={showImageModal} onHide={() => setShowImageModal(false)} size="lg" centered>
+        <Modal.Header closeButton>
+        </Modal.Header>
+        <Modal.Body className="d-flex justify-content-center">
+          <img src={currentImage} alt="Full Size" style={{ maxWidth: '100%', maxHeight: '100vh' }} />
+        </Modal.Body>
+      </Modal>
+      <Modal show={showImageModal} onHide={() => setShowImageModal(false)} size="lg" centered>
+        <Modal.Header closeButton>
+        </Modal.Header>
+        <Modal.Body className="d-flex justify-content-center">
+          <img src={currentImage} alt="Full Size" style={{ maxWidth: '100%', maxHeight: '100vh' }} />
+        </Modal.Body>
+      </Modal>
+
     </div>
   );
 };
