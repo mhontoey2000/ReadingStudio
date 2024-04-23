@@ -34,6 +34,38 @@ function Reportbook() {
   // const user = JSON.parse(localStorage.getItem('email'));
   const user = localStorage.getItem("email");
 
+  const [captchaCode, setCaptchaCode] = useState("");
+  const [userEnteredCode, setUserEnteredCode] = useState("");
+  const [errorModal, setErrorModal] = useState(false);
+  const [captchaBackgroundColor, setCaptchaBackgroundColor] = useState("#")
+  const [captchaTextColor, setCaptchaTextColor] = useState("#FFFFFF");
+
+  useEffect(() => {
+    generateCaptchaCode();
+  }, []);
+
+  const generateCaptchaCode = () => {
+    const randomCode = Math.random().toString(36).substring(7).toUpperCase();
+    const randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+    const complementaryTextColor = calculateComplementaryColor(randomColor);
+    setCaptchaCode(randomCode);
+    setCaptchaBackgroundColor(randomColor);
+    setCaptchaTextColor(complementaryTextColor);
+  };
+
+  const calculateComplementaryColor = (color) => {
+    // Function to calculate complementary color
+    const hex = color.replace(/^#/, '');
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+
+    const complementaryR = 255 - r;
+    const complementaryG = 255 - g;
+    const complementaryB = 255 - b;
+
+    return `rgb(${complementaryR}, ${complementaryG}, ${complementaryB})`;
+  };
   // useEffect(() => {
   //   apiClient
   //     .get("api/userdata?user_email=" + user)
@@ -111,6 +143,13 @@ function Reportbook() {
   const sendReport = (e) => {
     e.preventDefault();
 
+    if (userEnteredCode !== captchaCode) {
+      setErrorModal(true);
+      generateCaptchaCode();
+      setUserEnteredCode("");
+      return;
+    }
+  
     setShowModal(true); // Show the confirmation modal
   };
 
@@ -222,6 +261,35 @@ function Reportbook() {
                 />
               </div>
 
+              <div className="mb-3 d-flex flex-column align-items-center">
+                <label htmlFor="captcha" style={{fontWeight:"bold",marginBottom:"10px"}}>CAPTCHA</label>
+                <div className="d-flex flex-column align-items-center">
+                  <span className="mr-2" 
+                    style={{
+                      marginBottom:"10px",
+                      backgroundColor: captchaBackgroundColor,
+                      color: captchaTextColor,
+                      fontWeight:"bold",
+                      padding: "40px", 
+                      borderRadius: "5px",
+                      fontSize: "36px"
+                      }}>
+                        {captchaCode}
+                      </span>
+                  <input
+                    key={captchaCode} 
+                    type="text"
+                    className="form-control"
+                    id="captcha"
+                    placeholder="กรุณากรอกรหัส CAPTCHA"
+                    required
+                    onChange={(event) => {
+                      setUserEnteredCode(event.target.value.toUpperCase());
+                    }}
+                  />
+                </div>
+              </div>
+
               <div className="btn-containerr">
                 <div className="btn-group me-2">
                   <Button
@@ -284,6 +352,18 @@ function Reportbook() {
         <Modal.Body>คุณเคยรายงานเนื้อหานี้ไปแล้ว</Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleSuccessReportedModalOK}>
+            ปิด
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={errorModal} onHide={() => setErrorModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ไม่สำเร็จ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>รหัสไม่ถูกต้อง กรุณาลองอีกครั้ง</Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => setErrorModal(false)}>
             ปิด
           </Button>
         </Modal.Footer>
