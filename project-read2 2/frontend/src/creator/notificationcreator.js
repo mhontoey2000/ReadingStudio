@@ -14,8 +14,12 @@ import {
 } from "../config"
 
 function formatDate(dateString) {
-  const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
+  const date = new Date(dateString);
+  let day = ('0' + date.getDate()).slice(-2);  // ensures two digits
+  let month = ('0' + (date.getMonth() + 1)).slice(-2);  // ensures two digits, months are 0-indexed
+  let year = date.getFullYear(); 
+
+  return `${day}/${month}/${year}`;  // returns date in dd/mm/yy format
 }
 
 function Notificationcreator() {

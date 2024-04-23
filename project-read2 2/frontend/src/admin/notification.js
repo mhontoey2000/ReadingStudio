@@ -31,6 +31,9 @@ const Notification = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedReportToDelete, setSelectedReportToDelete] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
@@ -150,7 +153,14 @@ const Notification = () => {
     window.location.reload();
   };
 
-  const deleteUser = (id) => {
+  const openDeleteModal = (report) => {
+    setSelectedReportToDelete(report);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteReport = (id) => {
+    if (!selectedReportToDelete) return;
+
     fetch(API_BASE_URL + "api/report/" + id, {
       method: "DELETE",
     })
@@ -167,13 +177,21 @@ const Notification = () => {
       .catch((err) => {
         // console.log(err);
         setError(err);
+        setShowErrorModal(true);
+      })
+      .finally(() => {
+        setShowDeleteModal(false);
       });
   };
 
   function formatDate(dateString) {
-    const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  }
+    const date = new Date(dateString);
+    let day = ('0' + date.getDate()).slice(-2);  // ensures two digits
+    let month = ('0' + (date.getMonth() + 1)).slice(-2);  // ensures two digits, months are 0-indexed
+    let year = date.getFullYear(); 
+
+    return `${day}/${month}/${year}`;  // returns date in dd/mm/yy format
+}
   
   return (
     <div>
@@ -272,7 +290,7 @@ const Notification = () => {
                         <td className="col-sm-2">
                           <Button
                             className="btn btn-danger amt2"
-                            onClick={() => deleteUser(item.report_id)}
+                            onClick={() => openDeleteModal(item)}
                           >
                             ลบ
                           </Button>
@@ -450,6 +468,23 @@ const Notification = () => {
         <Modal.Footer>
           <Button variant="danger" onClick={handleErrorModalOK}>
             ตกลง
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>ยืนยันการลบ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          คุณต้องการลบการรายงานนี้ใช่ไหม?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            ยกเลิก
+          </Button>
+          <Button variant="danger" onClick={confirmDeleteReport}>
+            ลบ
           </Button>
         </Modal.Footer>
       </Modal>
