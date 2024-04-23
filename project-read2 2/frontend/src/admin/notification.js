@@ -170,6 +170,11 @@ const Notification = () => {
       });
   };
 
+  function formatDate(dateString) {
+    const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  }
+  
   return (
     <div>
       {/* waite... data */}
@@ -224,7 +229,7 @@ const Notification = () => {
                         <td className="col-sm-1">{item.report_articlename}</td>
                         <td className="col-sm-3">{item.report_detail}</td>
                         <td className="col-sm-2">{item.reporter}</td>
-                        <td className="col-sm-1">{item.date_time}</td>
+                        <td className="col-sm-1">{formatDate(item.date_time)}</td>
                         {/* <td className="col-sm-1">{ Getth(item.report_status)}</td> */}
                         <td className="col-sm-2">
                           <Button

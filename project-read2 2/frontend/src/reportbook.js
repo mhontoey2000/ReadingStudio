@@ -139,7 +139,7 @@ function Reportbook() {
             <form className="form-group" onSubmit={sendReport}>
               <h2>กรุณากรอกรายละเอียดที่ต้องการรายงาน</h2>
               <div className="mb-3">
-                <label htmlFor="bookname">ชื่อหนังสือ</label>
+                <label htmlFor="bookname">ชื่อบทความ</label>
 
                 <input
                   type="text"
@@ -152,7 +152,7 @@ function Reportbook() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="articlename">ชื่อบท</label>
+                <label htmlFor="articlename">ชื่อตอน</label>
                 <input
                   type="text"
                   className="form-control"

@@ -6,6 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import LoadingPage from "../LoadingPage";
+import Searchbar from "../searchbar";
 import {
   apiClient,
   convertSoundToBase64,
@@ -25,14 +26,9 @@ function Forapprovebook() {
   const [errorMessage, setErrorMessage] = useState("");
   const user = localStorage.getItem("email");
   const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
-
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = items.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
     apiClient
@@ -55,6 +51,19 @@ function Forapprovebook() {
         console.error(error);
       });
   }, []);
+
+  const filteredItems = items.filter(item => {
+    const searchLower = searchTerm.toLowerCase();
+    const nameMatch = item.article_name.toLowerCase().includes(searchLower);
+    const sectionMatch = item.section_name.some(section => section.toLowerCase().includes(searchLower));
+    return nameMatch || sectionMatch;
+  });
+
+  // Pagination calculations
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = filteredItems.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
 
   const openStatusModal = (item) => {
     setShowModal(true);
@@ -115,6 +124,11 @@ function Forapprovebook() {
         <div className="grid-containerr">
           <div className="row">
             <h1>กลั่นกรองบทความที่ถูกเผยแพร่</h1>
+            
+            <div style={{ padding: "10px" }}>
+              <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+            </div>
+
             <table className="table table-hover">
               <thead>
                 <tr className="head" style={{ textAlign: "center" }}>
@@ -145,10 +159,10 @@ function Forapprovebook() {
                 </tr>
               </thead>
               <tbody className="table-group-divider">
-                {items.length === 0 ? (
+                {currentItems.length === 0 ? (
                   <tr>
                     <td colSpan="10" className="text-center">
-                      ไม่มีรายการบทความที่รอการอนุมัติ.
+                      ไม่มีรายการของบทความที่คุณค้นหา.
                     </td>
                   </tr>
                 ) : (

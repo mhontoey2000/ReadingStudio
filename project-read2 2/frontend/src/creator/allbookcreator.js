@@ -24,12 +24,7 @@ function Allbookcreator() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = items.slice(startIndex, endIndex);
   const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
-
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
     init();
@@ -70,9 +65,28 @@ function Allbookcreator() {
         );
       });
   };
+  
   const filteredItems = items.filter((article) => {
-    return article.article_name.includes(searchTerm);
+    // Convert search term to lower case for case-insensitive comparison
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+  
+    // Check if the article name contains the search term
+    const nameMatches = article.article_name.toLowerCase().includes(lowerCaseSearchTerm);
+  
+    // Check if any section name contains the search term
+    // Ensure article.section_name is valid and an array before applying the some() function
+    const sectionMatches = article.section_name && Array.isArray(article.section_name) && article.section_name.some(section =>
+      section.toLowerCase().includes(lowerCaseSearchTerm)
+    );
+  
+    // Return true if either nameMatches or sectionMatches is true
+    return nameMatches || sectionMatches;
   });
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = filteredItems.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
 
   return (
     <div>
@@ -126,7 +140,7 @@ function Allbookcreator() {
               </tr>
             </thead>
             <tbody className="table-group-divider">
-              {filteredItems.length === 0 ? (
+              {currentItems.length === 0 ? (
                 <tr>
                   <td colSpan="10">
                     ไม่มีรายการบทความที่คุณค้นหา หรือคุณเขียนชื่อบทความผิด.

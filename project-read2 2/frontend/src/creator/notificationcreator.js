@@ -13,8 +13,6 @@ import {
   convertImageToBase64,
 } from "../config"
 
-const ITEMS_PER_PAGE = 10;
-
 function formatDate(dateString) {
   const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
   return new Date(dateString).toLocaleDateString(undefined, options);
@@ -28,12 +26,7 @@ function Notificationcreator() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const ITEMS_PER_PAGE = 10;
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = items.slice(startIndex, endIndex);
   const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
-
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
@@ -57,9 +50,26 @@ function Notificationcreator() {
       });
   }, [user]);
 
-  const filteredItems = items.filter((items) => {
-    return items.article_name.includes(searchTerm);
+  const filteredItems = items.filter(item => {
+    const searchLower = searchTerm.toLowerCase();
+    const nameMatch = item.article_name.toLowerCase().includes(searchLower);
+    let sectionMatch = false;
+    // Ensure section_name is treated correctly as an array
+    if (Array.isArray(item.section_name)) {
+      sectionMatch = item.section_name.some(section =>
+        section.toLowerCase().includes(searchLower)
+      );
+    } else if (typeof item.section_name === 'string') {
+      sectionMatch = item.section_name.toLowerCase().includes(searchLower);
+    }
+  
+    return nameMatch || sectionMatch;
   });
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = filteredItems.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
 
   return (
     <div>
@@ -105,7 +115,7 @@ function Notificationcreator() {
                 </tr>
               </thead>
               <tbody className="table-group-divider">
-                {filteredItems.length === 0 ? (
+                {currentItems.length === 0 ? (
                   <tr>
                     <td colSpan="10">ไม่มีรายการสถานะของบทความ.</td>
                   </tr>

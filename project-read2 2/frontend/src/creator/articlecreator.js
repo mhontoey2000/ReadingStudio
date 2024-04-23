@@ -25,12 +25,7 @@ function Articlecreator() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = items.slice(startIndex, endIndex);
   const [isLoadedBtn, setIsLoadedBtn] = useState(true); // close click btn for loadData....
-
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
     init();
@@ -52,6 +47,11 @@ function Articlecreator() {
   const filteredItems = items.filter((article) => {
     return article.article_name.includes(searchTerm);
   });
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = filteredItems.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
 
   const deleteBook = (bookId) => {
     const bookToDelete = items.find((article) => article.article_id === bookId);
@@ -115,7 +115,7 @@ function Articlecreator() {
               </tr>
             </thead>
             <tbody className="table-group-divider">
-              {filteredItems.length === 0 ? (
+              {currentItems.length === 0 ? (
                 <tr>
                   <td colSpan="10">
                     ไม่มีรายการบทของบทความที่คุณค้นหา หรือคุณเขียนชื่อบทความผิด.

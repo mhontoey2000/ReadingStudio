@@ -44,7 +44,6 @@ function Articlecreator() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = filteredItems.slice(startIndex, endIndex);
-
   const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
 
   return (
