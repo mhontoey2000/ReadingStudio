@@ -513,7 +513,7 @@ function Editarticle() {
                   </div>
                 )}
 
-                {Array.isArray(qitems) && qitems.length > 0 ? (
+                {/* {Array.isArray(qitems) && qitems.length > 0 ? (
                   <>
                     <Button
                       style={{ marginLeft: "10px" }}
@@ -526,7 +526,7 @@ function Editarticle() {
                   </>
                 ) : (
                   ""
-                )}
+                )} */}
               </div>
 
               <hr className="line1" />
