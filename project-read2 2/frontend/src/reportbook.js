@@ -34,45 +34,79 @@ function Reportbook() {
   // const user = JSON.parse(localStorage.getItem('email'));
   const user = localStorage.getItem("email");
 
-  useEffect(() => {
-    apiClient
-      .get("api/userdata?user_email=" + user)
-      .then((response) => {
-        setRemail(response.data[0].user_email);
-      })
-      .catch((error) => console.error(error));
-  }, [user]);
+  // useEffect(() => {
+  //   apiClient
+  //     .get("api/userdata?user_email=" + user)
+  //     .then((response) => {
+  //       setRemail(response.data[0].user_email);
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, [user]);
 
   useEffect(() => {
-    apiClient
-      .get(`api/articledetail/${articleid}`)
-      .then((response) => {
-        setAname(response.data[0].section_name);
-        setIsLoaded(true);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [articleid]);
+    Promise.all([
+      apiClient.get(`api/articledetail/${articleid}`),
+      apiClient.get(`api/article/${bookid}`),
+      apiClient.get("api/userdata?user_email=" + user),
+    ])
+      .then(([responseArticledetail, responseArticle, responseUserdata]) => {
+        if (responseArticledetail) {
+          setAname(responseArticledetail.data[0].section_name);
+        }
 
-  useEffect(() => {
-    apiClient
-      .get(`api/article/${bookid}`)
-      .then((response) => {
-        setBname(response.data[0].article_name);
-        // for (let i = 0; i < response.data.length; i++) {
-        //   if (response.data[i].article_id === bookid) {
-        //     setBname(response.data[i].article_name);
-        //   }
-        // }
+        if (responseArticle) {
+          setBname(responseArticle.data[0].article_name);
+        }
+
+        if (responseUserdata) {
+          setRemail(responseUserdata.data[0].user_email);
+        }
 
         // open click btn
         setIsLoadedBtn(false);
       })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [bookid]);
+      .catch((err) => {
+        console.error(err);
+      })
+
+    // apiClient
+    //   .get(`api/articledetail/${articleid}`)
+    //   .then((response) => {
+    //     setAname(response.data[0].section_name);
+    //     setIsLoaded(true);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+
+    // apiClient
+    //   .get(`api/article/${bookid}`)
+    //   .then((response) => {
+    //     setBname(response.data[0].article_name);
+
+    //     // open click btn
+    //     setIsLoadedBtn(false);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+
+
+  }, [articleid, bookid, user]);
+
+  // useEffect(() => {
+  //   apiClient
+  //     .get(`api/article/${bookid}`)
+  //     .then((response) => {
+  //       setBname(response.data[0].article_name);
+
+  //       // open click btn
+  //       setIsLoadedBtn(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }, [bookid]);
 
   const sendReport = (e) => {
     e.preventDefault();
