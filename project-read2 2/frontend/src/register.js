@@ -184,7 +184,7 @@ function Register() {
               {usertype === "creator" && (
                 <div className="mb-3">
                   <label className="form-label" htmlFor="idcard">
-                    อัพโหลดหลักฐานยืนยันตัวตน
+                    อัพโหลดหลักฐานยืนยันตัวตน เช่น บัตรประชาชน บัตรข้าราชการ
                   </label>
                   <input
                     type="file"
