@@ -7,6 +7,7 @@ import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useHistory } from "react-router-dom";
+import Modal from 'react-bootstrap/Modal';
 import Alert from "react-bootstrap/Alert";
 import {
   apiClient,
@@ -20,10 +21,9 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [usertype, setUsertype] = useState("");
-  const [key, setKey] = useState("");
-  const [code, setCode] = useState("");
   const history = useHistory();
   const [idcard, setIdCardImage] = useState(null);
+  const [showContactModal, setShowContactModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false); // alert show error
   const [alertMessage, setAlertMessage] = useState(""); // message alert
   const handleImageChange = (event) => {
@@ -36,8 +36,7 @@ function Register() {
     // console.log("addAccount function called");
     e.preventDefault();
     if (usertype === "creator" && idcard === null) {
-      alert("กรุณาติดต่อผู้พัฒนา rds_contact@gmail.com เพื่อขอคีย์");
-      setCode("กรุณาติดต่อผู้พัฒนา");
+      setShowContactModal(true);
     } else if (
       name !== "" &&
       surname !== "" &&
@@ -157,7 +156,7 @@ function Register() {
                   type="password"
                   className="form-control"
                   id="password"
-                  placeholder="กรุณากรอกรหัส"
+                  placeholder="กรุณากรอกรหัสผ่าน"
                   required
                   onChange={(event) => {
                     setPassword(event.target.value);
@@ -222,6 +221,18 @@ function Register() {
           </div>
         </div>
       </div>
+
+      <Modal show={showContactModal} onHide={() => setShowContactModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>คำแนะนำ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>กรุณาอัพโหลดหลักฐานยืนยันตัวตน</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowContactModal(false)}>
+            ปิด
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <footer className="footer">
         <span>ติดต่อผู้พัฒนา readingstudio101@gmail.com</span>
