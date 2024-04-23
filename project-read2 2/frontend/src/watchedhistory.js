@@ -183,12 +183,18 @@ function Watchedhistory() {
         console.error(error);
       });
   };
+  
   useEffect(() => {
     // Filter watched articles based on the search term
     const filteredArticles = watchedArticlesFilter(searchTerm);
     setFilteredWatchedArticles(filteredArticles);
-  }, [searchTerm, watchedArticles]);
-
+  
+    // Filter exam history based on the search term
+    const filteredExams = examHistoryFilter(searchTerm);
+    setFilteredExamHistory(filteredExams);
+  }, [searchTerm, watchedArticles, examHistory]);
+  
+  // Existing watched articles filtering function
   const watchedArticlesFilter = (term) => {
     const filteredArticles = Object.entries(watchedArticles).reduce(
       (result, [day, articles]) => {
@@ -198,22 +204,52 @@ function Watchedhistory() {
             article_section.section_name.toLowerCase().includes(term.toLowerCase()) ||
             day.toLowerCase().includes(term.toLowerCase())
         );
-
+  
         if (filteredArticles.length > 0) {
           result[day] = filteredArticles;
         }
-
+  
         return result;
       },
       {}
     );
-
+  
     return filteredArticles;
+  };
+  
+  // New exam history filtering function
+  const examHistoryFilter = (term) => {
+    const filteredExams = Object.entries(examHistory).reduce(
+      (result, [day, exams]) => {
+        const filteredExams = exams.filter(
+          (exam) =>
+            exam.article_name.toLowerCase().includes(term.toLowerCase()) ||
+            exam.section_name.toLowerCase().includes(term.toLowerCase()) ||
+            day.toLowerCase().includes(term.toLowerCase())
+        );
+  
+        if (filteredExams.length > 0) {
+          result[day] = filteredExams;
+        }
+  
+        return result;
+      },
+      {}
+    );
+  
+    return filteredExams;
   };
 
   const handleMenuClick = (menu) => {
     setActiveMenu(menu);
-  };
+    setSearchTerm(""); // Reset the search term upon changing the menu
+    // Reset the filtered states when changing tabs to show all data initially
+    if (menu === "watched") {
+      setFilteredWatchedArticles(watchedArticles);
+    } else if (menu === "exam") {
+      setFilteredExamHistory(examHistory);
+    }
+  };  
 
   return (
     <div>

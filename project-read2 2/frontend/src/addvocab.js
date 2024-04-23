@@ -135,7 +135,7 @@ function Addvocab() {
                   type="text"
                   className="form-control"
                   id="vocabname"
-                  placeholder="ตัวอย่าง A[อ่านว่า เอ]"
+                  placeholder="ตัวอย่าง เอ"
                   onChange={(event) => {
                     setVname(event.target.value);
                   }}
