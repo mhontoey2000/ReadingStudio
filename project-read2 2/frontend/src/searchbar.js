@@ -15,7 +15,8 @@ function Searchbar(props) {
     }
 
     return (
-        <div className="input-wrapper">
+        // input-wrapper
+        <div className="">
             <div className="search-inner">
                 <input
                     placeholder="ค้นหา"

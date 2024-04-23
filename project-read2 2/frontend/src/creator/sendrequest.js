@@ -52,8 +52,8 @@ function Sendrequest() {
       })
       .then((response) => {
         setShowSuccessModal(true);
-         // open click btn
-         setIsLoadedBtn(false);
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error("Error updating status_article:", error);
@@ -73,8 +73,10 @@ function Sendrequest() {
         <div className="grid-containerr">
           <h1>เลือกบทความที่ต้องการเผยแพร่</h1>
 
-          <div style={{ padding: "10px" }}>
-            <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+          <div className="row justify-content-md-center">
+            <div className="col-md-auto" style={{ padding: "10px" }}>
+              <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+            </div>
           </div>
 
           <table className="table table-hover">

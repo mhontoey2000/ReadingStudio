@@ -124,9 +124,11 @@ function Forapprovebook() {
         <div className="grid-containerr">
           <div className="row">
             <h1>กลั่นกรองบทความที่ถูกเผยแพร่</h1>
-            
-            <div style={{ padding: "10px" }}>
-              <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+
+            <div className="row justify-content-md-center">
+              <div className="col-md-auto" style={{ padding: "10px" }}>
+                <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+              </div>
             </div>
 
             <table className="table table-hover">
@@ -175,11 +177,11 @@ function Forapprovebook() {
                       <td className="col-sm-2">
                         {Array.isArray(item.section_name)
                           ? item.section_name.map((article_section, index) => (
-                              <span key={index}>
-                                {article_section}
-                                {index < item.section_name.length - 1 && ", "}
-                              </span>
-                            ))
+                            <span key={index}>
+                              {article_section}
+                              {index < item.section_name.length - 1 && ", "}
+                            </span>
+                          ))
                           : "ไม่มีตอนของบทความ"}
                       </td>
                       <td className="col-sm-2">
@@ -193,19 +195,18 @@ function Forapprovebook() {
                       <td className="col-sm-1">{item.article_creator}</td>
                       <td className="col-sm-2">
                         <Button
-                          className={`btn ${
-                            item.status_article === "pending"
+                          className={`btn ${item.status_article === "pending"
                               ? "btn-info"
                               : item.status_article === "creating"
-                              ? "btn-secondary"
-                              : item.status_article === "finished"
-                              ? "btn-secondary"
-                              : item.status_article === "deny"
-                              ? "btn-danger"
-                              : item.status_article === "published"
-                              ? "btn-success"
-                              : "btn-secondary"
-                          }`}
+                                ? "btn-secondary"
+                                : item.status_article === "finished"
+                                  ? "btn-secondary"
+                                  : item.status_article === "deny"
+                                    ? "btn-danger"
+                                    : item.status_article === "published"
+                                      ? "btn-success"
+                                      : "btn-secondary"
+                            }`}
                           style={{ color: "white" }}
                           onClick={() => openStatusModal(item)}
                         >

@@ -48,9 +48,11 @@ const Allexamadmin = () => {
         <div className="grid-containerr">
           <h1>ข้อสอบทั้งหมดของฉัน</h1>
 
-          <div style={{ padding: "10px" }}>
+          <div className="row justify-content-md-center">
+          <div className="col-md-auto" style={{ padding: "10px" }}>
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
           </div>
+        </div>
 
           <table className="table table-hover">
             <thead>

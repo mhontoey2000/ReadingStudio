@@ -52,7 +52,7 @@ const Allbookadmin = () => {
             setItems(filteredData);
             //console.log(items);
             // open click btn
-         setIsLoadedBtn(false);
+            setIsLoadedBtn(false);
           })
           .catch((error) => {
             console.error(error);
@@ -92,16 +92,16 @@ const Allbookadmin = () => {
   const filteredItems = items.filter((article) => {
     // Convert search term to lower case for case-insensitive comparison
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-  
+
     // Check if the article name contains the search term
     const nameMatches = article.article_name.toLowerCase().includes(lowerCaseSearchTerm);
-  
+
     // Check if any section name contains the search term
     // Ensure article.section_name is valid and an array before applying the some() function
     const sectionMatches = article.section_name && Array.isArray(article.section_name) && article.section_name.some(section =>
       section.toLowerCase().includes(lowerCaseSearchTerm)
     );
-  
+
     // Return true if either nameMatches or sectionMatches is true
     return nameMatches || sectionMatches;
   });
@@ -121,15 +121,17 @@ const Allbookadmin = () => {
           <div className="row">
             <h1>บทความทั้งหมด</h1>
 
-            <div style={{ padding: "10px" }}>
-            <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
-          </div>
+            <div className="row justify-content-md-center">
+              <div className="col-md-auto" style={{ padding: "10px" }}>
+                <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+              </div>
+            </div>
 
-          <div className="text-center" style={{margin:"10px"}}>
-            <cite style={{color:"#192655",fontWeight:"bold"}}>สร้างยังไม่เสร็จ</cite>
-            <cite style={{color:"red",marginLeft:"10px"}}>หมายถึงบทความของคุณยังไม่สร้างตอนของบทความนั้น</cite>
-          </div>
-            
+            <div className="text-center" style={{ margin: "10px" }}>
+              <cite style={{ color: "#192655", fontWeight: "bold" }}>สร้างยังไม่เสร็จ</cite>
+              <cite style={{ color: "red", marginLeft: "10px" }}>หมายถึงบทความของคุณยังไม่สร้างตอนของบทความนั้น</cite>
+            </div>
+
             <table className="table table-hover">
               <thead>
                 <tr className="head" style={{ textAlign: "center" }}>
@@ -160,131 +162,131 @@ const Allbookadmin = () => {
                 </tr>
               </thead>
               <tbody className="table-group-divider">
-              {currentItems.length === 0 ? (
-                <tr>
-                  <td colSpan="10" className="text-center">
-                    ไม่มีรายการของบทความที่คุณค้นหา
-                    หรือคุณเขียนชื่อของบทความผิด.
-                  </td>
-                </tr>
-              ) : (
-                currentItems.map((article, index) => (
-                  <tr key={article.article_id}>
-                    <td className="col-sm-1" key={`article${index}`}>
-                    {startIndex + index + 1}
-                    </td>
-                    <td className="col-sm-2">{article.article_name}</td>
-                    {/* <td className='col-sm-4'>{article.article_detail}</td> */}
-                    <td className="col-sm-3">
-                      {article.section_name.map((article_section, index) => (
-                        <span key={index}>
-                          {article_section}
-                          {index < article.section_name.length - 1 && ", "}{" "}
-                          {/* Add a comma if not the last article_section */}
-                        </span>
-                      ))}
-                    </td>
-                    <td className="col-sm-1">
-                      <img
-                        src={article.article_imagedata || article.article_image}
-                        width="100"
-                        height="100"
-                      />
-                    </td>
-                    <td className="col-sm-2">
-                      {article.status_article === "pending" && (
-                        <span style={{ color: "#FFC436", fontWeight: "bold" }}>
-                          รออนุมัติ
-                        </span>
-                      )}
-                      {article.status_article === "creating" && (
-                        <span style={{ color: "#192655", fontWeight: "bold" }}>
-                          สร้างยังไม่เสร็จ
-                        </span>
-                      )}
-                      {article.status_article === "finished" && (
-                        <span style={{ color: "#3876BF", fontWeight: "bold" }}>
-                          สร้างเสร็จแล้ว
-                        </span>
-                      )}
-                      {article.status_article === "deny" && (
-                        <span style={{ color: "red", fontWeight: "bold" }}>
-                          ถูกปฏิเสธ
-                        </span>
-                      )}
-                      {article.status_article === "published" && (
-                        <span style={{ color: "green", fontWeight: "bold" }}>
-                          เผยแพร่แล้ว
-                        </span>
-                      )}
-                    </td>
-                    <td className="col-sm-1">
-                      {canUserEditChapter(article.article_creator) && (
-                        <Link
-                          className="btn btn-warning amt1"
-                          to={{
-                            pathname: `/Page/editbook_${article.article_id}`,
-                            state: { article_id: article.article_id },
-                          }}
-                        >
-                          แก้ไขบทความ
-                        </Link>
-                      )}
-                    </td>
-                    <td className="col-sm-1">
-                      {canUserEditChapter(article.article_creator) && (
-                        <Link
-                          className="btn btn-warning amt1"
-                          to={{
-                            pathname: `/Page/articleedit_${article.article_id}`,
-                            state: { article_id: article.article_id },
-                          }}
-                        >
-                          แก้ไขตอน
-                        </Link>
-                      )}
-                    </td>
-                    <td className="col-sm-1">
-                      {canUserEditChapter(article.article_creator) && (
-                        <Button
-                          className="btn btn-danger amt2"
-                          onClick={() => deleteBook(article.article_id)}
-                        >
-                          ลบบทความ
-                        </Button>
-                      )}
+                {currentItems.length === 0 ? (
+                  <tr>
+                    <td colSpan="10" className="text-center">
+                      ไม่มีรายการของบทความที่คุณค้นหา
+                      หรือคุณเขียนชื่อของบทความผิด.
                     </td>
                   </tr>
-                ))
-              )}
+                ) : (
+                  currentItems.map((article, index) => (
+                    <tr key={article.article_id}>
+                      <td className="col-sm-1" key={`article${index}`}>
+                        {startIndex + index + 1}
+                      </td>
+                      <td className="col-sm-2">{article.article_name}</td>
+                      {/* <td className='col-sm-4'>{article.article_detail}</td> */}
+                      <td className="col-sm-3">
+                        {article.section_name.map((article_section, index) => (
+                          <span key={index}>
+                            {article_section}
+                            {index < article.section_name.length - 1 && ", "}{" "}
+                            {/* Add a comma if not the last article_section */}
+                          </span>
+                        ))}
+                      </td>
+                      <td className="col-sm-1">
+                        <img
+                          src={article.article_imagedata || article.article_image}
+                          width="100"
+                          height="100"
+                        />
+                      </td>
+                      <td className="col-sm-2">
+                        {article.status_article === "pending" && (
+                          <span style={{ color: "#FFC436", fontWeight: "bold" }}>
+                            รออนุมัติ
+                          </span>
+                        )}
+                        {article.status_article === "creating" && (
+                          <span style={{ color: "#192655", fontWeight: "bold" }}>
+                            สร้างยังไม่เสร็จ
+                          </span>
+                        )}
+                        {article.status_article === "finished" && (
+                          <span style={{ color: "#3876BF", fontWeight: "bold" }}>
+                            สร้างเสร็จแล้ว
+                          </span>
+                        )}
+                        {article.status_article === "deny" && (
+                          <span style={{ color: "red", fontWeight: "bold" }}>
+                            ถูกปฏิเสธ
+                          </span>
+                        )}
+                        {article.status_article === "published" && (
+                          <span style={{ color: "green", fontWeight: "bold" }}>
+                            เผยแพร่แล้ว
+                          </span>
+                        )}
+                      </td>
+                      <td className="col-sm-1">
+                        {canUserEditChapter(article.article_creator) && (
+                          <Link
+                            className="btn btn-warning amt1"
+                            to={{
+                              pathname: `/Page/editbook_${article.article_id}`,
+                              state: { article_id: article.article_id },
+                            }}
+                          >
+                            แก้ไขบทความ
+                          </Link>
+                        )}
+                      </td>
+                      <td className="col-sm-1">
+                        {canUserEditChapter(article.article_creator) && (
+                          <Link
+                            className="btn btn-warning amt1"
+                            to={{
+                              pathname: `/Page/articleedit_${article.article_id}`,
+                              state: { article_id: article.article_id },
+                            }}
+                          >
+                            แก้ไขตอน
+                          </Link>
+                        )}
+                      </td>
+                      <td className="col-sm-1">
+                        {canUserEditChapter(article.article_creator) && (
+                          <Button
+                            className="btn btn-danger amt2"
+                            onClick={() => deleteBook(article.article_id)}
+                          >
+                            ลบบทความ
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
               <tfoot>
-              <tr>
-                <td colSpan="8" style={{ textAlign: "center" }}>
-                  <Button
-                    onClick={() =>
-                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
-                    }
-                    disabled={currentPage === 1}
-                  >
-                    ย้อนกลับ
-                  </Button>
-                  <span style={{ margin: "0 10px" }}>
-                    {currentPage} จาก {totalPages}
-                  </span>
-                  <Button
-                    onClick={() =>
-                      setCurrentPage((prevPage) =>
-                        Math.min(prevPage + 1, totalPages)
-                      )
-                    }
-                    disabled={currentPage === totalPages}
-                  >
-                    ถัดไป
-                  </Button>
-                </td>
-              </tr>
-            </tfoot>
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center" }}>
+                    <Button
+                      onClick={() =>
+                        setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                    >
+                      ย้อนกลับ
+                    </Button>
+                    <span style={{ margin: "0 10px" }}>
+                      {currentPage} จาก {totalPages}
+                    </span>
+                    <Button
+                      onClick={() =>
+                        setCurrentPage((prevPage) =>
+                          Math.min(prevPage + 1, totalPages)
+                        )
+                      }
+                      disabled={currentPage === totalPages}
+                    >
+                      ถัดไป
+                    </Button>
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>

@@ -98,9 +98,11 @@ function Allbookcreator() {
         <div className="grid-containerr">
           <h1>บทความทั้งหมดของฉัน</h1>
 
-          <div style={{ padding: "10px" }}>
+          <div className="row justify-content-md-center">
+          <div className="col-md-auto" style={{ padding: "10px" }}>
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
           </div>
+        </div>
 
           <div className="text-center" style={{ margin: "10px" }}>
             <cite style={{ color: "#192655", fontWeight: "bold" }}>

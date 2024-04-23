@@ -17,7 +17,7 @@ function formatDate(dateString) {
   const date = new Date(dateString);
   let day = ('0' + date.getDate()).slice(-2);  // ensures two digits
   let month = ('0' + (date.getMonth() + 1)).slice(-2);  // ensures two digits, months are 0-indexed
-  let year = date.getFullYear(); 
+  let year = date.getFullYear();
 
   return `${day}/${month}/${year}`;  // returns date in dd/mm/yy format
 }
@@ -46,8 +46,8 @@ function Notificationcreator() {
       .then((response) => {
         // console.log(response.data);
         setItems(response.data);
-         // open click btn
-         setIsLoadedBtn(false);
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -66,7 +66,7 @@ function Notificationcreator() {
     } else if (typeof item.section_name === 'string') {
       sectionMatch = item.section_name.toLowerCase().includes(searchLower);
     }
-  
+
     return nameMatch || sectionMatch;
   });
 
@@ -84,8 +84,10 @@ function Notificationcreator() {
         <div className="grid-containerr">
           <h1>รายการแจ้งเตือน</h1>
 
-          <div style={{ padding: "10px" }}>
-            <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+          <div className="row justify-content-md-center">
+            <div className="col-md-auto" style={{ padding: "10px" }}>
+              <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+            </div>
           </div>
 
           <div className="row">
@@ -127,7 +129,7 @@ function Notificationcreator() {
                   currentItems.map((items, index) => (
                     <tr key={items.request_id}>
                       <td className="col-sm-1" key={`article${index + 1}`}>
-                      {startIndex + index + 1}
+                        {startIndex + index + 1}
                       </td>
                       <td className="col-sm-2">{items.article_name}</td>
                       <td className="col-sm-2">{items.section_name}</td>
@@ -196,7 +198,7 @@ function Notificationcreator() {
                       ย้อนกลับ
                     </Button>
                     <span style={{ margin: "0 10px" }}>
-                       {currentPage} จาก {totalPages}
+                      {currentPage} จาก {totalPages}
                     </span>
                     <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
                       ถัดไป

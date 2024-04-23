@@ -48,8 +48,8 @@ const Notification = () => {
       .get(`api/reportnotification`)
       .then((response) => {
         setReport(response.data);
-         // open click btn
-         setIsLoadedBtn(false);
+        // open click btn
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -188,11 +188,11 @@ const Notification = () => {
     const date = new Date(dateString);
     let day = ('0' + date.getDate()).slice(-2);  // ensures two digits
     let month = ('0' + (date.getMonth() + 1)).slice(-2);  // ensures two digits, months are 0-indexed
-    let year = date.getFullYear(); 
+    let year = date.getFullYear();
 
     return `${day}/${month}/${year}`;  // returns date in dd/mm/yy format
-}
-  
+  }
+
   return (
     <div>
       {/* waite... data */}
@@ -251,19 +251,18 @@ const Notification = () => {
                         {/* <td className="col-sm-1">{ Getth(item.report_status)}</td> */}
                         <td className="col-sm-2">
                           <Button
-                            className={`btn ${
-                              item.report_status === "pending"
-                                ? "btn-info"
-                                : item.report_status === "creating"
+                            className={`btn ${item.report_status === "pending"
+                              ? "btn-info"
+                              : item.report_status === "creating"
                                 ? "btn-secondary"
                                 : item.report_status === "finished"
-                                ? "btn-secondary"
-                                : item.report_status === "deny"
-                                ? "btn-danger"
-                                : item.report_status === "published"
-                                ? "btn-success"
-                                : "btn-secondary"
-                            }`}
+                                  ? "btn-secondary"
+                                  : item.report_status === "deny"
+                                    ? "btn-danger"
+                                    : item.report_status === "published"
+                                      ? "btn-success"
+                                      : "btn-secondary"
+                              }`}
                             style={{ color: "white" }}
                             onClick={() => openStatusModal(item)}
                           >
@@ -483,7 +482,7 @@ const Notification = () => {
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             ยกเลิก
           </Button>
-          <Button variant="danger" onClick={confirmDeleteReport}>
+          <Button variant="danger" onClick={() => confirmDeleteReport(selectedReportToDelete.report_id)}>
             ลบ
           </Button>
         </Modal.Footer>

@@ -51,7 +51,7 @@ function Home() {
   const incrementBookView = (bookId) => {
     apiClient
       .post(`/api/article/view/${bookId}`)
-      .then((response) => {})
+      .then((response) => { })
       .catch((error) => {
         console.error(error);
       });
@@ -69,10 +69,16 @@ function Home() {
       <Header />
 
       <section>
-        <h1>บทความ</h1>
+        <div className="row">
+          <div className="col-12">
+            <h1>บทความ</h1>
+          </div>
+        </div>
 
-        <div style={{ padding: "10px" }}>
-          <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+        <div className="row justify-content-md-center">
+          <div className="col-md-auto" style={{ padding: "10px" }}>
+            <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+          </div>
         </div>
 
         <div className="bc">
@@ -83,7 +89,8 @@ function Home() {
               </div>
             ) : (
               filteredItems.map((article) => (
-                <div className="col-6 col-md-3" key={article.article_id}>
+                // <div className="col-6 col-md-3" key={article.article_id}>
+                <div className="col col-sm-4 col-md-3" key={article.article_id}>
                   <div
                     className="grid-item-wrapper"
                     style={{ padding: "10px" }}
@@ -141,8 +148,8 @@ function Home() {
             )}
           </div>
         </div>
-      </section>
-    </div>
+      </section >
+    </div >
   );
 }
 

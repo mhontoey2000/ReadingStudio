@@ -115,7 +115,7 @@ function Toaddarticle() {
           setLoading(false);
           setScreenLoaded(true);
           // open click btn
-        setIsLoadedBtn(false);
+          setIsLoadedBtn(false);
         })
         .catch((error) => {
           console.error(error);
@@ -136,6 +136,7 @@ function Toaddarticle() {
     "ประถมศึกษาปีที่ 4",
     "ประถมศึกษาปีที่ 5",
     "ประถมศึกษาปีที่ 6",
+    "มากกว่าประถมศึกษาปีที่ 6",
   ];
 
   const analyzeArticleLevel = (articleDetail) => {
@@ -245,8 +246,10 @@ function Toaddarticle() {
         <div className="grid-containerr">
           <h1>เพิ่มตอนของบทความ</h1>
 
-          <div style={{ padding: "10px" }}>
-            <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+          <div className="row justify-content-md-center">
+            <div className="col-md-auto" style={{ padding: "10px" }}>
+              <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+            </div>
           </div>
 
           {["admin", "creator"].includes(usertype) && (

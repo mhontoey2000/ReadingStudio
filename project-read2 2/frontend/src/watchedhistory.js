@@ -72,7 +72,7 @@ function Watchedhistory() {
 
         // Fetch all exam details
         const fetchExamDetails = uniqueArticleIds.map((articleId) =>
-        apiClient.get(`api/exam/${articleId}`)
+          apiClient.get(`api/exam/${articleId}`)
         );
 
         // Wait for all exam detail requests to complete
@@ -100,7 +100,7 @@ function Watchedhistory() {
             //console.log('scores', scores);
 
             setExamScores(scores);
-             
+
           })
           .catch((error) => {
             console.error(error);
@@ -118,7 +118,7 @@ function Watchedhistory() {
         setWatchedArticles(articlesByDay);
         setFilteredWatchedArticles(articlesByDay);
         // open click btn
-            setIsLoadedBtn(false);
+        setIsLoadedBtn(false);
       })
       .catch((error) => {
         console.error(error);
@@ -135,8 +135,8 @@ function Watchedhistory() {
         date.toDateString() === today.toDateString()
           ? "วันนี้"
           : date.toDateString() === yesterday.toDateString()
-          ? "เมื่อวานนี้"
-          : date.toLocaleDateString("th-TH", {
+            ? "เมื่อวานนี้"
+            : date.toLocaleDateString("th-TH", {
               weekday: "long",
               day: "numeric",
               month: "long",
@@ -183,17 +183,17 @@ function Watchedhistory() {
         console.error(error);
       });
   };
-  
+
   useEffect(() => {
     // Filter watched articles based on the search term
     const filteredArticles = watchedArticlesFilter(searchTerm);
     setFilteredWatchedArticles(filteredArticles);
-  
+
     // Filter exam history based on the search term
     const filteredExams = examHistoryFilter(searchTerm);
     setFilteredExamHistory(filteredExams);
   }, [searchTerm, watchedArticles, examHistory]);
-  
+
   // Existing watched articles filtering function
   const watchedArticlesFilter = (term) => {
     const filteredArticles = Object.entries(watchedArticles).reduce(
@@ -204,19 +204,19 @@ function Watchedhistory() {
             article_section.section_name.toLowerCase().includes(term.toLowerCase()) ||
             day.toLowerCase().includes(term.toLowerCase())
         );
-  
+
         if (filteredArticles.length > 0) {
           result[day] = filteredArticles;
         }
-  
+
         return result;
       },
       {}
     );
-  
+
     return filteredArticles;
   };
-  
+
   // New exam history filtering function
   const examHistoryFilter = (term) => {
     const filteredExams = Object.entries(examHistory).reduce(
@@ -227,16 +227,16 @@ function Watchedhistory() {
             exam.section_name.toLowerCase().includes(term.toLowerCase()) ||
             day.toLowerCase().includes(term.toLowerCase())
         );
-  
+
         if (filteredExams.length > 0) {
           result[day] = filteredExams;
         }
-  
+
         return result;
       },
       {}
     );
-  
+
     return filteredExams;
   };
 
@@ -249,29 +249,27 @@ function Watchedhistory() {
     } else if (menu === "exam") {
       setFilteredExamHistory(examHistory);
     }
-  };  
+  };
 
   return (
     <div>
-       {/* waite... data */}
-       <LoadingPage open={isLoadedBtn} />
+      {/* waite... data */}
+      <LoadingPage open={isLoadedBtn} />
       <Header />
 
       <div className="boxhistory">
         <div className="menuleft">
           <ul className="list-group list-group-flush">
             <li
-              className={`list-group-item te ${
-                activeMenu === "watched" ? "active" : ""
-              }`}
+              className={`list-group-item te ${activeMenu === "watched" ? "active" : ""
+                }`}
               onClick={() => handleMenuClick("watched")}
             >
               ประวัติการดู
             </li>
             <li
-              className={`list-group-item te ${
-                activeMenu === "exam" ? "active" : ""
-              }`}
+              className={`list-group-item te ${activeMenu === "exam" ? "active" : ""
+                }`}
               onClick={() => handleMenuClick("exam")}
             >
               ประวัติการทำข้อสอบ
@@ -395,7 +393,7 @@ function Watchedhistory() {
                               >
                                 คะแนนที่คุณทำได้:
                               </p>
-                              <p 
+                              <p
                                 style={{
                                   fontWeight: "bold",
                                   marginRight: "5px",

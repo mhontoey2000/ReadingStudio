@@ -45,6 +45,7 @@ function Articleedit() {
     "ประถมศึกษาปีที่ 4",
     "ประถมศึกษาปีที่ 5",
     "ประถมศึกษาปีที่ 6",
+    "มากกว่าประถมศึกษาปีที่ 6",
     "ไม่ระบุระดับ",
   ];
 
@@ -247,9 +248,11 @@ function Articleedit() {
         <div className="grid-containerr">
           <h1>เลือกตอนของบทความที่ต้องการแก้ไข</h1>
 
-          <div style={{ padding: "10px" }}>
+          <div className="row justify-content-md-center">
+          <div className="col-md-auto" style={{ padding: "10px" }}>
             <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
           </div>
+        </div>
 
           <table className="table table-hover">
             <thead>

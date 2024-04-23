@@ -57,7 +57,7 @@ function Bookarticle({ match }) {
   const incrementArticleView = (bookId) => {
     apiClient
       .post(`api/articles/view/${bookId}`)
-      .then((response) => {})
+      .then((response) => { })
       .catch((error) => {
         console.error(error);
       });
@@ -76,8 +76,10 @@ function Bookarticle({ match }) {
       <section>
         <h1>ตอนของบทความ</h1>
 
-        <div style={{ padding: "10px" }}>
-          <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+        <div className="row justify-content-md-center">
+          <div style={{ padding: "10px" }} className="col-md-auto">
+            <Searchbar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+          </div>
         </div>
 
         <div className="ac">
@@ -98,7 +100,7 @@ function Bookarticle({ match }) {
                   >
                     <div className="card cardhover">
                       {article_section.section_imagedata ||
-                      article_section.section_images ? (
+                        article_section.section_images ? (
                         <img
                           className="card-img-top img-fluid simg"
                           src={
