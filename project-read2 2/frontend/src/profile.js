@@ -91,8 +91,8 @@ function Profile() {
         return "อนุมัติ";
       case "pending":
         return "รออนุมัติ";
-      case "rejecting":
-        return "ถูกปฏิเสธ";
+      case "rejected":
+        return "ไม่อนุมัติ";
       default:
         return status; // or return a default label if status doesn't match any case
     }
