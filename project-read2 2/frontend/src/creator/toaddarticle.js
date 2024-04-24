@@ -141,29 +141,60 @@ function Toaddarticle() {
 
   const analyzeArticleLevel = (articleDetail) => {
     if (articleDetail) {
-      const words = articleDetail.split(" ");
-      let maxLevel = 0;
+        // สร้าง RegExp จาก keys ของ wordLevels
+        const wordPattern = new RegExp(Object.keys(wordLevels).map(word => `(?:${word})+`).join("|"), "gi");
+        const matches = articleDetail.match(wordPattern);
 
-      for (const word of words) {
-        if (wordLevels[word]) {
-          maxLevel = Math.max(maxLevel, wordLevels[word]);
+        // เก็บข้อมูลความถี่ของแต่ละระดับ
+        let levelCounts = {};
+        if (matches) {
+            matches.forEach(word => {
+                const normalizedWord = word.toLowerCase();
+                const wordData = wordLevels[normalizedWord];
+                if (wordData) {
+                    Object.keys(wordData).forEach(level => {
+                        if (wordData[level] === "1") {
+                            let levelNumber = parseInt(level.substring(1), 10); // p1, p2, ... p6 -> 1, 2, ... 6
+                            levelCounts[levelNumber] = (levelCounts[levelNumber] || 0) + 1;
+                        }
+                    });
+                }
+            });
         }
-      }
 
-      const levelMapping = {
-        1: "ประถมศึกษาปีที่ 1",
-        2: "ประถมศึกษาปีที่ 2",
-        3: "ประถมศึกษาปีที่ 3",
-        4: "ประถมศึกษาปีที่ 4",
-        5: "ประถมศึกษาปีที่ 5",
-        6: "ประถมศึกษาปีที่ 6",
-      };
+        // หาระดับที่มีความถี่สูงสุด
+        let maxCount = 0;
+        let recommendedLevels = [];
+        Object.keys(levelCounts).forEach(level => {
+            if (levelCounts[level] > maxCount) {
+                maxCount = levelCounts[level];
+                recommendedLevels = [level];
+            } else if (levelCounts[level] === maxCount) {
+                recommendedLevels.push(level);
+            }
+        });
 
-      return levelMapping[maxLevel] || "N/A";
+        // สร้างข้อความระดับที่แนะนำ
+        const levelMapping = {
+            1: "ประถมศึกษาปีที่ 1",
+            2: "ประถมศึกษาปีที่ 2",
+            3: "ประถมศึกษาปีที่ 3",
+            4: "ประถมศึกษาปีที่ 4",
+            5: "ประถมศึกษาปีที่ 5",
+            6: "ประถมศึกษาปีที่ 6"
+        };
+
+        if (recommendedLevels.length > 1) {
+            return recommendedLevels.map(level => levelMapping[level]).join(" และ ");
+        } else if (recommendedLevels.length === 1) {
+            return levelMapping[recommendedLevels[0]];
+        } else {
+            return "ไม่สามารถวัดระดับได้";
+        }
     } else {
-      return "N/A";
+        return "ไม่สามารถวัดระดับได้";
     }
-  };
+};
 
   const handleAnalyzeClick = (article_section) => {
     setLoadingVisible(true);
@@ -180,7 +211,7 @@ function Toaddarticle() {
     setTimeout(() => {
       setLoadingVisible(false);
       setScreenLoaded(true);
-    }, 5000);
+    }, 3000);
 
     setShowModal(true);
   };
